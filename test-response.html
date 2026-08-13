@@ -1,0 +1,1069 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="x-apple-disable-message-reformatting">
+
+    <title>Daily Shipping Report</title>
+
+    <style>
+        /* --------------------------------
+           BASE STYLES
+        -------------------------------- */
+
+        body {
+            margin: 0;
+            padding: 0;
+            background: #f3f4f6;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        table {
+            border-collapse: collapse;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+        }
+
+        .email-container {
+            width: 100%;
+            max-width: 1000px;
+            margin: 0 auto;
+            background: #ffffff;
+        }
+
+        .report-header {
+            padding: 24px;
+            border-bottom: 1px solid #d1d5db;
+        }
+
+        .report-header h1 {
+            margin: 0;
+            font-size: 26px;
+            line-height: 1.2;
+        }
+
+        .report-header p {
+            margin: 6px 0 0;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+
+        .berth-section {
+            padding: 24px;
+        }
+
+        .berth-section h2 {
+            margin: 0 0 16px;
+            font-size: 20px;
+            line-height: 1.2;
+        }
+
+        .shipping-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .shipping-table th,
+        .shipping-table td {
+            border: 1px solid #d1d5db;
+            padding: 10px;
+            text-align: left;
+            vertical-align: top;
+        }
+
+        .shipping-table th {
+            font-size: 12px;
+            line-height: 1.2;
+            text-transform: uppercase;
+        }
+
+        .shipping-table td {
+            font-size: 14px;
+            line-height: 1.4;
+        }
+
+        /* --------------------------------
+           MOBILE VERSION
+        -------------------------------- */
+
+        .mobile-report {
+            display: none;
+        }
+
+        .mobile-vessel-card {
+            margin-bottom: 16px;
+            border: 1px solid #d1d5db;
+            background: #ffffff;
+        }
+
+        .mobile-vessel-name {
+            padding: 16px;
+            font-size: 22px;
+            line-height: 1.2;
+            font-weight: bold;
+            border-bottom: 1px solid #d1d5db;
+        }
+
+        .mobile-detail {
+            padding: 12px 16px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .mobile-detail:last-child {
+            border-bottom: none;
+        }
+
+        .mobile-detail-label {
+            display: block;
+            margin-bottom: 4px;
+            font-size: 12px;
+            line-height: 1.2;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .mobile-detail-value {
+            display: block;
+            font-size: 18px;
+            line-height: 1.3;
+        }
+
+        /* --------------------------------
+           RESPONSIVE RULES
+        -------------------------------- */
+
+        @media screen and (max-width: 600px) {
+
+            body {
+                padding: 0 !important;
+            }
+
+            .email-container {
+                width: 100% !important;
+                max-width: 100% !important;
+            }
+
+            .desktop-report {
+                display: none !important;
+            }
+
+            .mobile-report {
+                display: block !important;
+            }
+
+            .report-header {
+                padding: 20px 16px !important;
+            }
+
+            .report-header h1 {
+                font-size: 24px !important;
+            }
+
+            .berth-section {
+                padding: 16px !important;
+            }
+
+            .berth-section h2 {
+                font-size: 22px !important;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+            <td align="center">
+
+                <table
+                    role="presentation"
+                    width="100%"
+                    cellpadding="0"
+                    cellspacing="0"
+                    border="0"
+                    class="email-container"
+                >
+
+                    <tr>
+                        <td>
+
+                            <div class="report-header">
+                                <h1>Daily Shipping Report</h1>
+                                <p>Vessel Schedule &amp; Port Operations</p>
+                            </div>
+
+                            <!-- DESKTOP REPORT -->
+                            <div class="desktop-report">
+
+            <div class="berth-section">
+
+                <h2>Berth 103</h2>
+
+                <table class="shipping-table" width="100%">
+                    <thead>
+                        <tr>
+                            <th>Vessel</th>
+                            <th>ETA</th>
+                            <th>ETB</th>
+                            <th>ETC</th>
+                            <th>ETD</th>
+                            <th>Cargo</th>
+                            <th>Quantity</th>
+                            <th>Operation</th>
+                            <th>Remarks</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+        
+                <tr>
+                    <td>Scot Bremen</td>
+                    <td>Sun Apr 23 2017 18:00:00 GMT-0300 (Brasilia Standard Time)</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td>Coal Tar + BTX</td>
+                    <td>7700</td>
+                    <td>Load</td>
+                    <td>04 days to operate.</td>
+                </tr>
+            
+                <tr>
+                    <td>Lowlands Engel</td>
+                    <td>Sun Oct 19 2025 09:48:00 GMT-0300 (Brasilia Standard Time)</td>
+                    <td>Tue Oct 21 2025 14:00:00 GMT-0300 (Brasilia Standard Time)</td>
+                    <td>Sat Oct 25 2025 14:00:00 GMT-0300 (Brasilia Standard Time)</td>
+                    <td>Sat Oct 25 2025 14:00:00 GMT-0300 (Brasilia Standard Time)</td>
+                    <td>Wheat</td>
+                    <td>34700</td>
+                    <td>Disch</td>
+                    <td>At Berth. </td>
+                </tr>
+            
+                    </tbody>
+                </table>
+
+            </div>
+        
+            <div class="berth-section">
+
+                <h2>Berth 104</h2>
+
+                <table class="shipping-table" width="100%">
+                    <thead>
+                        <tr>
+                            <th>Vessel</th>
+                            <th>ETA</th>
+                            <th>ETB</th>
+                            <th>ETC</th>
+                            <th>ETD</th>
+                            <th>Cargo</th>
+                            <th>Quantity</th>
+                            <th>Operation</th>
+                            <th>Remarks</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+        
+                <tr>
+                    <td>Furor Aquarius</td>
+                    <td>Thu Oct 23 2025 12:00:00 GMT-0300 (Brasilia Standard Time)</td>
+                    <td>Thu Oct 23 2025 12:00:00 GMT-0300 (Brasilia Standard Time)</td>
+                    <td>Fri Oct 24 2025 12:00:00 GMT-0300 (Brasilia Standard Time)</td>
+                    <td>Fri Oct 24 2025 12:00:00 GMT-0300 (Brasilia Standard Time)</td>
+                    <td>Bunker</td>
+                    <td>-</td>
+                    <td>-</td>
+                    <td></td>
+                </tr>
+            
+                    </tbody>
+                </table>
+
+            </div>
+        
+            <div class="berth-section">
+
+                <h2>Berth 105</h2>
+
+                <table class="shipping-table" width="100%">
+                    <thead>
+                        <tr>
+                            <th>Vessel</th>
+                            <th>ETA</th>
+                            <th>ETB</th>
+                            <th>ETC</th>
+                            <th>ETD</th>
+                            <th>Cargo</th>
+                            <th>Quantity</th>
+                            <th>Operation</th>
+                            <th>Remarks</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+        
+                <tr>
+                    <td>Ara Libertad</td>
+                    <td>Fri Oct 24 2025 12:00:00 GMT-0300 (Brasilia Standard Time)</td>
+                    <td>Fri Oct 24 2025 12:00:00 GMT-0300 (Brasilia Standard Time)</td>
+                    <td>Mon Oct 27 2025 12:00:00 GMT-0300 (Brasilia Standard Time)</td>
+                    <td>Mon Oct 27 2025 12:00:00 GMT-0300 (Brasilia Standard Time)</td>
+                    <td>Argentinian Navy</td>
+                    <td>-</td>
+                    <td>-</td>
+                    <td></td>
+                </tr>
+            
+                    </tbody>
+                </table>
+
+            </div>
+        
+            <div class="berth-section">
+
+                <h2>Berth 106</h2>
+
+                <table class="shipping-table" width="100%">
+                    <thead>
+                        <tr>
+                            <th>Vessel</th>
+                            <th>ETA</th>
+                            <th>ETB</th>
+                            <th>ETC</th>
+                            <th>ETD</th>
+                            <th>Cargo</th>
+                            <th>Quantity</th>
+                            <th>Operation</th>
+                            <th>Remarks</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+        
+                <tr>
+                    <td>Majestic</td>
+                    <td>Fri Oct 24 2025 01:00:00 GMT-0300 (Brasilia Standard Time)</td>
+                    <td>Fri Oct 24 2025 01:00:00 GMT-0300 (Brasilia Standard Time)</td>
+                    <td>Mon Oct 27 2025 01:00:00 GMT-0300 (Brasilia Standard Time)</td>
+                    <td>Mon Oct 27 2025 01:00:00 GMT-0300 (Brasilia Standard Time)</td>
+                    <td>Containers</td>
+                    <td>500</td>
+                    <td>Load/Disch</td>
+                    <td></td>
+                </tr>
+            
+                <tr>
+                    <td>SH Vega</td>
+                    <td>Mon Oct 27 2025 09:00:00 GMT-0300 (Brasilia Standard Time)</td>
+                    <td>Mon Oct 27 2025 09:00:00 GMT-0300 (Brasilia Standard Time)</td>
+                    <td>Tue Oct 28 2025 09:00:00 GMT-0300 (Brasilia Standard Time)</td>
+                    <td>Tue Oct 28 2025 09:00:00 GMT-0300 (Brasilia Standard Time)</td>
+                    <td>Cruise Ship</td>
+                    <td>-</td>
+                    <td>-</td>
+                    <td></td>
+                </tr>
+            
+                <tr>
+                    <td>CMA CGM Spirit</td>
+                    <td>Fri Oct 31 2025 12:00:00 GMT-0300 (Brasilia Standard Time)</td>
+                    <td>Fri Oct 31 2025 12:00:00 GMT-0300 (Brasilia Standard Time)</td>
+                    <td>Mon Nov 03 2025 12:00:00 GMT-0300 (Brasilia Standard Time)</td>
+                    <td>Mon Nov 03 2025 12:00:00 GMT-0300 (Brasilia Standard Time)</td>
+                    <td>Containers</td>
+                    <td>500</td>
+                    <td>Load/Disch</td>
+                    <td></td>
+                </tr>
+            
+                <tr>
+                    <td>CMA CGM Cayenne</td>
+                    <td>Fri Oct 31 2025 12:00:00 GMT-0300 (Brasilia Standard Time)</td>
+                    <td>Mon Nov 03 2025 12:00:00 GMT-0300 (Brasilia Standard Time)</td>
+                    <td>Thu Nov 06 2025 12:00:00 GMT-0300 (Brasilia Standard Time)</td>
+                    <td>Thu Nov 06 2025 12:00:00 GMT-0300 (Brasilia Standard Time)</td>
+                    <td>Containers</td>
+                    <td>500</td>
+                    <td>Load/Disch</td>
+                    <td></td>
+                </tr>
+            
+                <tr>
+                    <td>Maya Bay</td>
+                    <td>Thu Nov 06 2025 12:00:00 GMT-0300 (Brasilia Standard Time)</td>
+                    <td>Thu Nov 06 2025 12:00:00 GMT-0300 (Brasilia Standard Time)</td>
+                    <td>Sun Nov 09 2025 12:00:00 GMT-0300 (Brasilia Standard Time)</td>
+                    <td>Sun Nov 09 2025 12:00:00 GMT-0300 (Brasilia Standard Time)</td>
+                    <td>Containers</td>
+                    <td>500</td>
+                    <td>Load/Disch</td>
+                    <td></td>
+                </tr>
+            
+                <tr>
+                    <td>Express Brasil</td>
+                    <td>Thu Nov 13 2025 12:00:00 GMT-0300 (Brasilia Standard Time)</td>
+                    <td>Thu Nov 13 2025 12:00:00 GMT-0300 (Brasilia Standard Time)</td>
+                    <td>Sun Nov 16 2025 12:00:00 GMT-0300 (Brasilia Standard Time)</td>
+                    <td>Sun Nov 16 2025 12:00:00 GMT-0300 (Brasilia Standard Time)</td>
+                    <td>Containers</td>
+                    <td>500</td>
+                    <td>Load/Disch</td>
+                    <td></td>
+                </tr>
+            
+                <tr>
+                    <td>CMA CGM Balboa</td>
+                    <td>Wed Nov 19 2025 12:00:00 GMT-0300 (Brasilia Standard Time)</td>
+                    <td>Wed Nov 19 2025 12:00:00 GMT-0300 (Brasilia Standard Time)</td>
+                    <td>Sat Nov 22 2025 12:00:00 GMT-0300 (Brasilia Standard Time)</td>
+                    <td>Sat Nov 22 2025 12:00:00 GMT-0300 (Brasilia Standard Time)</td>
+                    <td>Containers</td>
+                    <td>500</td>
+                    <td>Load/Disch</td>
+                    <td></td>
+                </tr>
+            
+                <tr>
+                    <td>Douce France</td>
+                    <td>Fri Nov 21 2025 12:00:00 GMT-0300 (Brasilia Standard Time)</td>
+                    <td>Sat Nov 22 2025 12:00:00 GMT-0300 (Brasilia Standard Time)</td>
+                    <td>Tue Nov 25 2025 12:00:00 GMT-0300 (Brasilia Standard Time)</td>
+                    <td>Tue Nov 25 2025 12:00:00 GMT-0300 (Brasilia Standard Time)</td>
+                    <td>Containers</td>
+                    <td>500</td>
+                    <td>Load/Disch</td>
+                    <td></td>
+                </tr>
+            
+                    </tbody>
+                </table>
+
+            </div>
+        
+                            </div>
+
+                            <!-- MOBILE REPORT -->
+                            <div class="mobile-report">
+
+            <div class="berth-section">
+
+                <h2>Berth 103</h2>
+        
+                <div class="mobile-vessel-card">
+
+                    <div class="mobile-vessel-name">
+                        Scot Bremen
+                    </div>
+
+                    <div class="mobile-detail">
+                        <span class="mobile-detail-label">ETA</span>
+                        <span class="mobile-detail-value">Sun Apr 23 2017 18:00:00 GMT-0300 (Brasilia Standard Time)</span>
+                    </div>
+
+                    <div class="mobile-detail">
+                        <span class="mobile-detail-label">ETB</span>
+                        <span class="mobile-detail-value"></span>
+                    </div>
+
+                    <div class="mobile-detail">
+                        <span class="mobile-detail-label">ETC</span>
+                        <span class="mobile-detail-value"></span>
+                    </div>
+
+                    <div class="mobile-detail">
+                        <span class="mobile-detail-label">ETD</span>
+                        <span class="mobile-detail-value"></span>
+                    </div>
+
+                    <div class="mobile-detail">
+                        <span class="mobile-detail-label">Cargo</span>
+                        <span class="mobile-detail-value">Coal Tar + BTX</span>
+                    </div>
+
+                    <div class="mobile-detail">
+                        <span class="mobile-detail-label">Quantity</span>
+                        <span class="mobile-detail-value">7700</span>
+                    </div>
+
+                    <div class="mobile-detail">
+                        <span class="mobile-detail-label">Operation</span>
+                        <span class="mobile-detail-value">Load</span>
+                    </div>
+
+                    <div class="mobile-detail">
+                        <span class="mobile-detail-label">Remarks</span>
+                        <span class="mobile-detail-value">04 days to operate.</span>
+                    </div>
+
+                </div>
+            
+                <div class="mobile-vessel-card">
+
+                    <div class="mobile-vessel-name">
+                        Lowlands Engel
+                    </div>
+
+                    <div class="mobile-detail">
+                        <span class="mobile-detail-label">ETA</span>
+                        <span class="mobile-detail-value">Sun Oct 19 2025 09:48:00 GMT-0300 (Brasilia Standard Time)</span>
+                    </div>
+
+                    <div class="mobile-detail">
+                        <span class="mobile-detail-label">ETB</span>
+                        <span class="mobile-detail-value">Tue Oct 21 2025 14:00:00 GMT-0300 (Brasilia Standard Time)</span>
+                    </div>
+
+                    <div class="mobile-detail">
+                        <span class="mobile-detail-label">ETC</span>
+                        <span class="mobile-detail-value">Sat Oct 25 2025 14:00:00 GMT-0300 (Brasilia Standard Time)</span>
+                    </div>
+
+                    <div class="mobile-detail">
+                        <span class="mobile-detail-label">ETD</span>
+                        <span class="mobile-detail-value">Sat Oct 25 2025 14:00:00 GMT-0300 (Brasilia Standard Time)</span>
+                    </div>
+
+                    <div class="mobile-detail">
+                        <span class="mobile-detail-label">Cargo</span>
+                        <span class="mobile-detail-value">Wheat</span>
+                    </div>
+
+                    <div class="mobile-detail">
+                        <span class="mobile-detail-label">Quantity</span>
+                        <span class="mobile-detail-value">34700</span>
+                    </div>
+
+                    <div class="mobile-detail">
+                        <span class="mobile-detail-label">Operation</span>
+                        <span class="mobile-detail-value">Disch</span>
+                    </div>
+
+                    <div class="mobile-detail">
+                        <span class="mobile-detail-label">Remarks</span>
+                        <span class="mobile-detail-value">At Berth. </span>
+                    </div>
+
+                </div>
+            
+            </div>
+        
+            <div class="berth-section">
+
+                <h2>Berth 104</h2>
+        
+                <div class="mobile-vessel-card">
+
+                    <div class="mobile-vessel-name">
+                        Furor Aquarius
+                    </div>
+
+                    <div class="mobile-detail">
+                        <span class="mobile-detail-label">ETA</span>
+                        <span class="mobile-detail-value">Thu Oct 23 2025 12:00:00 GMT-0300 (Brasilia Standard Time)</span>
+                    </div>
+
+                    <div class="mobile-detail">
+                        <span class="mobile-detail-label">ETB</span>
+                        <span class="mobile-detail-value">Thu Oct 23 2025 12:00:00 GMT-0300 (Brasilia Standard Time)</span>
+                    </div>
+
+                    <div class="mobile-detail">
+                        <span class="mobile-detail-label">ETC</span>
+                        <span class="mobile-detail-value">Fri Oct 24 2025 12:00:00 GMT-0300 (Brasilia Standard Time)</span>
+                    </div>
+
+                    <div class="mobile-detail">
+                        <span class="mobile-detail-label">ETD</span>
+                        <span class="mobile-detail-value">Fri Oct 24 2025 12:00:00 GMT-0300 (Brasilia Standard Time)</span>
+                    </div>
+
+                    <div class="mobile-detail">
+                        <span class="mobile-detail-label">Cargo</span>
+                        <span class="mobile-detail-value">Bunker</span>
+                    </div>
+
+                    <div class="mobile-detail">
+                        <span class="mobile-detail-label">Quantity</span>
+                        <span class="mobile-detail-value">-</span>
+                    </div>
+
+                    <div class="mobile-detail">
+                        <span class="mobile-detail-label">Operation</span>
+                        <span class="mobile-detail-value">-</span>
+                    </div>
+
+                    <div class="mobile-detail">
+                        <span class="mobile-detail-label">Remarks</span>
+                        <span class="mobile-detail-value"></span>
+                    </div>
+
+                </div>
+            
+            </div>
+        
+            <div class="berth-section">
+
+                <h2>Berth 105</h2>
+        
+                <div class="mobile-vessel-card">
+
+                    <div class="mobile-vessel-name">
+                        Ara Libertad
+                    </div>
+
+                    <div class="mobile-detail">
+                        <span class="mobile-detail-label">ETA</span>
+                        <span class="mobile-detail-value">Fri Oct 24 2025 12:00:00 GMT-0300 (Brasilia Standard Time)</span>
+                    </div>
+
+                    <div class="mobile-detail">
+                        <span class="mobile-detail-label">ETB</span>
+                        <span class="mobile-detail-value">Fri Oct 24 2025 12:00:00 GMT-0300 (Brasilia Standard Time)</span>
+                    </div>
+
+                    <div class="mobile-detail">
+                        <span class="mobile-detail-label">ETC</span>
+                        <span class="mobile-detail-value">Mon Oct 27 2025 12:00:00 GMT-0300 (Brasilia Standard Time)</span>
+                    </div>
+
+                    <div class="mobile-detail">
+                        <span class="mobile-detail-label">ETD</span>
+                        <span class="mobile-detail-value">Mon Oct 27 2025 12:00:00 GMT-0300 (Brasilia Standard Time)</span>
+                    </div>
+
+                    <div class="mobile-detail">
+                        <span class="mobile-detail-label">Cargo</span>
+                        <span class="mobile-detail-value">Argentinian Navy</span>
+                    </div>
+
+                    <div class="mobile-detail">
+                        <span class="mobile-detail-label">Quantity</span>
+                        <span class="mobile-detail-value">-</span>
+                    </div>
+
+                    <div class="mobile-detail">
+                        <span class="mobile-detail-label">Operation</span>
+                        <span class="mobile-detail-value">-</span>
+                    </div>
+
+                    <div class="mobile-detail">
+                        <span class="mobile-detail-label">Remarks</span>
+                        <span class="mobile-detail-value"></span>
+                    </div>
+
+                </div>
+            
+            </div>
+        
+            <div class="berth-section">
+
+                <h2>Berth 106</h2>
+        
+                <div class="mobile-vessel-card">
+
+                    <div class="mobile-vessel-name">
+                        Majestic
+                    </div>
+
+                    <div class="mobile-detail">
+                        <span class="mobile-detail-label">ETA</span>
+                        <span class="mobile-detail-value">Fri Oct 24 2025 01:00:00 GMT-0300 (Brasilia Standard Time)</span>
+                    </div>
+
+                    <div class="mobile-detail">
+                        <span class="mobile-detail-label">ETB</span>
+                        <span class="mobile-detail-value">Fri Oct 24 2025 01:00:00 GMT-0300 (Brasilia Standard Time)</span>
+                    </div>
+
+                    <div class="mobile-detail">
+                        <span class="mobile-detail-label">ETC</span>
+                        <span class="mobile-detail-value">Mon Oct 27 2025 01:00:00 GMT-0300 (Brasilia Standard Time)</span>
+                    </div>
+
+                    <div class="mobile-detail">
+                        <span class="mobile-detail-label">ETD</span>
+                        <span class="mobile-detail-value">Mon Oct 27 2025 01:00:00 GMT-0300 (Brasilia Standard Time)</span>
+                    </div>
+
+                    <div class="mobile-detail">
+                        <span class="mobile-detail-label">Cargo</span>
+                        <span class="mobile-detail-value">Containers</span>
+                    </div>
+
+                    <div class="mobile-detail">
+                        <span class="mobile-detail-label">Quantity</span>
+                        <span class="mobile-detail-value">500</span>
+                    </div>
+
+                    <div class="mobile-detail">
+                        <span class="mobile-detail-label">Operation</span>
+                        <span class="mobile-detail-value">Load/Disch</span>
+                    </div>
+
+                    <div class="mobile-detail">
+                        <span class="mobile-detail-label">Remarks</span>
+                        <span class="mobile-detail-value"></span>
+                    </div>
+
+                </div>
+            
+                <div class="mobile-vessel-card">
+
+                    <div class="mobile-vessel-name">
+                        SH Vega
+                    </div>
+
+                    <div class="mobile-detail">
+                        <span class="mobile-detail-label">ETA</span>
+                        <span class="mobile-detail-value">Mon Oct 27 2025 09:00:00 GMT-0300 (Brasilia Standard Time)</span>
+                    </div>
+
+                    <div class="mobile-detail">
+                        <span class="mobile-detail-label">ETB</span>
+                        <span class="mobile-detail-value">Mon Oct 27 2025 09:00:00 GMT-0300 (Brasilia Standard Time)</span>
+                    </div>
+
+                    <div class="mobile-detail">
+                        <span class="mobile-detail-label">ETC</span>
+                        <span class="mobile-detail-value">Tue Oct 28 2025 09:00:00 GMT-0300 (Brasilia Standard Time)</span>
+                    </div>
+
+                    <div class="mobile-detail">
+                        <span class="mobile-detail-label">ETD</span>
+                        <span class="mobile-detail-value">Tue Oct 28 2025 09:00:00 GMT-0300 (Brasilia Standard Time)</span>
+                    </div>
+
+                    <div class="mobile-detail">
+                        <span class="mobile-detail-label">Cargo</span>
+                        <span class="mobile-detail-value">Cruise Ship</span>
+                    </div>
+
+                    <div class="mobile-detail">
+                        <span class="mobile-detail-label">Quantity</span>
+                        <span class="mobile-detail-value">-</span>
+                    </div>
+
+                    <div class="mobile-detail">
+                        <span class="mobile-detail-label">Operation</span>
+                        <span class="mobile-detail-value">-</span>
+                    </div>
+
+                    <div class="mobile-detail">
+                        <span class="mobile-detail-label">Remarks</span>
+                        <span class="mobile-detail-value"></span>
+                    </div>
+
+                </div>
+            
+                <div class="mobile-vessel-card">
+
+                    <div class="mobile-vessel-name">
+                        CMA CGM Spirit
+                    </div>
+
+                    <div class="mobile-detail">
+                        <span class="mobile-detail-label">ETA</span>
+                        <span class="mobile-detail-value">Fri Oct 31 2025 12:00:00 GMT-0300 (Brasilia Standard Time)</span>
+                    </div>
+
+                    <div class="mobile-detail">
+                        <span class="mobile-detail-label">ETB</span>
+                        <span class="mobile-detail-value">Fri Oct 31 2025 12:00:00 GMT-0300 (Brasilia Standard Time)</span>
+                    </div>
+
+                    <div class="mobile-detail">
+                        <span class="mobile-detail-label">ETC</span>
+                        <span class="mobile-detail-value">Mon Nov 03 2025 12:00:00 GMT-0300 (Brasilia Standard Time)</span>
+                    </div>
+
+                    <div class="mobile-detail">
+                        <span class="mobile-detail-label">ETD</span>
+                        <span class="mobile-detail-value">Mon Nov 03 2025 12:00:00 GMT-0300 (Brasilia Standard Time)</span>
+                    </div>
+
+                    <div class="mobile-detail">
+                        <span class="mobile-detail-label">Cargo</span>
+                        <span class="mobile-detail-value">Containers</span>
+                    </div>
+
+                    <div class="mobile-detail">
+                        <span class="mobile-detail-label">Quantity</span>
+                        <span class="mobile-detail-value">500</span>
+                    </div>
+
+                    <div class="mobile-detail">
+                        <span class="mobile-detail-label">Operation</span>
+                        <span class="mobile-detail-value">Load/Disch</span>
+                    </div>
+
+                    <div class="mobile-detail">
+                        <span class="mobile-detail-label">Remarks</span>
+                        <span class="mobile-detail-value"></span>
+                    </div>
+
+                </div>
+            
+                <div class="mobile-vessel-card">
+
+                    <div class="mobile-vessel-name">
+                        CMA CGM Cayenne
+                    </div>
+
+                    <div class="mobile-detail">
+                        <span class="mobile-detail-label">ETA</span>
+                        <span class="mobile-detail-value">Fri Oct 31 2025 12:00:00 GMT-0300 (Brasilia Standard Time)</span>
+                    </div>
+
+                    <div class="mobile-detail">
+                        <span class="mobile-detail-label">ETB</span>
+                        <span class="mobile-detail-value">Mon Nov 03 2025 12:00:00 GMT-0300 (Brasilia Standard Time)</span>
+                    </div>
+
+                    <div class="mobile-detail">
+                        <span class="mobile-detail-label">ETC</span>
+                        <span class="mobile-detail-value">Thu Nov 06 2025 12:00:00 GMT-0300 (Brasilia Standard Time)</span>
+                    </div>
+
+                    <div class="mobile-detail">
+                        <span class="mobile-detail-label">ETD</span>
+                        <span class="mobile-detail-value">Thu Nov 06 2025 12:00:00 GMT-0300 (Brasilia Standard Time)</span>
+                    </div>
+
+                    <div class="mobile-detail">
+                        <span class="mobile-detail-label">Cargo</span>
+                        <span class="mobile-detail-value">Containers</span>
+                    </div>
+
+                    <div class="mobile-detail">
+                        <span class="mobile-detail-label">Quantity</span>
+                        <span class="mobile-detail-value">500</span>
+                    </div>
+
+                    <div class="mobile-detail">
+                        <span class="mobile-detail-label">Operation</span>
+                        <span class="mobile-detail-value">Load/Disch</span>
+                    </div>
+
+                    <div class="mobile-detail">
+                        <span class="mobile-detail-label">Remarks</span>
+                        <span class="mobile-detail-value"></span>
+                    </div>
+
+                </div>
+            
+                <div class="mobile-vessel-card">
+
+                    <div class="mobile-vessel-name">
+                        Maya Bay
+                    </div>
+
+                    <div class="mobile-detail">
+                        <span class="mobile-detail-label">ETA</span>
+                        <span class="mobile-detail-value">Thu Nov 06 2025 12:00:00 GMT-0300 (Brasilia Standard Time)</span>
+                    </div>
+
+                    <div class="mobile-detail">
+                        <span class="mobile-detail-label">ETB</span>
+                        <span class="mobile-detail-value">Thu Nov 06 2025 12:00:00 GMT-0300 (Brasilia Standard Time)</span>
+                    </div>
+
+                    <div class="mobile-detail">
+                        <span class="mobile-detail-label">ETC</span>
+                        <span class="mobile-detail-value">Sun Nov 09 2025 12:00:00 GMT-0300 (Brasilia Standard Time)</span>
+                    </div>
+
+                    <div class="mobile-detail">
+                        <span class="mobile-detail-label">ETD</span>
+                        <span class="mobile-detail-value">Sun Nov 09 2025 12:00:00 GMT-0300 (Brasilia Standard Time)</span>
+                    </div>
+
+                    <div class="mobile-detail">
+                        <span class="mobile-detail-label">Cargo</span>
+                        <span class="mobile-detail-value">Containers</span>
+                    </div>
+
+                    <div class="mobile-detail">
+                        <span class="mobile-detail-label">Quantity</span>
+                        <span class="mobile-detail-value">500</span>
+                    </div>
+
+                    <div class="mobile-detail">
+                        <span class="mobile-detail-label">Operation</span>
+                        <span class="mobile-detail-value">Load/Disch</span>
+                    </div>
+
+                    <div class="mobile-detail">
+                        <span class="mobile-detail-label">Remarks</span>
+                        <span class="mobile-detail-value"></span>
+                    </div>
+
+                </div>
+            
+                <div class="mobile-vessel-card">
+
+                    <div class="mobile-vessel-name">
+                        Express Brasil
+                    </div>
+
+                    <div class="mobile-detail">
+                        <span class="mobile-detail-label">ETA</span>
+                        <span class="mobile-detail-value">Thu Nov 13 2025 12:00:00 GMT-0300 (Brasilia Standard Time)</span>
+                    </div>
+
+                    <div class="mobile-detail">
+                        <span class="mobile-detail-label">ETB</span>
+                        <span class="mobile-detail-value">Thu Nov 13 2025 12:00:00 GMT-0300 (Brasilia Standard Time)</span>
+                    </div>
+
+                    <div class="mobile-detail">
+                        <span class="mobile-detail-label">ETC</span>
+                        <span class="mobile-detail-value">Sun Nov 16 2025 12:00:00 GMT-0300 (Brasilia Standard Time)</span>
+                    </div>
+
+                    <div class="mobile-detail">
+                        <span class="mobile-detail-label">ETD</span>
+                        <span class="mobile-detail-value">Sun Nov 16 2025 12:00:00 GMT-0300 (Brasilia Standard Time)</span>
+                    </div>
+
+                    <div class="mobile-detail">
+                        <span class="mobile-detail-label">Cargo</span>
+                        <span class="mobile-detail-value">Containers</span>
+                    </div>
+
+                    <div class="mobile-detail">
+                        <span class="mobile-detail-label">Quantity</span>
+                        <span class="mobile-detail-value">500</span>
+                    </div>
+
+                    <div class="mobile-detail">
+                        <span class="mobile-detail-label">Operation</span>
+                        <span class="mobile-detail-value">Load/Disch</span>
+                    </div>
+
+                    <div class="mobile-detail">
+                        <span class="mobile-detail-label">Remarks</span>
+                        <span class="mobile-detail-value"></span>
+                    </div>
+
+                </div>
+            
+                <div class="mobile-vessel-card">
+
+                    <div class="mobile-vessel-name">
+                        CMA CGM Balboa
+                    </div>
+
+                    <div class="mobile-detail">
+                        <span class="mobile-detail-label">ETA</span>
+                        <span class="mobile-detail-value">Wed Nov 19 2025 12:00:00 GMT-0300 (Brasilia Standard Time)</span>
+                    </div>
+
+                    <div class="mobile-detail">
+                        <span class="mobile-detail-label">ETB</span>
+                        <span class="mobile-detail-value">Wed Nov 19 2025 12:00:00 GMT-0300 (Brasilia Standard Time)</span>
+                    </div>
+
+                    <div class="mobile-detail">
+                        <span class="mobile-detail-label">ETC</span>
+                        <span class="mobile-detail-value">Sat Nov 22 2025 12:00:00 GMT-0300 (Brasilia Standard Time)</span>
+                    </div>
+
+                    <div class="mobile-detail">
+                        <span class="mobile-detail-label">ETD</span>
+                        <span class="mobile-detail-value">Sat Nov 22 2025 12:00:00 GMT-0300 (Brasilia Standard Time)</span>
+                    </div>
+
+                    <div class="mobile-detail">
+                        <span class="mobile-detail-label">Cargo</span>
+                        <span class="mobile-detail-value">Containers</span>
+                    </div>
+
+                    <div class="mobile-detail">
+                        <span class="mobile-detail-label">Quantity</span>
+                        <span class="mobile-detail-value">500</span>
+                    </div>
+
+                    <div class="mobile-detail">
+                        <span class="mobile-detail-label">Operation</span>
+                        <span class="mobile-detail-value">Load/Disch</span>
+                    </div>
+
+                    <div class="mobile-detail">
+                        <span class="mobile-detail-label">Remarks</span>
+                        <span class="mobile-detail-value"></span>
+                    </div>
+
+                </div>
+            
+                <div class="mobile-vessel-card">
+
+                    <div class="mobile-vessel-name">
+                        Douce France
+                    </div>
+
+                    <div class="mobile-detail">
+                        <span class="mobile-detail-label">ETA</span>
+                        <span class="mobile-detail-value">Fri Nov 21 2025 12:00:00 GMT-0300 (Brasilia Standard Time)</span>
+                    </div>
+
+                    <div class="mobile-detail">
+                        <span class="mobile-detail-label">ETB</span>
+                        <span class="mobile-detail-value">Sat Nov 22 2025 12:00:00 GMT-0300 (Brasilia Standard Time)</span>
+                    </div>
+
+                    <div class="mobile-detail">
+                        <span class="mobile-detail-label">ETC</span>
+                        <span class="mobile-detail-value">Tue Nov 25 2025 12:00:00 GMT-0300 (Brasilia Standard Time)</span>
+                    </div>
+
+                    <div class="mobile-detail">
+                        <span class="mobile-detail-label">ETD</span>
+                        <span class="mobile-detail-value">Tue Nov 25 2025 12:00:00 GMT-0300 (Brasilia Standard Time)</span>
+                    </div>
+
+                    <div class="mobile-detail">
+                        <span class="mobile-detail-label">Cargo</span>
+                        <span class="mobile-detail-value">Containers</span>
+                    </div>
+
+                    <div class="mobile-detail">
+                        <span class="mobile-detail-label">Quantity</span>
+                        <span class="mobile-detail-value">500</span>
+                    </div>
+
+                    <div class="mobile-detail">
+                        <span class="mobile-detail-label">Operation</span>
+                        <span class="mobile-detail-value">Load/Disch</span>
+                    </div>
+
+                    <div class="mobile-detail">
+                        <span class="mobile-detail-label">Remarks</span>
+                        <span class="mobile-detail-value"></span>
+                    </div>
+
+                </div>
+            
+            </div>
+        
+                            </div>
+
+                        </td>
+                    </tr>
+
+                </table>
+
+            </td>
+        </tr>
+    </table>
+
+</body>
+</html>

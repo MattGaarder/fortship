@@ -1,0 +1,5 @@
+.env
+google-token.json
+microsoft-token-cache.json
+node_modules/
+LINEUP.xlsx

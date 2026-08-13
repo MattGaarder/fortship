@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Daily Shipping Report</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 20px;
+            background: #f3f4f6;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        .email-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: #ffffff;
+        }
+
+        .report-header {
+            padding: 24px;
+            border-bottom: 1px solid #d1d5db;
+        }
+
+        .report-header h1 {
+            margin: 0;
+            font-size: 26px;
+        }
+
+        .report-header p {
+            margin: 6px 0 0;
+            font-size: 14px;
+        }
+
+        .berth-section {
+            padding: 24px;
+        }
+
+        .berth-section h2 {
+            margin: 0 0 16px;
+            font-size: 20px;
+        }
+
+        .shipping-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .shipping-table th,
+        .shipping-table td {
+            border: 1px solid #d1d5db;
+            padding: 10px;
+            text-align: left;
+            vertical-align: top;
+        }
+
+        .shipping-table th {
+            font-size: 12px;
+            text-transform: uppercase;
+        }
+
+        .shipping-table td {
+            font-size: 14px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="report-header">
+    <h1>Daily Shipping Report</h1>
+    <p>Vessel Schedule &amp; Port Operations</p>
+    <div class="berth-section">
+
+    <h2>BERTH 103</h2>
+
+    <table class="shipping-table">
+
+        <thead>
+            <tr>
+                <th>Vessel</th>
+                <th>ETA</th>
+                <th>ETB</th>
+                <th>ETC</th>
+                <th>ETD</th>
+                <th>Cargo</th>
+                <th>Quantity</th>
+                <th>Operation</th>
+                <th>Remarks</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Lowlands Engel</td>
+                <td>Oct 19 9:48</td>
+                <td>21 Oct PM</td>
+                <td>25 Oct PM</td>
+                <td>25 Oct PM</td>
+                <td>Wheat</td>
+                <td>34,700.000</td>
+                <td>Disch</td>
+                <td>At Berth.</td>
+            </tr>
+        </tbody>
+    </table>
+    <div class="berth-section">
+    <h2>BERTH 104</h2>
+    <table class="shipping-table">
+        <thead>
+            <tr>
+                <th>Vessel</th>
+                <th>ETA</th>
+                <th>ETB</th>
+                <th>ETC</th>
+                <th>ETD</th>
+                <th>Cargo</th>
+                <th>Quantity</th>
+                <th>Operation</th>
+                <th>Remarks</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Furor Aquarius</td>
+                <td>Oct 23 12:00</td>
+                <td>23 Oct PM</td>
+                <td>24 Oct PM</td>
+                <td>24 Oct PM</td>
+                <td>Bunker</td>
+                <td>-</td>
+                <td>-</td>
+                <td></td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+</div>
+</div>
+
+</body>
+</html>

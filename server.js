@@ -1,0 +1,265 @@
+require("dotenv").config();
+
+const crypto = require("crypto");
+const path = require("path");
+const express = require("express");
+const session = require("express-session");
+const cors = require("cors");
+
+const parseShippingReport = require("./parser");
+const generateHtml = require("./generator");
+const { getGoogleAuthUrl, getGoogleTokens } = require("./gmail-auth");
+const {
+    getMicrosoftLoginUrl,
+    getMicrosoftTokenFromCode
+} = require("./auth");
+const { createReportDraft, selectedProvider } = require("./mailer");
+
+const app = express();
+const port = Number(process.env.PORT || 3000);
+const isProduction = process.env.NODE_ENV === "production";
+const testWorkbookPath = path.join(__dirname, "LINEUP.xlsx");
+
+for (const variable of ["SESSION_SECRET", "API_KEY", "REPORT_RECIPIENTS"]) {
+    if (!process.env[variable]) {
+        throw new Error(`${variable} is required.`);
+    }
+}
+
+if (isProduction) {
+    // Required when the app sits behind ngrok, a load balancer, or a reverse proxy.
+    app.set("trust proxy", 1);
+}
+
+app.use(express.json({ limit: "1mb" }));
+app.use(session({
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+        httpOnly: true,
+        sameSite: "lax",
+        secure: isProduction
+    }
+}));
+
+// Office Scripts' runtime does not have a stable Origin, so Microsoft requires
+// an external API called with fetch to allow '*'. Scope that exception to the
+// machine-to-machine endpoint instead of enabling CORS for the whole app.
+const officeScriptCors = cors({
+    origin: "*",
+    methods: ["POST", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "X-API-Key"],
+    optionsSuccessStatus: 200
+});
+
+function authenticateExcelRequest(req, res, next) {
+    const received = req.get("X-API-Key");
+    const expected = process.env.API_KEY;
+
+    const valid = typeof received === "string" &&
+        received.length === expected.length &&
+        crypto.timingSafeEqual(Buffer.from(received), Buffer.from(expected));
+
+    if (!valid) {
+        return res.status(401).json({ success: false, message: "Unauthorized." });
+    }
+
+    next();
+}
+
+function isShippingReport(report) {
+    return !!report && Array.isArray(report.berths) && report.berths.every(
+        (berth) => typeof berth?.name === "string" && Array.isArray(berth.vessels)
+    );
+}
+
+function createOAuthState(req, key) {
+    const state = crypto.randomBytes(32).toString("base64url");
+    req.session[key] = state;
+    return state;
+}
+
+function hasValidOAuthState(req, key, state) {
+    const expected = req.session[key];
+    delete req.session[key];
+
+    return typeof state === "string" &&
+        typeof expected === "string" &&
+        state.length === expected.length &&
+        crypto.timingSafeEqual(Buffer.from(state), Buffer.from(expected));
+}
+
+function signInRequired(res, provider) {
+    return res.status(401).send(
+        `<p>Sign in with ${provider} before creating a test draft.</p>`
+    );
+}
+
+// ----- Google OAuth -----
+
+app.get("/google/login", (req, res) => {
+    const state = createOAuthState(req, "googleOAuthState");
+    res.redirect(getGoogleAuthUrl(state));
+});
+
+app.get("/google/callback", async (req, res) => {
+    if (req.query.error) {
+        return res.status(400).send("Google authentication was cancelled or denied.");
+    }
+
+    if (!req.query.code || !hasValidOAuthState(req, "googleOAuthState", req.query.state)) {
+        return res.status(400).send("Invalid Google authorization response. Please try again.");
+    }
+
+    try {
+        await getGoogleTokens(req.query.code);
+        req.session.googleAuthenticated = true;
+        res.redirect("/");
+    } catch (error) {
+        console.error("Google authentication failed:", error);
+        res.status(500).send("Google authentication failed. Check the server log.");
+    }
+});
+
+// ----- Microsoft OAuth / Microsoft Graph -----
+
+app.get("/microsoft/login", async (req, res, next) => {
+    try {
+        const state = createOAuthState(req, "microsoftOAuthState");
+        res.redirect(await getMicrosoftLoginUrl(state));
+    } catch (error) {
+        next(error);
+    }
+});
+
+app.get("/microsoft/callback", async (req, res) => {
+    if (req.query.error) {
+        return res.status(400).send("Microsoft authentication was cancelled or denied.");
+    }
+
+    if (!req.query.code || !hasValidOAuthState(req, "microsoftOAuthState", req.query.state)) {
+        return res.status(400).send("Invalid Microsoft authorization response. Please try again.");
+    }
+
+    try {
+        const token = await getMicrosoftTokenFromCode(req.query.code);
+        req.session.microsoftAuthenticated = true;
+        req.session.microsoftAccountHomeId = token.account.homeAccountId;
+        res.redirect("/");
+    } catch (error) {
+        console.error("Microsoft authentication failed:", error);
+        res.status(500).send("Microsoft authentication failed. Check the server log.");
+    }
+});
+
+// ----- Browser-only smoke tests -----
+
+app.post("/test/:provider/draft", async (req, res) => {
+    const provider = req.params.provider.toLowerCase();
+
+    if (!["gmail", "microsoft"].includes(provider)) {
+        return res.status(404).send("Unknown email provider.");
+    }
+
+    if (!req.session[`${provider}Authenticated`]) {
+        return signInRequired(res, provider === "gmail" ? "Google" : "Microsoft");
+    }
+
+    try {
+        const report = parseShippingReport(testWorkbookPath);
+        const draft = await createReportDraft({
+            provider,
+            subject: "Daily Shipping Report - TEST",
+            html: generateHtml(report),
+            microsoftAccountHomeId: req.session.microsoftAccountHomeId
+        });
+
+        res.send(`<p>${draft.provider} draft created: ${draft.id}</p><p><a href="/">Back</a></p>`);
+    } catch (error) {
+        console.error("Test draft failed:", error);
+        const mailboxError = error.message.includes("more than one account is cached") ||
+            error.message.includes("configured Microsoft account");
+
+        res.status(mailboxError ? 422 : 500).send(
+            mailboxError ? error.message : "Failed to create test draft. Check the server log."
+        );
+    }
+});
+
+// ----- Excel / Office Script endpoint -----
+
+app.options("/generate-report-json", officeScriptCors);
+
+app.post(
+    "/generate-report-json",
+    officeScriptCors,
+    authenticateExcelRequest,
+    async (req, res) => {
+        if (!isShippingReport(req.body)) {
+            return res.status(400).json({
+                success: false,
+                message: "Invalid shipping report."
+            });
+        }
+
+        try {
+            const draft = await createReportDraft({
+                subject: process.env.DAILY_REPORT_SUBJECT || "Daily Shipping Report",
+                html: generateHtml(req.body)
+            });
+
+            console.log(`${draft.provider} draft created: ${draft.id}`);
+            res.status(201).json({
+                success: true,
+                provider: draft.provider,
+                draftId: draft.id
+            });
+        } catch (error) {
+            console.error("Report generation failed:", error);
+            res.status(500).json({
+                success: false,
+                message: "Failed to create report draft."
+            });
+        }
+    }
+);
+
+app.get("/", (req, res) => {
+    const provider = selectedProvider();
+    const googleStatus = req.session.googleAuthenticated ? "connected" : "not connected";
+    const microsoftStatus = req.session.microsoftAuthenticated ? "connected" : "not connected";
+
+    res.type("html").send(`
+        <!doctype html>
+        <html lang="en">
+            <head><meta charset="utf-8"><title>Shipping Report Generator</title></head>
+            <body>
+                <h1>Shipping Report Generator</h1>
+                <p>Automated drafts use: <strong>${provider}</strong>.</p>
+                <p>Google: ${googleStatus} — <a href="/google/login">connect Google</a></p>
+                <p>Microsoft: ${microsoftStatus} — <a href="/microsoft/login">connect Microsoft</a></p>
+                <form action="/test/gmail/draft" method="post"><button>Test Gmail draft</button></form>
+                <form action="/test/microsoft/draft" method="post"><button>Test Microsoft draft</button></form>
+            </body>
+        </html>
+    `);
+});
+
+app.use((error, _req, res, _next) => {
+    console.error("Unhandled server error:", error);
+    res.status(500).send("Server error. Check the server log.");
+});
+
+const server = app.listen(port, () => {
+    console.log(`Server running on port ${port}.`);
+});
+
+server.on("error", (error) => {
+    if (error.code === "EADDRINUSE") {
+        console.error(`Port ${port} is already in use. Stop the existing Node server, then run npm start again.`);
+        return;
+    }
+
+    console.error("Unable to start server:", error);
+});
