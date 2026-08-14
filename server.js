@@ -2,6 +2,7 @@ require("dotenv").config();
 
 const crypto = require("crypto");
 const path = require("path");
+const fs = require("fs");
 const express = require("express");
 const session = require("express-session");
 const cors = require("cors");
@@ -13,7 +14,7 @@ const {
     getMicrosoftLoginUrl,
     getMicrosoftTokenFromCode
 } = require("./auth");
-const { createReportDraft, selectedProvider } = require("./mailer");
+const { createReportDraft, selectedProvider, sendReportDraft } = require("./mailer");
 
 const app = express();
 const port = Number(process.env.PORT || 3000);
@@ -32,6 +33,7 @@ if (isProduction) {
 }
 
 app.use(express.json({ limit: "1mb" }));
+app.use('/assets', express.static(path.join(__dirname, 'assets')));
 app.use(session({
     secret: process.env.SESSION_SECRET,
     resave: false,
@@ -163,26 +165,121 @@ app.post("/test/:provider/draft", async (req, res) => {
     }
 
     if (!req.session[`${provider}Authenticated`]) {
-        return signInRequired(res, provider === "gmail" ? "Google" : "Microsoft");
+        return signInRequired(
+            res,
+            provider === "gmail" ? "Google" : "Microsoft"
+        );
     }
 
     try {
+        // -------------------------------------------------------
+        // TEMPORARY RESPONSIVE EMAIL TEST
+        // -------------------------------------------------------
+
+//         const html = `<!DOCTYPE html>
+// <html lang="en">
+// <head>
+//     <meta charset="UTF-8">
+//     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+//     <style>
+//         .mobile-report {
+//             display: none;
+//         }
+
+//         @media screen and (max-width: 600px) {
+//             .desktop-report {
+//                 display: none !important;
+//             }
+
+//             .mobile-report {
+//                 display: block !important;
+//             }
+//         }
+//     </style>
+// </head>
+
+// <body>
+
+//     <div class="desktop-report">
+
+//         <table width="100%" border="1">
+//             <tr>
+//                 <th>Vessel</th>
+//                 <th>ETA</th>
+//                 <th>ETB</th>
+//                 <th>Cargo</th>
+//             </tr>
+
+//             <tr>
+//                 <td>Scot Bremen</td>
+//                 <td>April 23 18:00</td>
+//                 <td>#REF!</td>
+//                 <td>Coal Tar + BTX</td>
+//             </tr>
+//         </table>
+
+//     </div>
+
+//     <div class="mobile-report">
+
+//         <h2>Scot Bremen</h2>
+
+//         <p>ETA: April 23 18:00</p>
+//         <p>ETB: #REF!</p>
+//         <p>Cargo: Coal Tar + BTX</p>
+
+//     </div>
+
+// </body>
+// </html>`;
         const report = parseShippingReport(testWorkbookPath);
+        const { html, images } = generateHtml(report);
+
+        console.log("WORKING HTML LENGTH:", html.length);
+        console.log("HAS MOBILE:", html.includes('class="mobile-report"'));
+        console.log("HAS MEDIA QUERY:", html.includes('@media screen and (max-width: 600px)'));
+
+        fs.writeFileSync("debug-browser.html", html);
+
+        // -------------------------------------------------------
+        // CREATE THE DRAFT
+        // -------------------------------------------------------
+
         const draft = await createReportDraft({
             provider,
-            subject: "Daily Shipping Report - TEST",
-            html: generateHtml(report),
+            subject: "Daily Shipping Report - RESPONSIVE TEST",
+            html,
+            images: images,
             microsoftAccountHomeId: req.session.microsoftAccountHomeId
         });
 
-        res.send(`<p>${draft.provider} draft created: ${draft.id}</p><p><a href="/">Back</a></p>`);
+        // -------------------------------------------------------
+        // SEND THE DRAFT
+        // -------------------------------------------------------
+
+        await sendReportDraft({
+            provider,
+            draftId: draft.id,
+            microsoftAccountHomeId: req.session.microsoftAccountHomeId
+        });
+
+        res.send(
+            `<p>${draft.provider} responsive test email sent: ${draft.id}</p>
+             <p><a href="/">Back</a></p>`
+        );
+
     } catch (error) {
         console.error("Test draft failed:", error);
-        const mailboxError = error.message.includes("more than one account is cached") ||
+
+        const mailboxError =
+            error.message.includes("more than one account is cached") ||
             error.message.includes("configured Microsoft account");
 
         res.status(mailboxError ? 422 : 500).send(
-            mailboxError ? error.message : "Failed to create test draft. Check the server log."
+            mailboxError
+                ? error.message
+                : "Failed to create/send test email. Check the server log."
         );
     }
 });
@@ -204,9 +301,23 @@ app.post(
         }
 
         try {
+            const { html, images } = generateHtml(req.body);
+
+            const debugPath = path.join(__dirname, "debug-office.html");
+
+            fs.writeFileSync(debugPath, html, "utf8");
+
+            console.log("DEBUG Office Script HTML written to:", debugPath);
+            console.log("DEBUG HTML length:", html.length);
+            console.log("DEBUG @media:", html.includes("@media"));
+
             const draft = await createReportDraft({
                 subject: process.env.DAILY_REPORT_SUBJECT || "Daily Shipping Report",
-                html: generateHtml(req.body)
+                html,
+                images
+            });
+            await sendReportDraft({
+                draftId: draft.id
             });
 
             console.log(`${draft.provider} draft created: ${draft.id}`);
@@ -241,9 +352,27 @@ app.get("/", (req, res) => {
                 <p>Microsoft: ${microsoftStatus} — <a href="/microsoft/login">connect Microsoft</a></p>
                 <form action="/test/gmail/draft" method="post"><button>Test Gmail draft</button></form>
                 <form action="/test/microsoft/draft" method="post"><button>Test Microsoft draft</button></form>
+                <p><a href="/preview" target="_blank">View Live Preview</a></p>
             </body>
         </html>
     `);
+});
+
+app.get("/preview", (req, res) => {
+    try {
+        // Clear cache so changes to generator.js are instantly reflected
+        delete require.cache[require.resolve('./generator')];
+        const freshGenerateHtml = require('./generator');
+        
+        const report = parseShippingReport(testWorkbookPath);
+        const { html } = freshGenerateHtml(report, { isPreview: true });
+        
+        // Inject a meta refresh tag to automatically reload the page every 2 seconds for live preview
+        const finalHtml = html.replace('</head>', '    <meta http-equiv="refresh" content="2">\n</head>');
+        res.send(finalHtml);
+    } catch (error) {
+        res.status(500).send("Error generating preview: " + error.message);
+    }
 });
 
 app.use((error, _req, res, _next) => {

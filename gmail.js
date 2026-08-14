@@ -3,37 +3,44 @@ const {
 } = require("./gmail-auth");
 
 
-function createMimeMessage({
-    to,
-    subject,
-    html
-}) {
-    const mimeMessage = [
-        `To: ${to}`,
-        `Subject: ${subject}`,
-        "MIME-Version: 1.0",
-        'Content-Type: text/html; charset="UTF-8"',
-        "",
-        html
-    ].join("\r\n");
+const MailComposer = require("nodemailer/lib/mail-composer");
 
-    return Buffer
-        .from(mimeMessage, "utf8")
-        .toString("base64url");
+async function createMimeMessage({ to, subject, html, images = [] }) {
+    const mail = new MailComposer({
+        to,
+        subject,
+        html,
+        attachments: images.map(img => ({
+            path: img.path,
+            cid: img.cid
+        }))
+    });
+    
+    const message = await mail.compile().build();
+
+    // debug
+
+    require("fs").writeFileSync(
+        "./debug-email.eml",
+        message
+    );
+
+    return message.toString("base64url");
 }
-
 
 async function createGmailDraft({
     tokens,
     to,
     subject,
-    html
+    html,
+    images
 }) {
     const gmail = getGmailClient(tokens);
-    const raw = createMimeMessage({
+    const raw = await createMimeMessage({
         to,
         subject,
-        html
+        html,
+        images
     });
     const response =
         await gmail.users.drafts.create({

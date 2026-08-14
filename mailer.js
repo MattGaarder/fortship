@@ -31,6 +31,7 @@ function reportRecipients() {
 
 async function createReportDraft({
     html,
+    images,
     subject,
     provider = selectedProvider(),
     microsoftAccountHomeId
@@ -42,7 +43,8 @@ async function createReportDraft({
             tokens: getStoredGoogleTokens(),
             to: to.join(", "),
             subject,
-            html
+            html,
+            images
         });
 
         return { provider, id: draft.id };
@@ -51,7 +53,7 @@ async function createReportDraft({
     const accessToken = await getMicrosoftAccessToken({
         accountHomeId: microsoftAccountHomeId
     });
-    const draft = await createMicrosoftDraft({ to, subject, html, accessToken });
+    const draft = await createMicrosoftDraft({ to, subject, html, accessToken, images });
 
     return { provider, id: draft.id };
 }

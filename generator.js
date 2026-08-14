@@ -1,3 +1,5 @@
+const path = require("path");
+
 function escapeHtml(value) {
     return String(value ?? "").replace(/[&<>"']/g, (character) => ({
         "&": "&amp;",
@@ -8,7 +10,7 @@ function escapeHtml(value) {
     })[character]);
 }
 
-function generateHtml(report) {
+function generateHtml(report, { isPreview = false } = {}) {
     let html = `
 <!DOCTYPE html>
 <html lang="en">
@@ -16,12 +18,12 @@ function generateHtml(report) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="x-apple-disable-message-reformatting">
-    <title>Daily Shipping Report</title>
+    <title>Port of Pecém — Line Up</title>
     <style>
         body {
             margin: 0;
             padding: 0;
-            background: #f3f4f6;
+            background: #D4DDE5;
             font-family: Arial, Helvetica, sans-serif;
         }
 
@@ -54,12 +56,16 @@ function generateHtml(report) {
             line-height: 1.4;
         }
         .berth-section {
-            padding: 24px;
+
+            padding-top: 12px;
+            padding-bottom: 12px;
+            background-color: #D4DDE5;
+            text-align: center;
         }
-        .berth-section h2 {
-            margin: 0 0 16px;
-            font-size: 20px;
-            line-height: 1.2;
+        .berth-section h3 {
+            font-size: 13px;
+            line-height: 1;
+            margin: 0 0 12px 0;
         }
         .shipping-table {
             width: 100%;
@@ -75,12 +81,14 @@ function generateHtml(report) {
         .shipping-table th {
             font-size: 12px;
             line-height: 1.2;
-            text-transform: uppercase;
+            background-color: #1D4369;
+            color: #ffffff;
         }
         .shipping-table td {
             font-size: 14px;
             line-height: 1.4;
         }
+
 
         /* --------------------------------
            MOBILE VERSION
@@ -98,7 +106,6 @@ function generateHtml(report) {
             padding: 16px;
             font-size: 22px;
             line-height: 1.2;
-            font-weight: bold;
             border-bottom: 1px solid #d1d5db;
         }
         .mobile-detail {
@@ -113,7 +120,6 @@ function generateHtml(report) {
             margin-bottom: 4px;
             font-size: 12px;
             line-height: 1.2;
-            font-weight: bold;
             text-transform: uppercase;
         }
         .mobile-detail-value {
@@ -171,8 +177,17 @@ function generateHtml(report) {
                     <tr>
                         <td>
                             <div class="report-header">
-                                <h1>Daily Shipping Report</h1>
-                                <p>Vessel Schedule &amp; Port Operations</p>
+                                <table width="100%" border="0" cellpadding="0" cellspacing="0">
+                                    <tr>
+                                        <td align="left" valign="middle">
+                                            <h1>Port of Pecém — Line Up</h1>
+                                            <p>Vessel Schedule &amp; Port Operations</p>
+                                        </td>
+                                        <td align="right" valign="middle">
+                                            <img src="${isPreview ? '/assets/bf-fortship-1_1.png' : 'cid:company-logo'}" alt="Fortship Logo" style="max-height: 60px;">
+                                        </td>
+                                    </tr>
+                                </table>
                             </div>
                             <!-- DESKTOP REPORT -->
                             <div class="desktop-report">
@@ -180,11 +195,11 @@ function generateHtml(report) {
         for (const berth of report.berths) {
         html += `
             <div class="berth-section">
-                <h2>${escapeHtml(berth.name)}</h2>
+                <h3>${escapeHtml(berth.name)}</h3>
                 <table class="shipping-table" width="100%">
                     <thead>
                         <tr>
-                            <th>Vessel</th>
+                            <th>Vessels Names</th>
                             <th>ETA</th>
                             <th>ETB</th>
                             <th>ETC</th>
@@ -197,10 +212,11 @@ function generateHtml(report) {
                     </thead>
                     <tbody>
         `;
-        for (const vessel of berth.vessels) {
+        for (const [i, vessel] of berth.vessels.entries()) {
+            const rowBg = i % 2 === 0 ? "#ffffff" : "#EAEDF0";
             html += `
-                <tr>
-                    <td>${escapeHtml(vessel.name)}</td>
+                <tr style="background-color: ${rowBg};">
+                    <td style="background-color: #1D4369; color: #ffffff;">${escapeHtml(vessel.name)}</td>
                     <td>${escapeHtml(vessel.eta)}</td>
                     <td>${escapeHtml(vessel.etb)}</td>
                     <td>${escapeHtml(vessel.etc)}</td>
@@ -291,7 +307,15 @@ function generateHtml(report) {
 </html>
 `;
 
-    return html;
+    return {
+        html,
+        images: isPreview ? [] : [
+            {
+                path: path.join(__dirname, "assets", "bf-fortship-1_1.png"),
+                cid: "company-logo"
+            }
+        ]
+    };
 }
 
 module.exports = generateHtml;
