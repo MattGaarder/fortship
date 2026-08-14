@@ -25,7 +25,6 @@ function reportRecipients() {
     if (recipients.length === 0) {
         throw new Error("REPORT_RECIPIENTS must contain at least one email address.");
     }
-
     return recipients;
 }
 

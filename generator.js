@@ -91,41 +91,53 @@ function generateHtml(report, { isPreview = false } = {}) {
 
 
         /* --------------------------------
-           MOBILE VERSION
+        MOBILE VERSION
         -------------------------------- */
 
         .mobile-report {
             display: none;
         }
+
         .mobile-vessel-card {
             margin-bottom: 16px;
             border: 1px solid #d1d5db;
             background: #ffffff;
         }
+
         .mobile-vessel-name {
-            padding: 16px;
-            font-size: 22px;
-            line-height: 1.2;
-            border-bottom: 1px solid #d1d5db;
+            padding: 10px;
+            font-size: 14px;
+            line-height: 1.4;
+            font-weight: bold;
+            background-color: #1D4369;
+            color: #ffffff;
         }
+
         .mobile-detail {
-            padding: 12px 16px;
-            border-bottom: 1px solid #e5e7eb;
+            padding: 10px;
+            border-bottom: 1px solid #d1d5db;
+            background-color: #ffffff;
         }
+
         .mobile-detail:last-child {
             border-bottom: none;
         }
+
         .mobile-detail-label {
             display: block;
-            margin-bottom: 4px;
-            font-size: 12px;
+            margin-bottom: 3px;
+            font-size: 11px;
             line-height: 1.2;
+            font-weight: bold;
+            color: #1D4369;
             text-transform: uppercase;
         }
+
         .mobile-detail-value {
             display: block;
-            font-size: 18px;
-            line-height: 1.3;
+            font-size: 14px;
+            line-height: 1.4;
+            color: #111827;
         }
 
         /* --------------------------------
@@ -136,27 +148,35 @@ function generateHtml(report, { isPreview = false } = {}) {
             body {
                 padding: 0 !important;
             }
+
             .email-container {
                 width: 100% !important;
                 max-width: 100% !important;
             }
+
             .desktop-report {
                 display: none !important;
             }
+
             .mobile-report {
                 display: block !important;
             }
+
             .report-header {
                 padding: 20px 16px !important;
             }
+
             .report-header h1 {
                 font-size: 24px !important;
             }
+
             .berth-section {
-                padding: 16px !important;
+                padding: 12px !important;
             }
-            .berth-section h2 {
-                font-size: 22px !important;
+
+            .berth-section h3 {
+                font-size: 13px !important;
+                margin: 0 0 12px 0 !important;
             }
         }
     </style>
@@ -244,7 +264,7 @@ function generateHtml(report, { isPreview = false } = {}) {
     for (const berth of report.berths) {
         html += `
             <div class="berth-section">
-                <h2>${escapeHtml(berth.name)}</h2>
+                <h3>${escapeHtml(berth.name)}</h3>
         `;
         for (const vessel of berth.vessels) {
             html += `
