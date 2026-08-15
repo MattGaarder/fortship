@@ -15,6 +15,7 @@ const {
     getMicrosoftTokenFromCode
 } = require("./auth");
 const { createReportDraft, selectedProvider, sendReportDraft } = require("./mailer");
+const getWeather = require("./weather");
 
 const app = express();
 const port = Number(process.env.PORT || 3000);
@@ -172,69 +173,14 @@ app.post("/test/:provider/draft", async (req, res) => {
     }
 
     try {
-        // -------------------------------------------------------
-        // TEMPORARY RESPONSIVE EMAIL TEST
-        // -------------------------------------------------------
 
-//         const html = `<!DOCTYPE html>
-// <html lang="en">
-// <head>
-//     <meta charset="UTF-8">
-//     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-//     <style>
-//         .mobile-report {
-//             display: none;
-//         }
-
-//         @media screen and (max-width: 600px) {
-//             .desktop-report {
-//                 display: none !important;
-//             }
-
-//             .mobile-report {
-//                 display: block !important;
-//             }
-//         }
-//     </style>
-// </head>
-
-// <body>
-
-//     <div class="desktop-report">
-
-//         <table width="100%" border="1">
-//             <tr>
-//                 <th>Vessel</th>
-//                 <th>ETA</th>
-//                 <th>ETB</th>
-//                 <th>Cargo</th>
-//             </tr>
-
-//             <tr>
-//                 <td>Scot Bremen</td>
-//                 <td>April 23 18:00</td>
-//                 <td>#REF!</td>
-//                 <td>Coal Tar + BTX</td>
-//             </tr>
-//         </table>
-
-//     </div>
-
-//     <div class="mobile-report">
-
-//         <h2>Scot Bremen</h2>
-
-//         <p>ETA: April 23 18:00</p>
-//         <p>ETB: #REF!</p>
-//         <p>Cargo: Coal Tar + BTX</p>
-
-//     </div>
-
-// </body>
-// </html>`;
         const report = parseShippingReport(testWorkbookPath);
-        const { html, images } = generateHtml(report);
+        const weather = await getWeather();
+
+        const { html, images } = generateHtml(
+            report,
+            weather
+        );
 
         console.log("WORKING HTML LENGTH:", html.length);
         console.log("HAS MOBILE:", html.includes('class="mobile-report"'));
@@ -299,28 +245,28 @@ app.post(
                 message: "Invalid shipping report."
             });
         }
-
         try {
-            const { html, images } = generateHtml(req.body);
+            const weather = await getWeather();
+            const { html, images } = generateHtml(req.body, weather);
 
-            const debugPath = path.join(__dirname, "debug-office.html");
-
-            fs.writeFileSync(debugPath, html, "utf8");
-
-            console.log("DEBUG Office Script HTML written to:", debugPath);
-            console.log("DEBUG HTML length:", html.length);
-            console.log("DEBUG @media:", html.includes("@media"));
+            // const debugPath = path.join(__dirname, "debug-office.html");
+            // fs.writeFileSync(debugPath, html, "utf8");
+            // console.log("DEBUG Office Script HTML written to:", debugPath);
+            // console.log("DEBUG HTML length:", html.length);
+            // console.log("DEBUG @media:", html.includes("@media"));
 
             const draft = await createReportDraft({
                 subject: process.env.DAILY_REPORT_SUBJECT || "Daily Shipping Report",
                 html,
                 images
             });
+
             await sendReportDraft({
                 draftId: draft.id
             });
 
             console.log(`${draft.provider} draft created: ${draft.id}`);
+
             res.status(201).json({
                 success: true,
                 provider: draft.provider,
@@ -358,20 +304,52 @@ app.get("/", (req, res) => {
     `);
 });
 
-app.get("/preview", (req, res) => {
+app.get("/test-weather", async (req, res) => {
+    try {
+        const weather = await getWeather();
+
+        res.json({
+            success: true,
+            weather
+        });
+    } catch (error) {
+        console.error("Weather test failed:", error);
+
+        res.status(500).json({
+            success: false,
+            error: error.message,
+            cause: error.cause?.message,
+            code: error.code
+        });
+    }
+});
+
+app.get("/preview", async (req, res) => {
     try {
         // Clear cache so changes to generator.js are instantly reflected
-        delete require.cache[require.resolve('./generator')];
-        const freshGenerateHtml = require('./generator');
-        
+        delete require.cache[require.resolve("./generator")];
+        const freshGenerateHtml = require("./generator");
+
         const report = parseShippingReport(testWorkbookPath);
-        const { html } = freshGenerateHtml(report, { isPreview: true });
-        
-        // Inject a meta refresh tag to automatically reload the page every 2 seconds for live preview
-        const finalHtml = html.replace('</head>', '    <meta http-equiv="refresh" content="2">\n</head>');
+        const weather = await getWeather();
+
+        const { html } = freshGenerateHtml(
+            report,
+            weather,
+            { isPreview: true }
+        );
+
+        const finalHtml = html.replace(
+            "</head>",
+            '    <meta http-equiv="refresh" content="2">\n</head>'
+        );
+
         res.send(finalHtml);
     } catch (error) {
-        res.status(500).send("Error generating preview: " + error.message);
+        console.error("Preview generation failed:", error);
+        res.status(500).send(
+            "Error generating preview: " + error.message
+        );
     }
 });
 

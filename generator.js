@@ -10,7 +10,7 @@ function escapeHtml(value) {
     })[character]);
 }
 
-function generateHtml(report, { isPreview = false } = {}) {
+function generateHtml(report, weather, { isPreview = false } = {}) {
     let html = `
 <!DOCTYPE html>
 <html lang="en">
@@ -20,6 +20,97 @@ function generateHtml(report, { isPreview = false } = {}) {
     <meta name="x-apple-disable-message-reformatting">
     <title>Port of Pecém — Line Up</title>
     <style>
+        /* --------------------------------
+        OVERVIEW
+        -------------------------------- */
+
+        .weather-section {
+            padding: 0;
+            background-color: #D4DDE5;
+            border-top: 1px solid #d1d5db;
+        }
+
+        .weather-section h2 {
+            margin: 0;
+            padding: 12px 16px;
+            background-color: #D4DDE5;
+            color: #1D4369;
+            font-size: 13px;
+            line-height: 1;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            text-align: center;
+        }
+
+        /* Desktop overview */
+
+        .overview-desktop {
+            width: 100%;
+            background-color: #D4DDE5;
+        }
+
+        /* Mobile overview is hidden by default */
+
+        .overview-mobile {
+            display: none;
+        }
+
+        /* Port image */
+
+        .port-image {
+            display: block;
+            width: 100%;
+            max-width: 100%;
+            height: auto;
+        }
+
+        /* Weather cards */
+
+        .weather-card {
+            padding: 14px;
+            border: 1px solid #d1d5db;
+            background-color: #ffffff;
+        }
+
+        .weather-card h3 {
+            margin: 0 0 12px 0;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #d1d5db;
+            color: #1D4369;
+            font-size: 14px;
+            line-height: 1.2;
+            font-weight: bold;
+        }
+
+        .weather-icon {
+            display: block;
+            width: 50px;
+            height: 50px;
+            margin: 0 auto 10px auto;
+        }
+
+        .weather-temperature {
+            margin-bottom: 8px;
+            color: #1D4369;
+            font-size: 22px;
+            line-height: 1.1;
+            font-weight: bold;
+        }
+
+        .weather-value {
+            margin-bottom: 4px;
+            color: #111827;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+
+        .weather-label {
+            color: #6b7280;
+            font-size: 12px;
+        }
+
+
+
         body {
             margin: 0;
             padding: 0;
@@ -145,6 +236,7 @@ function generateHtml(report, { isPreview = false } = {}) {
         -------------------------------- */
 
         @media screen and (max-width: 600px) {
+
             body {
                 padding: 0 !important;
             }
@@ -178,6 +270,55 @@ function generateHtml(report, { isPreview = false } = {}) {
                 font-size: 13px !important;
                 margin: 0 0 12px 0 !important;
             }
+
+
+            /* -------------------------------
+            MOBILE OVERVIEW
+            ------------------------------- */
+
+            .overview-desktop {
+                display: none !important;
+            }
+
+            .overview-mobile {
+                display: table !important;
+                width: 100% !important;
+            }
+
+            .weather-card {
+                padding: 10px !important;
+            }
+
+            .weather-card h3 {
+                font-size: 13px !important;
+                margin-bottom: 8px !important;
+                padding-bottom: 6px !important;
+            }
+
+            .weather-icon {
+                width: 40px !important;
+                height: 40px !important;
+                margin-bottom: 8px !important;
+            }
+
+            .weather-temperature {
+                font-size: 20px !important;
+            }
+
+            .weather-value {
+                font-size: 12px !important;
+            }
+
+            .weather-label {
+                font-size: 11px !important;
+            }
+
+            .mobile-weather-row td {
+                display: table-cell !important;
+                width: 50% !important;
+                vertical-align: top !important;
+            }
+
         }
     </style>
 </head>
@@ -252,7 +393,6 @@ function generateHtml(report, { isPreview = false } = {}) {
         html += `
                     </tbody>
                 </table>
-
             </div>
         `;
     }
@@ -313,26 +453,279 @@ function generateHtml(report, { isPreview = false } = {}) {
     }
     html += `
                             </div>
-
                         </td>
                     </tr>
-
                 </table>
+                <!-- OVERVIEW -->
+<div class="weather-section">
 
+    <h2>Overview</h2>
+
+    <!-- DESKTOP OVERVIEW -->
+    <table
+        class="overview-desktop"
+        role="presentation"
+        width="100%"
+        cellpadding="0"
+        cellspacing="0"
+        border="0"
+    >
+        <tr>
+
+            <!-- PORT -->
+            <td
+                width="50%"
+                valign="top"
+                style="padding: 0 8px 12px 16px;"
+            >
+                <img
+                    src="${isPreview ? '/assets/ports/pecem.png' : 'cid:port-image'}"
+                    class="port-image"
+                    alt="Port of Pecém"
+                    width="100%"
+                >
             </td>
+
+            <!-- DAY -->
+            <td
+                width="25%"
+                valign="top"
+                style="padding: 0 8px 12px 8px;"
+            >
+                <div class="weather-card">
+
+                    <h3>Day</h3>
+
+                    <img
+                        src="${isPreview
+                            ? `/assets/weather/${weather.current.icon}.png`
+                            : 'cid:weather-day-icon'}"
+                        class="weather-icon"
+                        alt="${escapeHtml(weather.current.condition)}"
+                        width="50"
+                        height="50"
+                    >
+
+                    <div class="weather-temperature">
+                        ${escapeHtml(weather.current.temperature)}°C
+                    </div>
+
+                    <div class="weather-value">
+                        <span class="weather-label">Feels like:</span>
+                        ${escapeHtml(weather.current.feelsLike)}°C
+                    </div>
+
+                    <div class="weather-value">
+                        <span class="weather-label">Wind:</span>
+                        ${escapeHtml(weather.current.windSpeed)} km/h
+                    </div>
+
+                    <div class="weather-value">
+                        <span class="weather-label">Rain:</span>
+                        ${escapeHtml(weather.current.rainChance)}%
+                    </div>
+
+                </div>
+            </td>
+
+            <!-- NIGHT -->
+            <td
+                width="25%"
+                valign="top"
+                style="padding: 0 16px 12px 8px;"
+            >
+                <div class="weather-card">
+
+                    <h3>Night — 21:00</h3>
+
+                    <img
+                        src="${isPreview
+                            ? `/assets/weather/${weather.night.icon}.png`
+                            : 'cid:weather-night-icon'}"
+                        class="weather-icon"
+                        alt="${escapeHtml(weather.night.condition)}"
+                        width="50"
+                        height="50"
+                    >
+
+                    <div class="weather-temperature">
+                        ${escapeHtml(weather.night.temperature)}°C
+                    </div>
+
+                    <div class="weather-value">
+                        <span class="weather-label">Feels like:</span>
+                        ${escapeHtml(weather.night.feelsLike)}°C
+                    </div>
+
+                    <div class="weather-value">
+                        <span class="weather-label">Wind:</span>
+                        ${escapeHtml(weather.night.windSpeed)} km/h
+                    </div>
+
+                    <div class="weather-value">
+                        <span class="weather-label">Rain:</span>
+                        ${escapeHtml(weather.night.rainChance)}%
+                    </div>
+
+                </div>
+            </td>
+
         </tr>
     </table>
 
+
+    <!-- MOBILE OVERVIEW -->
+    <table
+        class="overview-mobile"
+        role="presentation"
+        width="100%"
+        cellpadding="0"
+        cellspacing="0"
+        border="0"
+        style="width: 100%; table-layout: fixed;"
+    >
+
+        <!-- PORT IMAGE -->
+        <tr>
+            <td
+                colspan="2"
+                valign="top"
+                style="padding: 0 12px 12px 12px;"
+            >
+                <img
+                    src="${isPreview ? '/assets/ports/pecem.png' : 'cid:port-image'}"
+                    class="port-image"
+                    alt="Port of Pecém"
+                    width="100%"
+                >
+            </td>
+        </tr>
+
+        <!-- WEATHER CARDS -->
+        <tr class="mobile-weather-row">
+
+            <!-- DAY -->
+            <td
+                width="50%"
+                valign="top"
+                style="padding: 0 6px 12px 12px;"
+            >
+                <div class="weather-card">
+
+                    <h3>Day</h3>
+
+                    <img
+                        src="${isPreview
+                            ? `/assets/weather/${weather.current.icon}.png`
+                            : 'cid:weather-day-icon'}"
+                        class="weather-icon"
+                        alt="${escapeHtml(weather.current.condition)}"
+                        width="40"
+                        height="40"
+                    >
+
+                    <div class="weather-temperature">
+                        ${escapeHtml(weather.current.temperature)}°C
+                    </div>
+
+                    <div class="weather-value">
+                        <span class="weather-label">Feels:</span>
+                        ${escapeHtml(weather.current.feelsLike)}°C
+                    </div>
+
+                    <div class="weather-value">
+                        <span class="weather-label">Wind:</span>
+                        ${escapeHtml(weather.current.windSpeed)} km/h
+                    </div>
+
+                    <div class="weather-value">
+                        <span class="weather-label">Rain:</span>
+                        ${escapeHtml(weather.current.rainChance)}%
+                    </div>
+
+                </div>
+            </td>
+
+            <!-- NIGHT -->
+            <td
+                width="50%"
+                valign="top"
+                style="padding: 0 12px 12px 6px;"
+            >
+                <div class="weather-card">
+
+                    <h3>Night — 21:00</h3>
+
+                    <img
+                        src="${isPreview
+                            ? `/assets/weather/${weather.night.icon}.png`
+                            : 'cid:weather-night-icon'}"
+                        class="weather-icon"
+                        alt="${escapeHtml(weather.night.condition)}"
+                        width="40"
+                        height="40"
+                    >
+
+                    <div class="weather-temperature">
+                        ${escapeHtml(weather.night.temperature)}°C
+                    </div>
+
+                    <div class="weather-value">
+                        <span class="weather-label">Feels:</span>
+                        ${escapeHtml(weather.night.feelsLike)}°C
+                    </div>
+
+                    <div class="weather-value">
+                        <span class="weather-label">Wind:</span>
+                        ${escapeHtml(weather.night.windSpeed)} km/h
+                    </div>
+
+                    <div class="weather-value">
+                        <span class="weather-label">Rain:</span>
+                        ${escapeHtml(weather.night.rainChance)}%
+                    </div>
+
+                </div>
+            </td>
+
+        </tr>
+    </table>
+
+</div>
 </body>
 </html>
 `;
+    const weatherDayIconPath = path.join(
+        __dirname,
+        "assets",
+        "weather",
+        `${weather.current.icon}.png`
+    );
 
+    const weatherNightIconPath = path.join(
+        __dirname,
+        "assets",
+        "weather",
+        `${weather.night.icon}.png`
+    );
     return {
         html,
         images: isPreview ? [] : [
             {
                 path: path.join(__dirname, "assets", "bf-fortship-1_1.png"),
                 cid: "company-logo"
+            },
+            {
+                path: weatherDayIconPath,
+                cid: "weather-day-icon"
+            },
+            {
+                path: weatherNightIconPath,
+                cid: "weather-night-icon"
+            },
+            {
+                path: path.join(__dirname, "assets", "ports", "pecem.png"),
+                cid: "port-image"
             }
         ]
     };
