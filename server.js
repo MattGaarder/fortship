@@ -7,6 +7,7 @@ const express = require("express");
 const session = require("express-session");
 const cors = require("cors");
 
+const { getPortConfig } = require("./config");
 const parseShippingReport = require("./parser");
 const generateHtml = require("./generator");
 const { getGoogleAuthUrl, getGoogleTokens } = require("./gmail-auth");
@@ -22,7 +23,7 @@ const port = Number(process.env.PORT || 3000);
 const isProduction = process.env.NODE_ENV === "production";
 const testWorkbookPath = path.join(__dirname, "LINEUP.xlsx");
 
-for (const variable of ["SESSION_SECRET", "API_KEY", "REPORT_RECIPIENTS"]) {
+for (const variable of ["SESSION_SECRET", "API_KEY"]) {
     if (!process.env[variable]) {
         throw new Error(`${variable} is required.`);
     }
@@ -175,11 +176,13 @@ app.post("/test/:provider/draft", async (req, res) => {
     try {
 
         const report = parseShippingReport(testWorkbookPath);
-        const weather = await getWeather();
+        const port = getPortConfig(report.sheetName);
+        const weather = await getWeather(port.coordinates);
 
         const { html, images } = generateHtml(
             report,
-            weather
+            weather, 
+            port
         );
 
         console.log("WORKING HTML LENGTH:", html.length);
@@ -194,6 +197,7 @@ app.post("/test/:provider/draft", async (req, res) => {
 
         const draft = await createReportDraft({
             provider,
+            recipient: req.body.recipient,
             subject: "Daily Shipping Report - RESPONSIVE TEST",
             html,
             images: images,
@@ -246,8 +250,9 @@ app.post(
             });
         }
         try {
-            const weather = await getWeather();
-            const { html, images } = generateHtml(req.body, weather);
+            const port = getPortConfig(req.body.sheetName);
+            const weather = await getWeather(port.coordinates);
+            const { html, images } = generateHtml(req.body, weather, port);
 
             // const debugPath = path.join(__dirname, "debug-office.html");
             // fs.writeFileSync(debugPath, html, "utf8");
@@ -331,20 +336,17 @@ app.get("/preview", async (req, res) => {
         const freshGenerateHtml = require("./generator");
 
         const report = parseShippingReport(testWorkbookPath);
-        const weather = await getWeather();
+        const port = getPortConfig(report.sheetName, true);
+        const weather = await getWeather(port.coordinates);
 
         const { html } = freshGenerateHtml(
             report,
             weather,
+            port,
             { isPreview: true }
         );
 
-        const finalHtml = html.replace(
-            "</head>",
-            '    <meta http-equiv="refresh" content="2">\n</head>'
-        );
-
-        res.send(finalHtml);
+        res.send(html);
     } catch (error) {
         console.error("Preview generation failed:", error);
         res.status(500).send(
@@ -370,3 +372,4 @@ server.on("error", (error) => {
 
     console.error("Unable to start server:", error);
 });
+

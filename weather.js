@@ -11,18 +11,42 @@ function formatForecast(forecast) {
         humidity: forecast.main.humidity,
 
         windSpeed: Math.round(forecast.wind.speed * 3.6),
-        windDirection: forecast.wind.deg,
+        windDirection: getWindDirection(forecast.wind.deg),
         windGust: forecast.wind.gust
             ? Math.round(forecast.wind.gust * 3.6)
             : null,
 
-        rainChance: Math.round(forecast.pop * 100)
+        rainChance: Math.round(forecast.pop * 100),
+
+        pressure: forecast.main.sea_level,
+        visibility: Math.round(forecast.visibility / 1000),
+        clouds: forecast.clouds.all
     };
 }
 
-async function getWeather() {
-    const lat = -3.7014;
-    const lon = -38.4754;
+function formatTime(timestamp, timezoneOffset) {
+    const date = new Date((timestamp + timezoneOffset) * 1000);
+
+    return date.toLocaleTimeString("en-US", {
+        hour: "numeric",
+        minute: "2-digit",
+        hour12: true,
+        timeZone: "UTC"
+    });
+}
+
+function getWindDirection(degrees) {
+    const directions = [
+        "N", "NNE", "NE", "ENE",
+        "E", "ESE", "SE", "SSE",
+        "S", "SSW", "SW", "WSW",
+        "W", "WNW", "NW", "NNW"
+    ];
+
+    return directions[Math.round(degrees / 22.5) % 16];
+}
+
+async function getWeather({ lat, lon }) {
     const apiKey = process.env.OPENWEATHER_API_KEY;
 
     console.log("========== WEATHER DEBUG ==========");
@@ -67,7 +91,7 @@ async function getWeather() {
 
     const data = await response.json();
 
-    // console.log("OPENWEATHER RESPONSE:", JSON.stringify(data, null, 2));
+    console.log("OPENWEATHER RESPONSE:", JSON.stringify(data, null, 2));
 
     const forecast = data.list[0];
 
@@ -81,7 +105,13 @@ async function getWeather() {
 
     return {
         current: formatForecast(forecast),
-        night: formatForecast(nightForecast)
+        night: formatForecast(nightForecast),
+
+        sunrise: formatTime(data.city.sunrise, data.city.timezone),
+        sunset: formatTime(data.city.sunset, data.city.timezone),
+
+        city: data.city.name,
+        timezone: data.city.timezone
     };
 }
 

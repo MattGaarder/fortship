@@ -29,13 +29,14 @@ function reportRecipients() {
 }
 
 async function createReportDraft({
+    recipient,
     html,
     images,
     subject,
     provider = selectedProvider(),
     microsoftAccountHomeId
 }) {
-    const to = reportRecipients();
+    const to = reportRecipients(recipient);
 
     if (provider === "gmail") {
         const draft = await createGmailDraft({
