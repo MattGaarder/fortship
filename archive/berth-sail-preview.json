@@ -1,0 +1,197 @@
+{
+  "reportType": "berth-sail",
+  "sheetName": "Berth&Sail",
+  "recipient": "matteus.gaarder@gmail.com",
+  "rows": [
+    {
+      "label": "VESSEL",
+      "valueB": "FWN ARCTIC",
+      "valueC": ""
+    },
+    {
+      "label": "VOYAGE",
+      "valueB": "Mon, 5 Aug 1907",
+      "valueC": ""
+    },
+    {
+      "label": "PORT",
+      "valueB": "PECEM",
+      "valueC": ""
+    },
+    {
+      "label": "QUANTITY (UNITS)",
+      "valueB": "Sat, 21 Jan 1900",
+      "valueC": ""
+    },
+    {
+      "label": "CARGO TO LOADING",
+      "valueB": "BLADES",
+      "valueC": ""
+    },
+    {
+      "label": "BERTHING",
+      "valueB": "TMUT 5",
+      "valueC": ""
+    },
+    {
+      "label": "Free Pratique Granted",
+      "valueB": "Sun, 1 Dec 2024",
+      "valueC": "16:50h lt"
+    },
+    {
+      "label": "End of Sea Passage",
+      "valueB": "Wed, 4 Dec 2024",
+      "valueC": "07:20h lt"
+    },
+    {
+      "label": "Arrived at the Roads (Drifting)",
+      "valueB": "Wed, 4 Dec 2024",
+      "valueC": "07:20h lt"
+    },
+    {
+      "label": "Notice of Readiness Tendered",
+      "valueB": "Wed, 4 Dec 2024",
+      "valueC": "07:20h lt"
+    },
+    {
+      "label": "Anchor Down",
+      "valueB": "Wed, 4 Dec 2024",
+      "valueC": "07:20h lt"
+    },
+    {
+      "label": "Anchor Aweight",
+      "valueB": "Sat, 7 Dec 2024",
+      "valueC": "17:50h lt"
+    },
+    {
+      "label": "POB for Berthing",
+      "valueB": "Sat, 7 Dec 2024",
+      "valueC": "18:45h lt"
+    },
+    {
+      "label": "First Line Ashore",
+      "valueB": "Sat, 7 Dec 2024",
+      "valueC": "19:35h lt"
+    },
+    {
+      "label": "All Fast",
+      "valueB": "Sat, 7 Dec 2024",
+      "valueC": "19:55h lt"
+    },
+    {
+      "label": "Gangway Placed Ashore",
+      "valueB": "Sat, 7 Dec 2024",
+      "valueC": "20:10h lt"
+    },
+    {
+      "label": "Cleared by Port Authorities",
+      "valueB": "Sat, 7 Dec 2024",
+      "valueC": "20:47h lt"
+    },
+    {
+      "label": "Commenced Loading",
+      "valueB": "Sun, 8 Dec 2024",
+      "valueC": "08:00h lt"
+    },
+    {
+      "label": "Completed Loading",
+      "valueB": "",
+      "valueC": ""
+    },
+    {
+      "label": "Lashing/Securing vessel Completed by crew for sailing",
+      "valueB": "",
+      "valueC": ""
+    },
+    {
+      "label": "POB for Sailing",
+      "valueB": "",
+      "valueC": ""
+    },
+    {
+      "label": "Cast-off",
+      "valueB": "",
+      "valueC": ""
+    },
+    {
+      "label": "POB off.",
+      "valueB": "",
+      "valueC": ""
+    },
+    {
+      "label": "Next Port ETA",
+      "valueB": "",
+      "valueC": ""
+    },
+    {
+      "label": "",
+      "valueB": "",
+      "valueC": ""
+    },
+    {
+      "label": "BUNKERS UPON:",
+      "valueB": "BERTHING",
+      "valueC": "SAILING"
+    },
+    {
+      "label": "I.F.O.",
+      "valueB": "N/A",
+      "valueC": ""
+    },
+    {
+      "label": "D.O.",
+      "valueB": "282,920 M",
+      "valueC": ""
+    },
+    {
+      "label": "F.W.",
+      "valueB": "33,500 M",
+      "valueC": ""
+    },
+    {
+      "label": "",
+      "valueB": "",
+      "valueC": ""
+    },
+    {
+      "label": "DRAFTS UPON:",
+      "valueB": "BERTHING",
+      "valueC": "SAILING"
+    },
+    {
+      "label": "FWD",
+      "valueB": "3,60 M",
+      "valueC": ""
+    },
+    {
+      "label": "AFT",
+      "valueB": "4,90 M",
+      "valueC": ""
+    },
+    {
+      "label": "",
+      "valueB": "",
+      "valueC": ""
+    },
+    {
+      "label": "TUGS USED UPON:",
+      "valueB": "BERTHING",
+      "valueC": "SAILING"
+    },
+    {
+      "label": "NUMBERS",
+      "valueB": "Mon, 2 Jan 1900",
+      "valueC": ""
+    },
+    {
+      "label": "NAMES",
+      "valueB": "SAAM TUPI",
+      "valueC": ""
+    },
+    {
+      "label": "",
+      "valueB": "SAAM PHILLIPE",
+      "valueC": ""
+    }
+  ]
+}

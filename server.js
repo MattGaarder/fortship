@@ -9,7 +9,8 @@ const cors = require("cors");
 
 const { getPortConfig } = require("./config");
 const parseShippingReport = require("./parser");
-const generateHtml = require("./generator");
+const generateLineUpHtml = require("./generator-line-up");
+const generateBerthSailHtml = require("./generator-berth-sail");
 const { getGoogleAuthUrl, getGoogleTokens } = require("./gmail-auth");
 const {
     getMicrosoftLoginUrl,
@@ -22,6 +23,7 @@ const app = express();
 const port = Number(process.env.PORT || 3000);
 const isProduction = process.env.NODE_ENV === "production";
 const testWorkbookPath = path.join(__dirname, "LINEUP.xlsx");
+const berthSailPreviewPath = path.join(__dirname, "berth-sail-preview.json");
 
 for (const variable of ["SESSION_SECRET", "API_KEY"]) {
     if (!process.env[variable]) {
@@ -60,22 +62,40 @@ const officeScriptCors = cors({
 function authenticateExcelRequest(req, res, next) {
     const received = req.get("X-API-Key");
     const expected = process.env.API_KEY;
-
     const valid = typeof received === "string" &&
         received.length === expected.length &&
         crypto.timingSafeEqual(Buffer.from(received), Buffer.from(expected));
-
     if (!valid) {
         return res.status(401).json({ success: false, message: "Unauthorized." });
     }
-
     next();
 }
 
-function isShippingReport(report) {
-    return !!report && Array.isArray(report.berths) && report.berths.every(
-        (berth) => typeof berth?.name === "string" && Array.isArray(berth.vessels)
-    );
+function isLineUpReport(report) {
+    return !!report &&
+        report.reportType === "line-up" &&
+        typeof report.sheetName === "string" &&
+        typeof report.recipient === "string" &&
+        Array.isArray(report.berths) &&
+        report.berths.every(
+            (berth) =>
+                typeof berth?.name === "string" &&
+                Array.isArray(berth.vessels)
+        );
+}
+
+function isBerthSailReport(report) {
+    return !!report &&
+        report.reportType === "berth-sail" &&
+        typeof report.sheetName === "string" &&
+        typeof report.recipient === "string" &&
+        Array.isArray(report.rows) &&
+        report.rows.every(
+            (row) =>
+                typeof row?.label === "string" &&
+                typeof row?.valueB === "string" &&
+                typeof row?.valueC === "string"
+        );
 }
 
 function createOAuthState(req, key) {
@@ -87,7 +107,6 @@ function createOAuthState(req, key) {
 function hasValidOAuthState(req, key, state) {
     const expected = req.session[key];
     delete req.session[key];
-
     return typeof state === "string" &&
         typeof expected === "string" &&
         state.length === expected.length &&
@@ -99,6 +118,163 @@ function signInRequired(res, provider) {
         `<p>Sign in with ${provider} before creating a test draft.</p>`
     );
 }
+
+// ----- Excel / Office Script endpoint -----
+
+app.options("/generate-report-json", officeScriptCors);
+
+app.post(
+    "/generate-report-json",
+    officeScriptCors,
+    authenticateExcelRequest,
+    async (req, res) => {
+        const report = req.body;
+
+        if (!isLineUpReport(report) && !isBerthSailReport(report)) {
+            return res.status(400).json({
+                success: false,
+                message: "Invalid shipping report."
+            });
+        }
+        try {
+
+            const generators = {
+                "line-up": generateLineUpHtml,
+                "berth-sail": generateBerthSailHtml
+            };
+
+            const generator = generators[report.reportType];
+
+            let port = null;
+            let weather = null;
+
+            console.log("REPORT TYPE:", report.reportType);
+            console.log("SHEET NAME:", report.sheetName);
+
+            if (report.reportType === "line-up") {
+                port = getPortConfig(report.sheetName);
+                weather = await getWeather(port.coordinates);
+            }
+
+            const { html, images } =
+                report.reportType === "line-up"
+                    ? await generator(report, weather, port)
+                    : await generator(report);
+
+            const draft = await createReportDraft({
+                subject: process.env.DAILY_REPORT_SUBJECT || "Daily Shipping Report",
+                html,
+                images
+            });
+
+            await sendReportDraft({
+                draftId: draft.id
+            });
+
+            console.log(`${draft.provider} draft created: ${draft.id}`);
+
+            res.status(201).json({
+                success: true,
+                provider: draft.provider,
+                draftId: draft.id
+            });
+        } catch (error) {
+            console.error("Report generation failed:", error);
+            res.status(500).json({
+                success: false,
+                message: "Failed to create report draft."
+            });
+        }
+    }
+);
+
+app.get("/", (req, res) => {
+    const provider = selectedProvider();
+    const googleStatus = req.session.googleAuthenticated ? "connected" : "not connected";
+    const microsoftStatus = req.session.microsoftAuthenticated ? "connected" : "not connected";
+
+    res.type("html").send(`
+        <!doctype html>
+        <html lang="en">
+            <head><meta charset="utf-8"><title>Shipping Report Generator</title></head>
+            <body>
+                <h1>Shipping Report Generator</h1>
+                <p>Automated drafts use: <strong>${provider}</strong>.</p>
+                <p>Google: ${googleStatus} — <a href="/google/login">connect Google</a></p>
+                <p>Microsoft: ${microsoftStatus} — <a href="/microsoft/login">connect Microsoft</a></p>
+                <form action="/test/gmail/draft" method="post"><button>Test Gmail draft</button></form>
+                <form action="/test/microsoft/draft" method="post"><button>Test Microsoft draft</button></form>
+                <p><a href="/preview" target="_blank">View Live Preview</a></p>
+            </body>
+        </html>
+    `);
+});
+
+app.get("/test-weather", async (req, res) => {
+    try {
+        const weather = await getWeather();
+
+        res.json({
+            success: true,
+            weather
+        });
+    } catch (error) {
+        console.error("Weather test failed:", error);
+
+        res.status(500).json({
+            success: false,
+            error: error.message,
+            cause: error.cause?.message,
+            code: error.code
+        });
+    }
+});
+
+app.get("/preview", async (req, res) => {
+    try {
+        // Clear cache so changes to generator.js are instantly reflected
+        delete require.cache[require.resolve("./generator-line-up")];
+        delete require.cache[require.resolve("./generator-berth-sail")];
+        const freshGenerateHtml = require("./generator-line-up");
+
+        const report = parseShippingReport(testWorkbookPath);
+        const port = getPortConfig(report.sheetName, true);
+        const weather = await getWeather(port.coordinates);
+
+        const { html } = freshGenerateHtml(
+            report,
+            weather,
+            port,
+            { isPreview: true }
+        );
+
+        res.send(html);
+    } catch (error) {
+        console.error("Preview generation failed:", error);
+        res.status(500).send(
+            "Error generating preview: " + error.message
+        );
+    }
+});
+
+app.use((error, _req, res, _next) => {
+    console.error("Unhandled server error:", error);
+    res.status(500).send("Server error. Check the server log.");
+});
+
+const server = app.listen(port, () => {
+    console.log(`Server running on port ${port}.`);
+});
+
+server.on("error", (error) => {
+    if (error.code === "EADDRINUSE") {
+        console.error(`Port ${port} is already in use. Stop the existing Node server, then run npm start again.`);
+        return;
+    }
+
+    console.error("Unable to start server:", error);
+});
+
 
 // ----- Google OAuth -----
 
@@ -179,7 +355,7 @@ app.post("/test/:provider/draft", async (req, res) => {
         const port = getPortConfig(report.sheetName);
         const weather = await getWeather(port.coordinates);
 
-        const { html, images } = generateHtml(
+        const { html, images } = generateLineUpHtml(
             report,
             weather, 
             port
@@ -234,142 +410,38 @@ app.post("/test/:provider/draft", async (req, res) => {
     }
 });
 
-// ----- Excel / Office Script endpoint -----
-
-app.options("/generate-report-json", officeScriptCors);
-
-app.post(
-    "/generate-report-json",
-    officeScriptCors,
-    authenticateExcelRequest,
-    async (req, res) => {
-        if (!isShippingReport(req.body)) {
-            return res.status(400).json({
-                success: false,
-                message: "Invalid shipping report."
-            });
-        }
-        try {
-            const port = getPortConfig(req.body.sheetName);
-            const weather = await getWeather(port.coordinates);
-            const { html, images } = generateHtml(req.body, weather, port);
-
-            // const debugPath = path.join(__dirname, "debug-office.html");
-            // fs.writeFileSync(debugPath, html, "utf8");
-            // console.log("DEBUG Office Script HTML written to:", debugPath);
-            // console.log("DEBUG HTML length:", html.length);
-            // console.log("DEBUG @media:", html.includes("@media"));
-
-            const draft = await createReportDraft({
-                subject: process.env.DAILY_REPORT_SUBJECT || "Daily Shipping Report",
-                html,
-                images
-            });
-
-            await sendReportDraft({
-                draftId: draft.id
-            });
-
-            console.log(`${draft.provider} draft created: ${draft.id}`);
-
-            res.status(201).json({
-                success: true,
-                provider: draft.provider,
-                draftId: draft.id
-            });
-        } catch (error) {
-            console.error("Report generation failed:", error);
-            res.status(500).json({
-                success: false,
-                message: "Failed to create report draft."
-            });
-        }
-    }
-);
-
-app.get("/", (req, res) => {
-    const provider = selectedProvider();
-    const googleStatus = req.session.googleAuthenticated ? "connected" : "not connected";
-    const microsoftStatus = req.session.microsoftAuthenticated ? "connected" : "not connected";
-
-    res.type("html").send(`
-        <!doctype html>
-        <html lang="en">
-            <head><meta charset="utf-8"><title>Shipping Report Generator</title></head>
-            <body>
-                <h1>Shipping Report Generator</h1>
-                <p>Automated drafts use: <strong>${provider}</strong>.</p>
-                <p>Google: ${googleStatus} — <a href="/google/login">connect Google</a></p>
-                <p>Microsoft: ${microsoftStatus} — <a href="/microsoft/login">connect Microsoft</a></p>
-                <form action="/test/gmail/draft" method="post"><button>Test Gmail draft</button></form>
-                <form action="/test/microsoft/draft" method="post"><button>Test Microsoft draft</button></form>
-                <p><a href="/preview" target="_blank">View Live Preview</a></p>
-            </body>
-        </html>
-    `);
-});
-
-app.get("/test-weather", async (req, res) => {
+app.get("/preview/berth-sail", async (req, res) => {
     try {
-        const weather = await getWeather();
+        delete require.cache[
+            require.resolve("./generator-berth-sail")
+        ];
 
-        res.json({
-            success: true,
-            weather
-        });
-    } catch (error) {
-        console.error("Weather test failed:", error);
+        const generateBerthSailHtml =
+            require("./generator-berth-sail");
 
-        res.status(500).json({
-            success: false,
-            error: error.message,
-            cause: error.cause?.message,
-            code: error.code
-        });
-    }
-});
+        const report = JSON.parse(
+            fs.readFileSync(
+                berthSailPreviewPath,
+                "utf8"
+            )
+        );
 
-app.get("/preview", async (req, res) => {
-    try {
-        // Clear cache so changes to generator.js are instantly reflected
-        delete require.cache[require.resolve("./generator")];
-        const freshGenerateHtml = require("./generator");
-
-        const report = parseShippingReport(testWorkbookPath);
-        const port = getPortConfig(report.sheetName, true);
-        const weather = await getWeather(port.coordinates);
-
-        const { html } = freshGenerateHtml(
+        const { html } = generateBerthSailHtml(
             report,
-            weather,
-            port,
             { isPreview: true }
         );
 
         res.send(html);
+
     } catch (error) {
-        console.error("Preview generation failed:", error);
+        console.error(
+            "Berth&Sail preview generation failed:",
+            error
+        );
+
         res.status(500).send(
-            "Error generating preview: " + error.message
+            "Error generating Berth&Sail preview: " +
+            error.message
         );
     }
 });
-
-app.use((error, _req, res, _next) => {
-    console.error("Unhandled server error:", error);
-    res.status(500).send("Server error. Check the server log.");
-});
-
-const server = app.listen(port, () => {
-    console.log(`Server running on port ${port}.`);
-});
-
-server.on("error", (error) => {
-    if (error.code === "EADDRINUSE") {
-        console.error(`Port ${port} is already in use. Stop the existing Node server, then run npm start again.`);
-        return;
-    }
-
-    console.error("Unable to start server:", error);
-});
-

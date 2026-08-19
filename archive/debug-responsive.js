@@ -1,7 +1,7 @@
 const {
     createMicrosoftDraft,
     sendMicrosoftDraft
-} = require("./graph");
+} = require("../graph");
 
 const testHtml = `<!DOCTYPE html>
 <html>

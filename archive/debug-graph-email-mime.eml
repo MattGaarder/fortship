@@ -1,0 +1,819 @@
+To: "matteus.gaarder@outlook.com" <matteus.gaarder@outlook.com>
+Subject: Daily Shipping Report
+Thread-Topic: Daily Shipping Report
+Thread-Index: AQHdMANjpJTREa9mBEqMC8Kldtmqfw==
+Date: Wed, 19 Aug 2026 17:51:41 +0000
+Message-ID:
+	<GVXPR07MB9822A844EACB4569C41D4D05FBA52@GVXPR07MB9822.eurprd07.prod.outlook.com>
+Content-Language: en-US
+X-MS-Has-Attach: yes
+X-MS-TNEF-Correlator:
+X-MS-Exchange-Organization-RecordReviewCfmType: 0
+Content-Type: multipart/related;
+	boundary="_004_GVXPR07MB9822A844EACB4569C41D4D05FBA52GVXPR07MB9822eurp_";
+	type="multipart/alternative"
+MIME-Version: 1.0
+
+--_004_GVXPR07MB9822A844EACB4569C41D4D05FBA52GVXPR07MB9822eurp_
+Content-Type: multipart/alternative;
+	boundary="_000_GVXPR07MB9822A844EACB4569C41D4D05FBA52GVXPR07MB9822eurp_"
+
+--_000_GVXPR07MB9822A844EACB4569C41D4D05FBA52GVXPR07MB9822eurp_
+Content-Type: text/plain; charset="us-ascii"
+
+Berthing Report
+[Fortship Logo]
+VESSEL  FWN ARCTIC
+VOYAGE  2774
+PORT    PECEM
+QUANTITY (UNITS)        21
+CARGO TO LOADING        BLADES
+BERTHING        TMUT 5
+Berthing Report
+Free Pratique Granted   Sun, 1 Dec 2024         16:50h lt
+End of Sea Passage      Wed, 4 Dec 2024         07:20h lt
+Arrived at the Roads (Drifting)         Wed, 4 Dec 2024         07:20h lt
+Notice of Readiness Tendered    Wed, 4 Dec 2024         07:20h lt
+Anchor Down     Wed, 4 Dec 2024         07:20h lt
+Anchor Aweight  Sat, 7 Dec 2024         17:50h lt
+POB for Berthing        Sat, 7 Dec 2024         18:45h lt
+First Line Ashore       Sat, 7 Dec 2024         19:35h lt
+All Fast        Sat, 7 Dec 2024         19:55h lt
+Gangway Placed Ashore   Sat, 7 Dec 2024         20:10h lt
+Cleared by Port Authorities     Sat, 7 Dec 2024         20:47h lt
+Commenced Loading       Sun, 8 Dec 2024         08:00h lt
+Completed Loading
+Lashing/Securing vessel Completed by crew for sailing
+POB for Sailing
+Cast-off
+POB off.
+Next Port ETA
+BUNKERS UPON    BERTHING        SAILING
+I.F.O.  N/A
+D.O.    282,920 M
+F.W.    33,500 M
+DRAFTS UPON     BERTHING        SAILING
+FWD     3,60 M
+AFT     4,90 M
+TUGS USED UPON  BERTHING        SAILING
+NUMBERS         2
+NAMES   SAAM TUPI
+SAAM PHILLIPE
+Vessel Information
+Vessel Details
+VESSEL FWN ARCTIC
+VOYAGE 2774
+PORT PECEM
+QUANTITY (UNITS) 21
+CARGO TO LOADING BLADES
+BERTHING TMUT 5
+Berthing & Sailing Timeline
+Events
+Berthing Report
+Free Pratique Granted Sun, 1 Dec 2024
+16:50h lt
+End of Sea Passage Wed, 4 Dec 2024
+07:20h lt
+Arrived at the Roads (Drifting) Wed, 4 Dec 2024
+07:20h lt
+Notice of Readiness Tendered Wed, 4 Dec 2024
+07:20h lt
+Anchor Down Wed, 4 Dec 2024
+07:20h lt
+Anchor Aweight Sat, 7 Dec 2024
+17:50h lt
+POB for Berthing Sat, 7 Dec 2024
+18:45h lt
+First Line Ashore Sat, 7 Dec 2024
+19:35h lt
+All Fast Sat, 7 Dec 2024
+19:55h lt
+Gangway Placed Ashore Sat, 7 Dec 2024
+20:10h lt
+Cleared by Port Authorities Sat, 7 Dec 2024
+20:47h lt
+Commenced Loading Sun, 8 Dec 2024
+08:00h lt
+Completed Loading
+Lashing/Securing vessel Completed by crew for sailing
+POB for Sailing
+Cast-off
+POB off.
+Next Port ETA
+Bunkers Upon
+I.F.O. N/A
+D.O. 282,920 M
+F.W. 33,500 M
+Drafts Upon
+FWD 3,60 M
+AFT 4,90 M
+Tugs Used Upon
+NUMBERS 2
+NAMES SAAM TUPI
+SAAM PHILLIPE
+
+--_000_GVXPR07MB9822A844EACB4569C41D4D05FBA52GVXPR07MB9822eurp_
+Content-Type: text/html; charset="us-ascii"
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="x-apple-disable-message-reformatting">
+<title>Berthing Report</title>
+<style>
+body {
+    margin: 0;
+    padding: 0;
+    background: #D4DDE5;
+    font-family: Arial, Helvetica, sans-serif;
+}
+table {
+    border-collapse: collapse;
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+}
+
+.email-container {
+    width: 100%;
+    max-width: 1300px;
+    margin: 0 auto;
+    background: #ffffff;
+}
+
+
+
+.report-header {
+    padding: 24px;
+    border-bottom: 1px solid #d1d5db;
+}
+
+.report-header h1 {
+    margin: 0;
+    font-size: 26px;
+    line-height: 1.2;
+}
+
+
+.desktop-report {
+    display: block;
+}
+
+.berth-section {
+    background-color: #D4DDE5;
+}
+
+.berth-table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+}
+
+.berth-table th,
+.berth-table td,
+.timeline-table th,
+.timeline-table td {
+    padding: 10px 8px;
+    overflow-wrap: break-word;
+    word-break: normal;
+    vertical-align: middle;
+    box-sizing: border-box;
+}
+.berth-table .berth-label,
+.timeline-table .timeline-label {
+    padding-left: 30px;
+    font-weight: bold;
+}
+
+.berth-table .column-heading th {
+    background-color: #1D4369;
+    color: #ffffff;
+    font-size: 12px;
+    line-height: 0.5;
+    font-weight: bold;
+    text-align: left;
+}
+
+.berth-table .section-heading th {
+    background-color: #D4DDE5;
+    color: #1D4369;
+    border: 1px solid #d1d5db;
+    border-bottom: none;
+    font-size: 13px;
+    line-height: 1.2;
+    font-weight: bold;
+    text-align: left;
+    padding: 10px 8px;
+}
+
+.berth-table td {
+    font-size: 13px;
+    line-height: 1.4;
+}
+
+.berth-table .berth-label {
+    width: 42%;
+    font-weight: bold;
+}
+
+.timeline-table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+}
+
+
+
+
+/* -------------------------------------------------------
+   MOBILE
+------------------------------------------------------- */
+
+.mobile-report {
+    display: none;
+    width: 100%;
+}
+
+.mobile-section {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    background-color: #D4DDE5;
+}
+
+.mobile-section-title {
+    padding: 10px 18px;
+    background-color: #D4DDE5;
+    color: #1D4369;
+    font-size: 14px;
+    line-height: 1.3;
+    font-weight: bold;
+}
+
+.mobile-card {
+    width: 100%;
+    margin: 0;
+    border: 1px solid #d1d5db;
+    background-color: #ffffff;
+    box-sizing: border-box;
+}
+
+.mobile-card-header {
+    padding: 10px 18px;
+    background-color: #1D4369;
+    color: #ffffff;
+    font-size: 14px;
+    line-height: 1.4;
+    font-weight: bold;
+}
+
+.mobile-detail {
+    display: table;
+    width: 100%;
+    table-layout: fixed;
+    border-bottom: 1px solid #e5e7eb;
+    background-color: #ffffff;
+}
+
+.mobile-detail:last-child {
+    border-bottom: none;
+}
+
+.mobile-label,
+.mobile-value {
+    display: table-cell;
+    padding: 9px 12px;
+    font-size: 13px;
+    line-height: 1.4;
+    vertical-align: top;
+}
+
+.mobile-label {
+    width: 42%;
+    font-weight: bold;
+    color: #1D4369;
+}
+
+.mobile-value {
+    width: 58%;
+    overflow-wrap: break-word;
+}
+
+.mobile-secondary .mobile-label {
+    color: transparent;
+}
+
+.mobile-timeline-label {
+    width: 52%;
+}
+
+
+/* -------------------------------------------------------
+   OVERVIEW
+------------------------------------------------------- */
+
+.overview-desktop {
+    width: 100%;
+    background-color: #D4DDE5;
+}
+
+.overview-mobile {
+    display: none;
+}
+
+
+/* -------------------------------------------------------
+   RESPONSIVE
+------------------------------------------------------- */
+
+@media screen and (max-width: 600px) {
+
+    body {
+        padding: 0 !important;
+    }
+
+    .email-container {
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+
+    .desktop-report {
+        display: none !important;
+    }
+
+    .mobile-report {
+        display: block !important;
+    }
+
+    .report-header {
+        padding: 20px 16px !important;
+    }
+
+    .berth-section {
+        padding: 0 !important;
+    }
+
+    .overview-desktop {
+        display: none !important;
+    }
+
+    .overview-mobile {
+        display: table !important;
+        width: 100% !important;
+    }
+
+}
+
+</style>
+</head>
+<body>
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+<tbody>
+<tr>
+<td align="center">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="email-container">
+<tbody>
+<tr>
+<td><!-- =====================================================
+     HEADER
+===================================================== -->
+<div class="report-header">
+<table width="100%" border="0" cellpadding="0" cellspacing="0">
+<tbody>
+<tr>
+<td align="left" valign="middle">
+<h1>Berthing Report </h1>
+</td>
+<td align="right" valign="middle"><img alt="Fortship Logo" style="max-height: 60px;" data-outlook-trace="F:0|T:1" src="cid:company-logo">
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- =====================================================
+     DESKTOP REPORT
+===================================================== -->
+<div class="desktop-report">
+<div class="berth-section">
+<table class="berth-table" width="100%" cellpadding="0" cellspacing="0" border="0">
+<thead>
+<tr class="column-heading">
+<th></th>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr style="background-color: #ffffff;">
+<td class="berth-label">VESSEL </td>
+<td colspan="2">FWN ARCTIC </td>
+</tr>
+<tr style="background-color: #EAEDF0;">
+<td class="berth-label">VOYAGE </td>
+<td colspan="2">2774 </td>
+</tr>
+<tr style="background-color: #ffffff;">
+<td class="berth-label">PORT </td>
+<td colspan="2">PECEM </td>
+</tr>
+<tr style="background-color: #EAEDF0;">
+<td class="berth-label">QUANTITY (UNITS) </td>
+<td colspan="2">21 </td>
+</tr>
+<tr style="background-color: #ffffff;">
+<td class="berth-label">CARGO TO LOADING </td>
+<td colspan="2">BLADES </td>
+</tr>
+<tr style="background-color: #EAEDF0;">
+<td class="berth-label">BERTHING </td>
+<td colspan="2">TMUT 5 </td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- TIMELINE -->
+<div class="berth-section">
+<table class="timeline-table" width="100%" cellpadding="0" cellspacing="0" border="0">
+<tbody>
+<tr style="background-color: #ffffff;">
+<td class="timeline-label">Berthing Report </td>
+<td class="timeline-date"></td>
+<td class="timeline-time"></td>
+</tr>
+<tr style="background-color: #EAEDF0;">
+<td class="timeline-label">Free Pratique Granted </td>
+<td class="timeline-date">Sun, 1 Dec 2024 </td>
+<td class="timeline-time">16:50h lt </td>
+</tr>
+<tr style="background-color: #ffffff;">
+<td class="timeline-label">End of Sea Passage </td>
+<td class="timeline-date">Wed, 4 Dec 2024 </td>
+<td class="timeline-time">07:20h lt </td>
+</tr>
+<tr style="background-color: #EAEDF0;">
+<td class="timeline-label">Arrived at the Roads (Drifting) </td>
+<td class="timeline-date">Wed, 4 Dec 2024 </td>
+<td class="timeline-time">07:20h lt </td>
+</tr>
+<tr style="background-color: #ffffff;">
+<td class="timeline-label">Notice of Readiness Tendered </td>
+<td class="timeline-date">Wed, 4 Dec 2024 </td>
+<td class="timeline-time">07:20h lt </td>
+</tr>
+<tr style="background-color: #EAEDF0;">
+<td class="timeline-label">Anchor Down </td>
+<td class="timeline-date">Wed, 4 Dec 2024 </td>
+<td class="timeline-time">07:20h lt </td>
+</tr>
+<tr style="background-color: #ffffff;">
+<td class="timeline-label">Anchor Aweight </td>
+<td class="timeline-date">Sat, 7 Dec 2024 </td>
+<td class="timeline-time">17:50h lt </td>
+</tr>
+<tr style="background-color: #EAEDF0;">
+<td class="timeline-label">POB for Berthing </td>
+<td class="timeline-date">Sat, 7 Dec 2024 </td>
+<td class="timeline-time">18:45h lt </td>
+</tr>
+<tr style="background-color: #ffffff;">
+<td class="timeline-label">First Line Ashore </td>
+<td class="timeline-date">Sat, 7 Dec 2024 </td>
+<td class="timeline-time">19:35h lt </td>
+</tr>
+<tr style="background-color: #EAEDF0;">
+<td class="timeline-label">All Fast </td>
+<td class="timeline-date">Sat, 7 Dec 2024 </td>
+<td class="timeline-time">19:55h lt </td>
+</tr>
+<tr style="background-color: #ffffff;">
+<td class="timeline-label">Gangway Placed Ashore </td>
+<td class="timeline-date">Sat, 7 Dec 2024 </td>
+<td class="timeline-time">20:10h lt </td>
+</tr>
+<tr style="background-color: #EAEDF0;">
+<td class="timeline-label">Cleared by Port Authorities </td>
+<td class="timeline-date">Sat, 7 Dec 2024 </td>
+<td class="timeline-time">20:47h lt </td>
+</tr>
+<tr style="background-color: #ffffff;">
+<td class="timeline-label">Commenced Loading </td>
+<td class="timeline-date">Sun, 8 Dec 2024 </td>
+<td class="timeline-time">08:00h lt </td>
+</tr>
+<tr style="background-color: #EAEDF0;">
+<td class="timeline-label">Completed Loading </td>
+<td class="timeline-date"></td>
+<td class="timeline-time"></td>
+</tr>
+<tr style="background-color: #ffffff;">
+<td class="timeline-label">Lashing/Securing vessel Completed by crew for sailing </td>
+<td class="timeline-date"></td>
+<td class="timeline-time"></td>
+</tr>
+<tr style="background-color: #EAEDF0;">
+<td class="timeline-label">POB for Sailing </td>
+<td class="timeline-date"></td>
+<td class="timeline-time"></td>
+</tr>
+<tr style="background-color: #ffffff;">
+<td class="timeline-label">Cast-off </td>
+<td class="timeline-date"></td>
+<td class="timeline-time"></td>
+</tr>
+<tr style="background-color: #EAEDF0;">
+<td class="timeline-label">POB off. </td>
+<td class="timeline-date"></td>
+<td class="timeline-time"></td>
+</tr>
+<tr style="background-color: #ffffff;">
+<td class="timeline-label">Next Port ETA </td>
+<td class="timeline-date"></td>
+<td class="timeline-time"></td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- BUNKERS -->
+<div class="berth-section">
+<table class="berth-table" width="100%" cellpadding="0" cellspacing="0" border="0">
+<thead>
+<tr class="column-heading">
+<th>BUNKERS UPON </th>
+<th>BERTHING </th>
+<th>SAILING </th>
+</tr>
+</thead>
+<tbody>
+<tr style="background-color: #ffffff;">
+<td class="berth-label">I.F.O. </td>
+<td>N/A </td>
+<td></td>
+</tr>
+<tr style="background-color: #EAEDF0;">
+<td class="berth-label">D.O. </td>
+<td>282,920 M </td>
+<td></td>
+</tr>
+<tr style="background-color: #ffffff;">
+<td class="berth-label">F.W. </td>
+<td>33,500 M </td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- DRAFTS -->
+<div class="berth-section">
+<table class="berth-table" width="100%" cellpadding="0" cellspacing="0" border="0">
+<thead>
+<tr class="column-heading">
+<th>DRAFTS UPON </th>
+<th>BERTHING </th>
+<th>SAILING </th>
+</tr>
+</thead>
+<tbody>
+<tr style="background-color: #ffffff;">
+<td class="berth-label">FWD </td>
+<td>3,60 M </td>
+<td></td>
+</tr>
+<tr style="background-color: #EAEDF0;">
+<td class="berth-label">AFT </td>
+<td>4,90 M </td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- TUGS -->
+<div class="berth-section">
+<table class="berth-table" width="100%" cellpadding="0" cellspacing="0" border="0">
+<thead>
+<tr class="column-heading">
+<th>TUGS USED UPON </th>
+<th>BERTHING </th>
+<th>SAILING </th>
+</tr>
+</thead>
+<tbody>
+<tr style="background-color: #ffffff;">
+<td class="berth-label">NUMBERS </td>
+<td>2 </td>
+<td></td>
+</tr>
+<tr style="background-color: #EAEDF0;">
+<td class="berth-label">NAMES </td>
+<td>SAAM TUPI </td>
+<td></td>
+</tr>
+<tr style="background-color: #ffffff;">
+<td class="berth-label"></td>
+<td>SAAM PHILLIPE </td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<!-- =====================================================
+     MOBILE REPORT
+===================================================== -->
+<div class="mobile-report"><!-- VESSEL INFORMATION -->
+<div class="mobile-section">
+<div class="mobile-section-title">Vessel Information </div>
+<div class="mobile-card">
+<div class="mobile-card-header">Vessel Details </div>
+<div class="mobile-detail"><span class="mobile-label">VESSEL </span><span class="mobile-value">FWN ARCTIC
+</span></div>
+<div class="mobile-detail"><span class="mobile-label">VOYAGE </span><span class="mobile-value">2774
+</span></div>
+<div class="mobile-detail"><span class="mobile-label">PORT </span><span class="mobile-value">PECEM
+</span></div>
+<div class="mobile-detail"><span class="mobile-label">QUANTITY (UNITS) </span><span class="mobile-value">21
+</span></div>
+<div class="mobile-detail"><span class="mobile-label">CARGO TO LOADING </span><span class="mobile-value">BLADES
+</span></div>
+<div class="mobile-detail"><span class="mobile-label">BERTHING </span><span class="mobile-value">TMUT 5
+</span></div>
+</div>
+</div>
+<!-- TIMELINE -->
+<div class="mobile-section">
+<div class="mobile-section-title">Berthing &amp; Sailing Timeline </div>
+<div class="mobile-card">
+<div class="mobile-card-header">Events </div>
+<div class="mobile-detail"><span class="mobile-label mobile-timeline-label">Berthing Report
+</span><span class="mobile-value"></span></div>
+<div class="mobile-detail"><span class="mobile-label mobile-timeline-label">Free Pratique Granted
+</span><span class="mobile-value">Sun, 1 Dec 2024 <br>
+16:50h lt </span></div>
+<div class="mobile-detail"><span class="mobile-label mobile-timeline-label">End of Sea Passage
+</span><span class="mobile-value">Wed, 4 Dec 2024 <br>
+07:20h lt </span></div>
+<div class="mobile-detail"><span class="mobile-label mobile-timeline-label">Arrived at the Roads (Drifting)
+</span><span class="mobile-value">Wed, 4 Dec 2024 <br>
+07:20h lt </span></div>
+<div class="mobile-detail"><span class="mobile-label mobile-timeline-label">Notice of Readiness Tendered
+</span><span class="mobile-value">Wed, 4 Dec 2024 <br>
+07:20h lt </span></div>
+<div class="mobile-detail"><span class="mobile-label mobile-timeline-label">Anchor Down
+</span><span class="mobile-value">Wed, 4 Dec 2024 <br>
+07:20h lt </span></div>
+<div class="mobile-detail"><span class="mobile-label mobile-timeline-label">Anchor Aweight
+</span><span class="mobile-value">Sat, 7 Dec 2024 <br>
+17:50h lt </span></div>
+<div class="mobile-detail"><span class="mobile-label mobile-timeline-label">POB for Berthing
+</span><span class="mobile-value">Sat, 7 Dec 2024 <br>
+18:45h lt </span></div>
+<div class="mobile-detail"><span class="mobile-label mobile-timeline-label">First Line Ashore
+</span><span class="mobile-value">Sat, 7 Dec 2024 <br>
+19:35h lt </span></div>
+<div class="mobile-detail"><span class="mobile-label mobile-timeline-label">All Fast
+</span><span class="mobile-value">Sat, 7 Dec 2024 <br>
+19:55h lt </span></div>
+<div class="mobile-detail"><span class="mobile-label mobile-timeline-label">Gangway Placed Ashore
+</span><span class="mobile-value">Sat, 7 Dec 2024 <br>
+20:10h lt </span></div>
+<div class="mobile-detail"><span class="mobile-label mobile-timeline-label">Cleared by Port Authorities
+</span><span class="mobile-value">Sat, 7 Dec 2024 <br>
+20:47h lt </span></div>
+<div class="mobile-detail"><span class="mobile-label mobile-timeline-label">Commenced Loading
+</span><span class="mobile-value">Sun, 8 Dec 2024 <br>
+08:00h lt </span></div>
+<div class="mobile-detail"><span class="mobile-label mobile-timeline-label">Completed Loading
+</span><span class="mobile-value"></span></div>
+<div class="mobile-detail"><span class="mobile-label mobile-timeline-label">Lashing/Securing vessel Completed by crew for sailing
+</span><span class="mobile-value"></span></div>
+<div class="mobile-detail"><span class="mobile-label mobile-timeline-label">POB for Sailing
+</span><span class="mobile-value"></span></div>
+<div class="mobile-detail"><span class="mobile-label mobile-timeline-label">Cast-off
+</span><span class="mobile-value"></span></div>
+<div class="mobile-detail"><span class="mobile-label mobile-timeline-label">POB off.
+</span><span class="mobile-value"></span></div>
+<div class="mobile-detail"><span class="mobile-label mobile-timeline-label">Next Port ETA
+</span><span class="mobile-value"></span></div>
+</div>
+</div>
+<!-- BUNKERS -->
+<div class="mobile-section">
+<div class="mobile-section-title">Bunkers Upon </div>
+<div class="mobile-card">
+<div class="mobile-detail"><span class="mobile-label">I.F.O. </span><span class="mobile-value">N/A
+</span></div>
+<div class="mobile-detail"><span class="mobile-label">D.O. </span><span class="mobile-value">282,920 M
+</span></div>
+<div class="mobile-detail"><span class="mobile-label">F.W. </span><span class="mobile-value">33,500 M
+</span></div>
+</div>
+</div>
+<!-- DRAFTS -->
+<div class="mobile-section">
+<div class="mobile-section-title">Drafts Upon </div>
+<div class="mobile-card">
+<div class="mobile-detail"><span class="mobile-label">FWD </span><span class="mobile-value">3,60 M
+</span></div>
+<div class="mobile-detail"><span class="mobile-label">AFT </span><span class="mobile-value">4,90 M
+</span></div>
+</div>
+</div>
+<!-- TUGS -->
+<div class="mobile-section">
+<div class="mobile-section-title">Tugs Used Upon </div>
+<div class="mobile-card">
+<div class="mobile-detail"><span class="mobile-label">NUMBERS </span><span class="mobile-value">2
+</span></div>
+<div class="mobile-detail"><span class="mobile-label">NAMES </span><span class="mobile-value">SAAM TUPI
+</span></div>
+<div class="mobile-detail"><span class="mobile-label"></span><span class="mobile-value">SAAM PHILLIPE
+</span></div>
+</div>
+</div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+</tbody>
+</table>
+</body>
+</html>
+
+--_000_GVXPR07MB9822A844EACB4569C41D4D05FBA52GVXPR07MB9822eurp_--
+
+--_004_GVXPR07MB9822A844EACB4569C41D4D05FBA52GVXPR07MB9822eurp_
+Content-Type: image/png; name="bf-fortship-1_1.png"
+Content-Description: bf-fortship-1_1.png
+Content-Disposition: inline; filename="bf-fortship-1_1.png"; size=3603;
+	creation-date="Wed, 19 Aug 2026 17:51:41 GMT";
+	modification-date="Wed, 19 Aug 2026 17:51:41 GMT"
+Content-ID: <company-logo>
+Content-Transfer-Encoding: base64
+
+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
+
+--_004_GVXPR07MB9822A844EACB4569C41D4D05FBA52GVXPR07MB9822eurp_--

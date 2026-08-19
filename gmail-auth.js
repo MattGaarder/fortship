@@ -20,7 +20,6 @@ const oauth2Client = new google.auth.OAuth2(
     redirectUri
 );
 
-
 // Generate Google's login URL
 function getGoogleAuthUrl(state) {
     return oauth2Client.generateAuthUrl({
@@ -40,7 +39,6 @@ async function getGoogleTokens(code) {
         TOKEN_PATH,
         JSON.stringify(tokens, null, 2)
     );
-
     return tokens;
 }
 

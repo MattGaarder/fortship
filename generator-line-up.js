@@ -10,7 +10,7 @@ function escapeHtml(value) {
     })[character]);
 }
 
-function generateHtml(report, weather, port, { isPreview = false } = {}) {
+function generateLineUpHtml(report, weather, port, { isPreview = false } = {}) {
 
     let html = `
 <!DOCTYPE html>
@@ -1443,4 +1443,4 @@ function generateHtml(report, weather, port, { isPreview = false } = {}) {
     };
 }
 
-module.exports = generateHtml;
+module.exports = generateLineUpHtml;
