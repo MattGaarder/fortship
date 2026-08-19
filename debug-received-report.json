@@ -1,0 +1,148 @@
+{
+  "reportType": "daily-report",
+  "sheetName": "Daily Report",
+  "recipient": "",
+  "vesselName": "MV BOSC PASSION",
+  "holds": [
+    "Hold`s"
+  ],
+  "summary": [
+    {
+      "label": "Total Manifested (mtons)",
+      "value": "1,169.58"
+    },
+    {
+      "label": "Total Manifested (units)",
+      "value": "73"
+    },
+    {
+      "label": "Discharged Daily (mtons)",
+      "value": "945.279"
+    },
+    {
+      "label": "Balance to go (mtons)",
+      "value": "224.304"
+    },
+    {
+      "label": "Discharged Daily (units)",
+      "value": "59"
+    },
+    {
+      "label": "Balance to go (units)",
+      "value": "14"
+    }
+  ],
+  "dischargeSummary": [
+    {
+      "label": "Manifested (mtons)",
+      "value": "1,169.58"
+    },
+    {
+      "label": "Total Discharged (mtons)",
+      "value": "945.279"
+    },
+    {
+      "label": "Balance to go (mtons)",
+      "value": "224.304"
+    },
+    {
+      "label": "Manifested (units)",
+      "value": "73"
+    },
+    {
+      "label": "Total Discharged (units)",
+      "value": "59"
+    },
+    {
+      "label": "Balance to go (units)",
+      "value": "14"
+    }
+  ],
+  "discharges": [
+    {
+      "date": "Tue, 3 Mar 2026",
+      "shift": "06:00 - 12:00",
+      "units": "23",
+      "mtons": "104,289.09"
+    },
+    {
+      "date": "Tue, 3 Mar 2026",
+      "shift": "12:00 - 18:00",
+      "units": "6",
+      "mtons": "27,205.85"
+    },
+    {
+      "date": "Tue, 3 Mar 2026",
+      "shift": "18:00 - 00:00",
+      "units": "9",
+      "mtons": "144,195.16"
+    },
+    {
+      "date": "Wed, 4 Mar 2026",
+      "shift": "00:00 - 06:00",
+      "units": "13",
+      "mtons": "208,281.90"
+    },
+    {
+      "date": "Wed, 4 Mar 2026",
+      "shift": "06:00 - 12:00",
+      "units": "3",
+      "mtons": "48,065.06"
+    },
+    {
+      "date": "Wed, 4 Mar 2026",
+      "shift": "12:00 - 18:00",
+      "units": "0",
+      "mtons": "-"
+    },
+    {
+      "date": "Wed, 4 Mar 2026",
+      "shift": "18:00 - 00:00",
+      "units": "0",
+      "mtons": "-"
+    },
+    {
+      "date": "Thu, 5 Mar 2026",
+      "shift": "00:00 - 06:00",
+      "units": "4",
+      "mtons": "64,086.74"
+    },
+    {
+      "date": "Thu, 5 Mar 2026",
+      "shift": "06:00 - 12:00",
+      "units": "1",
+      "mtons": "16,021.68"
+    },
+    {
+      "date": "Thu, 5 Mar 2026",
+      "shift": "12:00 - 18:00",
+      "units": "4",
+      "mtons": "64,086.74"
+    },
+    {
+      "date": "Thu, 5 Mar 2026",
+      "shift": "18:00 - 00:00",
+      "units": "2",
+      "mtons": "32,043.37"
+    },
+    {
+      "date": "Fri, 6 Mar 2026",
+      "shift": "00:00 - 06:00",
+      "units": "12",
+      "mtons": "192,260.22"
+    },
+    {
+      "date": "Fri, 6 Mar 2026",
+      "shift": "06:00 - 12:00",
+      "units": "3",
+      "mtons": "48,065.06"
+    },
+    {
+      "date": "Fri, 6 Mar 2026",
+      "shift": "12:00 - 18:00",
+      "units": "8",
+      "mtons": "128,173.48"
+    }
+  ],
+  "etcs": "Sat, 7 Mar 2026 7 AM"
+}

@@ -11,6 +11,7 @@ const { getPortConfig } = require("./config");
 const parseShippingReport = require("./parser");
 const generateLineUpHtml = require("./generator-line-up");
 const generateBerthSailHtml = require("./generator-berth-sail");
+const generateDailyReportHtml = require("./generator-daily-report");
 const { getGoogleAuthUrl, getGoogleTokens } = require("./gmail-auth");
 const {
     getMicrosoftLoginUrl,
@@ -24,6 +25,7 @@ const port = Number(process.env.PORT || 3000);
 const isProduction = process.env.NODE_ENV === "production";
 const testWorkbookPath = path.join(__dirname, "LINEUP.xlsx");
 const berthSailPreviewPath = path.join(__dirname, "berth-sail-preview.json");
+const dailyReportPreviewPath = path.join(__dirname, "daily-report-preview.json");
 
 for (const variable of ["SESSION_SECRET", "API_KEY"]) {
     if (!process.env[variable]) {
@@ -98,6 +100,19 @@ function isBerthSailReport(report) {
         );
 }
 
+function isDailyReport(report) {
+    return !!report &&
+        report.reportType === "daily-report" &&
+        typeof report.sheetName === "string" &&
+        typeof report.recipient === "string" &&
+        typeof report.vesselName === "string" &&
+        Array.isArray(report.holds) &&
+        Array.isArray(report.summary) &&
+        Array.isArray(report.dischargeSummary) &&
+        Array.isArray(report.discharges) &&
+        typeof report.etcs === "string";
+}
+
 function createOAuthState(req, key) {
     const state = crypto.randomBytes(32).toString("base64url");
     req.session[key] = state;
@@ -130,17 +145,49 @@ app.post(
     async (req, res) => {
         const report = req.body;
 
-        if (!isLineUpReport(report) && !isBerthSailReport(report)) {
+        fs.writeFileSync(
+            path.join(__dirname, "debug-received-report.json"),
+            JSON.stringify(report, null, 2),
+            "utf8"
+        );
+
+        console.log("Received report:");
+        console.log(JSON.stringify(report, null, 2));
+
+        if (
+            !isLineUpReport(report) &&
+            !isBerthSailReport(report) &&
+            !isDailyReport(report)
+        ) {
             return res.status(400).json({
                 success: false,
                 message: "Invalid shipping report."
             });
         }
+
+
+
+        // try {
+        //     console.log("Report received successfully.");
+            
+        //     res.status(200).json({
+        //         success: true,
+        //         message: "Report received and saved as debug-received-report.json."
+        //     });
+        // } catch (error) {
+        //     console.error("Report processing failed:", error);
+
+        //     res.status(500).json({
+        //         success: false,
+        //         message: "Failed to process report."
+        //     });
+        // }
         try {
 
             const generators = {
                 "line-up": generateLineUpHtml,
-                "berth-sail": generateBerthSailHtml
+                "berth-sail": generateBerthSailHtml,
+                "daily-report": generateDailyReportHtml
             };
 
             const generator = generators[report.reportType];
@@ -415,18 +462,48 @@ app.get("/preview/berth-sail", async (req, res) => {
         delete require.cache[
             require.resolve("./generator-berth-sail")
         ];
-
         const generateBerthSailHtml =
             require("./generator-berth-sail");
-
         const report = JSON.parse(
             fs.readFileSync(
                 berthSailPreviewPath,
                 "utf8"
             )
         );
-
         const { html } = generateBerthSailHtml(
+            report,
+            { isPreview: true }
+        );
+        res.send(html);
+    } catch (error) {
+        console.error(
+            "Berth&Sail preview generation failed:",
+            error
+        );
+        res.status(500).send(
+            "Error generating Berth&Sail preview: " +
+            error.message
+        );
+    }
+});
+
+app.get("/preview/daily-report", async (req, res) => {
+    try {
+        delete require.cache[
+            require.resolve("./generator-daily-report")
+        ];
+
+        const generateDailyReportHtml =
+            require("./generator-daily-report");
+
+        const report = JSON.parse(
+            fs.readFileSync(
+                path.join(__dirname, "debug-received-report.json"),
+                "utf8"
+            )
+        );
+
+        const { html } = generateDailyReportHtml(
             report,
             { isPreview: true }
         );
@@ -435,12 +512,12 @@ app.get("/preview/berth-sail", async (req, res) => {
 
     } catch (error) {
         console.error(
-            "Berth&Sail preview generation failed:",
+            "Daily Report preview generation failed:",
             error
         );
 
         res.status(500).send(
-            "Error generating Berth&Sail preview: " +
+            "Error generating Daily Report preview: " +
             error.message
         );
     }
