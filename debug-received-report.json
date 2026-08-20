@@ -1,148 +1,442 @@
 {
-  "reportType": "daily-report",
-  "sheetName": "Daily Report",
-  "recipient": "",
-  "vesselName": "MV BOSC PASSION",
-  "holds": [
-    "Hold`s"
-  ],
-  "summary": [
+  "reportType": "line-up",
+  "sheetName": "Pecem",
+  "recipient": "matteus.gaarder@outlook.com",
+  "berths": [
     {
-      "label": "Total Manifested (mtons)",
-      "value": "1,169.58"
+      "name": "Pier 01",
+      "vessels": [
+        {
+          "name": "Golden Amber",
+          "eta": "17/10 15:45",
+          "etb": "25/10 PM",
+          "etc": "01/11 PM",
+          "etd": "01/11 PM",
+          "cargo": "Coal for Arcelormittal",
+          "quantity": 70000,
+          "operation": "Discharge",
+          "remarks": "At Berth. "
+        },
+        {
+          "name": "Xin An Yuan",
+          "eta": "22/10 17:30",
+          "etb": "01/11 PM",
+          "etc": "06/11 PM",
+          "etd": "06/11 PM",
+          "cargo": "Coal for EDP",
+          "quantity": 55000,
+          "operation": "Discharge",
+          "remarks": ""
+        },
+        {
+          "name": "Navios Meridian",
+          "eta": "03/11 12:00",
+          "etb": "06/11 PM",
+          "etc": "11/11 PM",
+          "etd": "11/11 PM",
+          "cargo": "Coal for EDP",
+          "quantity": 55000,
+          "operation": "Discharge",
+          "remarks": ""
+        },
+        {
+          "name": "Aquagem",
+          "eta": "14/10 09:24",
+          "etb": "11/11 PM",
+          "etc": "18/11 PM",
+          "etd": "18/11 PM",
+          "cargo": "Coal for Arcelormittal",
+          "quantity": 65000,
+          "operation": "Discharge",
+          "remarks": ""
+        },
+        {
+          "name": "Field Freia",
+          "eta": "22/11 12:00",
+          "etb": "22/11 PM",
+          "etc": "27/11 PM",
+          "etd": "27/11 PM",
+          "cargo": "Coal for Arcelormittal",
+          "quantity": 70000,
+          "operation": "Discharge",
+          "remarks": ""
+        }
+      ]
     },
     {
-      "label": "Total Manifested (units)",
-      "value": "73"
+      "name": "Pier 02",
+      "vessels": [
+        {
+          "name": "Forte São Marcelo",
+          "eta": "21/10 15:55",
+          "etb": "23/10 PM",
+          "etc": "31/10 PM",
+          "etd": "31/10 PM",
+          "cargo": "Iron Ore",
+          "quantity": 115000,
+          "operation": "Discharge",
+          "remarks": "At Berth. "
+        },
+        {
+          "name": "Forte dos Reis Magos",
+          "eta": "05/11 12:00",
+          "etb": "05/11 PM",
+          "etc": "13/11 PM",
+          "etd": "13/11 PM",
+          "cargo": "Iron Ore",
+          "quantity": 115000,
+          "operation": "Discharge",
+          "remarks": ""
+        },
+        {
+          "name": "TBN",
+          "eta": "11/11 12:00",
+          "etb": "13/11 PM",
+          "etc": "21/11 PM",
+          "etd": "21/11 PM",
+          "cargo": "Iron Ore",
+          "quantity": 115000,
+          "operation": "Discharge",
+          "remarks": ""
+        },
+        {
+          "name": "TBN",
+          "eta": "18/11 12:00",
+          "etb": "21/11 PM",
+          "etc": "29/11 PM",
+          "etd": "29/11 PM",
+          "cargo": "Iron Ore",
+          "quantity": 115000,
+          "operation": "Discharge",
+          "remarks": ""
+        }
+      ]
     },
     {
-      "label": "Discharged Daily (mtons)",
-      "value": "945.279"
+      "name": "TMUT 5",
+      "vessels": [
+        {
+          "name": "Star Lofoten",
+          "eta": "22/10 03:36",
+          "etb": "27/10 PM",
+          "etc": "#VALUE!",
+          "etd": "#VALUE!",
+          "cargo": "Steel Coils + Wheel Loader",
+          "quantity": 1674,
+          "operation": "Discharge",
+          "remarks": ""
+        },
+        {
+          "name": "Sepetiba Bay",
+          "eta": "23/10 07:12",
+          "etb": "#VALUE!",
+          "etc": "#VALUE!",
+          "etd": "#VALUE!",
+          "cargo": "Steel Slabs",
+          "quantity": 30240,
+          "operation": "Load",
+          "remarks": "88% of cargo readiness"
+        },
+        {
+          "name": "UAL Fortitude",
+          "eta": "25/10 06:50",
+          "etb": "#VALUE!",
+          "etc": "#VALUE!",
+          "etd": "#VALUE!",
+          "cargo": "Break Bulk",
+          "quantity": "22 Pieces // 232.844 tons",
+          "operation": "Discharge",
+          "remarks": ""
+        },
+        {
+          "name": "Linden Arrow",
+          "eta": "26/10 11:00",
+          "etb": "#VALUE!",
+          "etc": "#VALUE!",
+          "etd": "#VALUE!",
+          "cargo": "Granite in Blocks",
+          "quantity": 9000,
+          "operation": "Load",
+          "remarks": ""
+        },
+        {
+          "name": "UAL Brazil",
+          "eta": "29/10 12:00",
+          "etb": "#VALUE!",
+          "etc": "#VALUE!",
+          "etd": "#VALUE!",
+          "cargo": "Break Bulk",
+          "quantity": "123 Pieces // 639.70 tons",
+          "operation": "Discharge",
+          "remarks": ""
+        },
+        {
+          "name": "Covadonga",
+          "eta": "03/11 12:00",
+          "etb": "03/11 PM",
+          "etc": "#VALUE!",
+          "etd": "#VALUE!",
+          "cargo": "Coal Tar",
+          "quantity": 6300,
+          "operation": "Load",
+          "remarks": ""
+        },
+        {
+          "name": "RMS Fraternity",
+          "eta": "08/11 12:00",
+          "etb": "08/11 PM",
+          "etc": "08/11 PM",
+          "etd": "08/11 PM",
+          "cargo": "",
+          "quantity": "",
+          "operation": "",
+          "remarks": ""
+        },
+        {
+          "name": "BBC Moonstone",
+          "eta": "23/11 12:00",
+          "etb": "23/11 PM",
+          "etc": "26/11 PM",
+          "etd": "26/11 PM",
+          "cargo": "Windmill Blades",
+          "quantity": "43 x V150 ",
+          "operation": "Load",
+          "remarks": ""
+        }
+      ]
     },
     {
-      "label": "Balance to go (mtons)",
-      "value": "224.304"
+      "name": "TMUT 6",
+      "vessels": [
+        {
+          "name": "Eastern Laelia",
+          "eta": "13/10 07:30",
+          "etb": "22/10 PM",
+          "etc": "31/10 PM",
+          "etd": "31/10 PM",
+          "cargo": "Steel Coils",
+          "quantity": 16197,
+          "operation": "Discharge",
+          "remarks": "At Berth. "
+        },
+        {
+          "name": "Equinox Eagle",
+          "eta": "31/10 12:00",
+          "etb": "31/10 PM",
+          "etc": "13/11 PM",
+          "etd": "13/11 PM",
+          "cargo": "Steel Coils",
+          "quantity": 38932,
+          "operation": "Discharge",
+          "remarks": ""
+        },
+        {
+          "name": "Century Beijin",
+          "eta": "08/10 12:00",
+          "etb": "13/11 PM",
+          "etc": "23/11 PM",
+          "etd": "23/11 PM",
+          "cargo": "Steel Coils",
+          "quantity": 28764.65,
+          "operation": "Discharge",
+          "remarks": ""
+        }
+      ]
     },
     {
-      "label": "Discharged Daily (units)",
-      "value": "59"
+      "name": "TMUT 7",
+      "vessels": [
+        {
+          "name": "Federal Bering",
+          "eta": "16/10 15:30",
+          "etb": "25/10 AM",
+          "etc": "27/10 AM",
+          "etd": "27/10 AM",
+          "cargo": "Steel Slabs",
+          "quantity": 19845,
+          "operation": "Load",
+          "remarks": "At Berth. "
+        },
+        {
+          "name": "Aeolus",
+          "eta": "22/10 17:00",
+          "etb": "27/10 AM",
+          "etc": "02/11 AM",
+          "etd": "02/11 AM",
+          "cargo": "Steel Slabs",
+          "quantity": 58590,
+          "operation": "Load",
+          "remarks": "36% of cargo readiness"
+        },
+        {
+          "name": "Tai Splendor",
+          "eta": "03/11 12:00",
+          "etb": "03/11 PM",
+          "etc": "07/11 PM",
+          "etd": "07/11 PM",
+          "cargo": "Steel Slabs",
+          "quantity": 40320,
+          "operation": "Load",
+          "remarks": "29% of cargo readiness"
+        },
+        {
+          "name": "Saga Fuji",
+          "eta": "07/11 12:00",
+          "etb": "07/11 PM",
+          "etc": "11/11 PM",
+          "etd": "11/11 PM",
+          "cargo": "Steel Slabs",
+          "quantity": 40005,
+          "operation": "Load",
+          "remarks": "0% of cargo readiness"
+        }
+      ]
     },
     {
-      "label": "Balance to go (units)",
-      "value": "14"
+      "name": "TMUT 8",
+      "vessels": []
+    },
+    {
+      "name": "TMUT 9",
+      "vessels": [
+        {
+          "name": "Czech",
+          "eta": "24/10 14:00",
+          "etb": "26/10 PM",
+          "etc": "#VALUE!",
+          "etd": "#VALUE!",
+          "cargo": "Container",
+          "quantity": 205,
+          "operation": "Load/Disch",
+          "remarks": "At Berth."
+        },
+        {
+          "name": "Pedro Alvares Cabral",
+          "eta": "25/10 14:00",
+          "etb": "25/10 PM",
+          "etc": "26/10 PM",
+          "etd": "26/10 PM",
+          "cargo": "Container",
+          "quantity": 958,
+          "operation": "Load/Disch",
+          "remarks": ""
+        },
+        {
+          "name": "MSC Yukta X",
+          "eta": "26/10 07:00",
+          "etb": "26/10 PM",
+          "etc": "27/10 PM",
+          "etd": "27/10 PM",
+          "cargo": "Container",
+          "quantity": 832,
+          "operation": "Load/Disch",
+          "remarks": ""
+        },
+        {
+          "name": "MSC Domitille",
+          "eta": "29/10 02:00",
+          "etb": "29/10 AM",
+          "etc": "#VALUE!",
+          "etd": "#VALUE!",
+          "cargo": "Container",
+          "quantity": 200,
+          "operation": "Load/Disch",
+          "remarks": ""
+        },
+        {
+          "name": "Log-in Jacarandá",
+          "eta": "29/10 19:00",
+          "etb": "#VALUE!",
+          "etc": "#VALUE!",
+          "etd": "#VALUE!",
+          "cargo": "Container",
+          "quantity": 1000,
+          "operation": "Load/Disch",
+          "remarks": ""
+        },
+        {
+          "name": "Bartolomeu Dias",
+          "eta": "30/10 11:00",
+          "etb": "#VALUE!",
+          "etc": "#VALUE!",
+          "etd": "#VALUE!",
+          "cargo": "Container",
+          "quantity": 762,
+          "operation": "Load/Disch",
+          "remarks": ""
+        }
+      ]
+    },
+    {
+      "name": "TMUT 10",
+      "vessels": [
+        {
+          "name": "Aliança Leblon",
+          "eta": "22/10 01:00",
+          "etb": "22/10 AM",
+          "etc": "#VALUE!",
+          "etd": "#VALUE!",
+          "cargo": "Container",
+          "quantity": 441,
+          "operation": "Load/Disch",
+          "remarks": "At Berth."
+        },
+        {
+          "name": "Log-in Evolution",
+          "eta": "22/10 19:00",
+          "etb": "22/10 PM",
+          "etc": "23/10 PM",
+          "etd": "23/10 PM",
+          "cargo": "Container",
+          "quantity": 1015,
+          "operation": "Load/Disch",
+          "remarks": ""
+        },
+        {
+          "name": "NC Breda",
+          "eta": "24/10 05:00",
+          "etb": "24/10 AM",
+          "etc": "#VALUE!",
+          "etd": "#VALUE!",
+          "cargo": "Container",
+          "quantity": 128,
+          "operation": "Load/Disch",
+          "remarks": ""
+        },
+        {
+          "name": "Mercosul Guaruja",
+          "eta": "25/10 06:00",
+          "etb": "25/10 AM",
+          "etc": "#VALUE!",
+          "etd": "#VALUE!",
+          "cargo": "Container",
+          "quantity": 360,
+          "operation": "Load/Disch",
+          "remarks": ""
+        },
+        {
+          "name": "Maersk Frankfurt",
+          "eta": "26/10 05:00",
+          "etb": "26/10 AM",
+          "etc": "#VALUE!",
+          "etd": "#VALUE!",
+          "cargo": "Container",
+          "quantity": 289,
+          "operation": "Load/Disch",
+          "remarks": ""
+        },
+        {
+          "name": "Fernão de Magalhães",
+          "eta": "27/10 06:00",
+          "etb": "27/10 AM",
+          "etc": "#VALUE!",
+          "etd": "#VALUE!",
+          "cargo": "Container",
+          "quantity": 246,
+          "operation": "Load/Disch",
+          "remarks": ""
+        }
+      ]
     }
-  ],
-  "dischargeSummary": [
-    {
-      "label": "Manifested (mtons)",
-      "value": "1,169.58"
-    },
-    {
-      "label": "Total Discharged (mtons)",
-      "value": "945.279"
-    },
-    {
-      "label": "Balance to go (mtons)",
-      "value": "224.304"
-    },
-    {
-      "label": "Manifested (units)",
-      "value": "73"
-    },
-    {
-      "label": "Total Discharged (units)",
-      "value": "59"
-    },
-    {
-      "label": "Balance to go (units)",
-      "value": "14"
-    }
-  ],
-  "discharges": [
-    {
-      "date": "Tue, 3 Mar 2026",
-      "shift": "06:00 - 12:00",
-      "units": "23",
-      "mtons": "104,289.09"
-    },
-    {
-      "date": "Tue, 3 Mar 2026",
-      "shift": "12:00 - 18:00",
-      "units": "6",
-      "mtons": "27,205.85"
-    },
-    {
-      "date": "Tue, 3 Mar 2026",
-      "shift": "18:00 - 00:00",
-      "units": "9",
-      "mtons": "144,195.16"
-    },
-    {
-      "date": "Wed, 4 Mar 2026",
-      "shift": "00:00 - 06:00",
-      "units": "13",
-      "mtons": "208,281.90"
-    },
-    {
-      "date": "Wed, 4 Mar 2026",
-      "shift": "06:00 - 12:00",
-      "units": "3",
-      "mtons": "48,065.06"
-    },
-    {
-      "date": "Wed, 4 Mar 2026",
-      "shift": "12:00 - 18:00",
-      "units": "0",
-      "mtons": "-"
-    },
-    {
-      "date": "Wed, 4 Mar 2026",
-      "shift": "18:00 - 00:00",
-      "units": "0",
-      "mtons": "-"
-    },
-    {
-      "date": "Thu, 5 Mar 2026",
-      "shift": "00:00 - 06:00",
-      "units": "4",
-      "mtons": "64,086.74"
-    },
-    {
-      "date": "Thu, 5 Mar 2026",
-      "shift": "06:00 - 12:00",
-      "units": "1",
-      "mtons": "16,021.68"
-    },
-    {
-      "date": "Thu, 5 Mar 2026",
-      "shift": "12:00 - 18:00",
-      "units": "4",
-      "mtons": "64,086.74"
-    },
-    {
-      "date": "Thu, 5 Mar 2026",
-      "shift": "18:00 - 00:00",
-      "units": "2",
-      "mtons": "32,043.37"
-    },
-    {
-      "date": "Fri, 6 Mar 2026",
-      "shift": "00:00 - 06:00",
-      "units": "12",
-      "mtons": "192,260.22"
-    },
-    {
-      "date": "Fri, 6 Mar 2026",
-      "shift": "06:00 - 12:00",
-      "units": "3",
-      "mtons": "48,065.06"
-    },
-    {
-      "date": "Fri, 6 Mar 2026",
-      "shift": "12:00 - 18:00",
-      "units": "8",
-      "mtons": "128,173.48"
-    }
-  ],
-  "etcs": "Sat, 7 Mar 2026 7 AM"
+  ]
 }

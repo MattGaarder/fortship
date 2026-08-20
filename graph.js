@@ -53,67 +53,6 @@ async function getMicrosoftDraftBody(draftId, accessToken) {
             `Microsoft Graph MIME request returned ${mimeResponse.status}: ${errorText}`
         );
     }
-
-    // Graph returns the MIME message as raw text
-    const mime = await mimeResponse.text();
-
-
-    // ---------------------------------------------------------
-    // 3. Save the raw MIME as .eml
-    // ---------------------------------------------------------
-
-    const debugMimePath = path.join(
-        __dirname,
-        "debug-graph-email-mime.eml"
-    );
-
-    await fs.promises.writeFile(
-        debugMimePath,
-        mime,
-        "utf8"
-    );
-
-    console.log(
-        "DEBUG: Graph MIME written to:",
-        debugMimePath
-    );
-
-    console.log(
-        "DEBUG: MIME length:",
-        mime.length
-    );
-
-
-    // ---------------------------------------------------------
-    // 4. Basic MIME diagnostics
-    // ---------------------------------------------------------
-
-    console.log(
-        "DEBUG: MIME contains multipart/related:",
-        mime.toLowerCase().includes("multipart/related")
-    );
-
-    console.log(
-        "DEBUG: MIME contains text/html:",
-        mime.toLowerCase().includes("text/html")
-    );
-
-    console.log(
-        "DEBUG: MIME contains Content-ID:",
-        mime.toLowerCase().includes("content-id:")
-    );
-
-    console.log(
-        "DEBUG: MIME contains Content-Transfer-Encoding:",
-        mime.toLowerCase().includes("content-transfer-encoding:")
-    );
-
-    console.log(
-        "DEBUG: MIME contains @media:",
-        mime.includes("@media")
-    );
-
-
     return {
         html: data.body.content,
         mime
@@ -123,9 +62,6 @@ async function getMicrosoftDraftBody(draftId, accessToken) {
 //
 
 async function createMicrosoftDraft({ to, subject, html, accessToken, images = [] }) {
-
-    // DEBUG: save the exact HTML being sent to Microsoft Graph
-    const debugPath = path.join(__dirname, "debug-email.html");
 
     fs.writeFileSync(debugPath, html, "utf8");
 
