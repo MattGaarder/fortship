@@ -1,8 +1,6 @@
 const fs = require("fs");
 const path = require("path");
 
-// DEBUG html from graph
-
 async function getMicrosoftDraftBody(draftId, accessToken) {
     const response = await fetch(
         `https://graph.microsoft.com/v1.0/me/messages/${draftId}?$select=body`,
@@ -16,6 +14,7 @@ async function getMicrosoftDraftBody(draftId, accessToken) {
 
     if (!response.ok) {
         const errorText = await response.text();
+
         throw new Error(
             `Microsoft Graph returned ${response.status}: ${errorText}`
         );
@@ -23,7 +22,10 @@ async function getMicrosoftDraftBody(draftId, accessToken) {
 
     const data = await response.json();
 
-    const debugPath = path.join(__dirname, "debug-graph-email.html");
+    const debugPath = path.join(
+        __dirname,
+        "debug-graph-email.html"
+    );
 
     await fs.promises.writeFile(
         debugPath,
@@ -36,62 +38,59 @@ async function getMicrosoftDraftBody(draftId, accessToken) {
         debugPath
     );
 
-    const mimeResponse = await fetch(
-        `https://graph.microsoft.com/v1.0/me/messages/${draftId}/$value`,
-        {
-            method: "GET",
-            headers: {
-                Authorization: `Bearer ${accessToken}`
-            }
-        }
-    );
-
-    if (!mimeResponse.ok) {
-        const errorText = await mimeResponse.text();
-
-        throw new Error(
-            `Microsoft Graph MIME request returned ${mimeResponse.status}: ${errorText}`
-        );
-    }
-    return {
-        html: data.body.content,
-        mime
-    }
+    return data.body.content;
 }
 
-//
 
-async function createMicrosoftDraft({ to, subject, html, accessToken, images = [] }) {
+async function createMicrosoftDraft({
+    to,
+    subject,
+    html,
+    accessToken,
+    images = [],
+    attachments = []
+}) {
 
-    fs.writeFileSync(debugPath, html, "utf8");
+    const imageAttachments = await Promise.all(
+        images.map(async (img) => {
 
-    console.log("DEBUG: HTML written to:", debugPath);
-    console.log("DEBUG: HTML length:", html.length);
-    console.log("DEBUG: Contains @media:", html.includes("@media"));
-    console.log(
-        "DEBUG: Contains desktop rule:",
-        html.includes(".desktop-report")
+            const contentBytes =
+                await fs.promises.readFile(
+                    img.path,
+                    "base64"
+                );
+
+            const name = path.basename(img.path);
+
+            const ext =
+                path.extname(name)
+                    .slice(1)
+                    .toLowerCase();
+
+            const contentType =
+                ext === "jpg"
+                    ? "image/jpeg"
+                    : `image/${ext}`;
+
+            return {
+                "@odata.type":
+                    "#microsoft.graph.fileAttachment",
+
+                name,
+                contentType,
+                contentBytes,
+                isInline: true,
+                contentId: img.cid
+            };
+        })
     );
-    console.log(
-        "DEBUG: Contains mobile rule:",
-        html.includes(".mobile-report")
-    );
 
-
-
-    const attachments = await Promise.all(images.map(async (img) => {
-        const contentBytes = await fs.promises.readFile(img.path, "base64");
-        const name = path.basename(img.path);
-        let ext = path.extname(name).slice(1).toLowerCase();
-        const contentType = ext === "jpg" ? "image/jpeg" : `image/${ext}`;
-        return {
-            "@odata.type": "#microsoft.graph.fileAttachment",
-            name,
-            contentType,
-            contentBytes,
-            isInline: true,
-            contentId: img.cid
-        };
+    const fileAttachments = attachments.map((attachment) => ({
+        "@odata.type": "#microsoft.graph.fileAttachment",
+        name: attachment.name,
+        contentType: attachment.contentType,
+        contentBytes: attachment.contentBytes.toString("base64"),
+        isInline: false
     }));
 
     const response = await fetch(
@@ -113,18 +112,25 @@ async function createMicrosoftDraft({ to, subject, html, accessToken, images = [
                 },
 
                 toRecipients: to.map((address) => ({
-                    emailAddress: { address }
+                    emailAddress: {
+                        address
+                    }
                 })),
 
-                attachments
+                attachments: [
+                    ...imageAttachments,
+                    ...fileAttachments
+                ]
             })
         }
     );
 
     if (!response.ok) {
         const error = await response.text();
-        const requestId = response.headers.get("request-id");
-        const authenticate = response.headers.get("www-authenticate");
+        const requestId =
+            response.headers.get("request-id");
+        const authenticate =
+            response.headers.get("www-authenticate");
 
         throw new Error(
             `Microsoft Graph returned ${response.status}: ${error || "no response body"}` +
@@ -134,19 +140,32 @@ async function createMicrosoftDraft({ to, subject, html, accessToken, images = [
     }
 
     const data = await response.json();
-    console.log("DEBUG: Created draft ID:", data.id);
-    await getMicrosoftDraftBody(data.id, accessToken);
+
+    console.log(
+        "DEBUG: Created draft ID:",
+        data.id
+    );
+
+    // Optional debugging: confirm what Graph actually stored.
+    await getMicrosoftDraftBody(
+        data.id,
+        accessToken
+    );
+
     return data;
 }
 
 
+async function sendMicrosoftDraft(
+    draftId,
+    accessToken
+) {
 
-
-async function sendMicrosoftDraft(draftId, accessToken) {
     const response = await fetch(
         `https://graph.microsoft.com/v1.0/me/messages/${draftId}/send`,
         {
             method: "POST",
+
             headers: {
                 Authorization: `Bearer ${accessToken}`
             }
@@ -155,8 +174,10 @@ async function sendMicrosoftDraft(draftId, accessToken) {
 
     if (!response.ok) {
         const errorText = await response.text();
-        const requestId = response.headers.get("request-id");
-        const authenticate = response.headers.get("www-authenticate");
+        const requestId =
+            response.headers.get("request-id");
+        const authenticate =
+            response.headers.get("www-authenticate");
 
         throw new Error(
             `Microsoft Graph returned ${response.status}: ${errorText || "no response body"}` +
@@ -168,9 +189,69 @@ async function sendMicrosoftDraft(draftId, accessToken) {
     return true;
 }
 
+async function testOneDriveFile(accessToken) {
+    const response = await fetch(
+        "https://graph.microsoft.com/v1.0/me/drive/root/children",
+        {
+            headers: {
+                Authorization: `Bearer ${accessToken}`
+            }
+        }
+    );
+
+    if (!response.ok) {
+        const error = await response.text();
+
+        throw new Error(
+            `OneDrive Graph request failed (${response.status}): ${error}`
+        );
+    }
+
+    const data = await response.json();
+
+    console.log("========== ONEDRIVE DEBUG ==========");
+    console.log(
+        data.value.map(file => ({
+            name: file.name,
+            id: file.id,
+            size: file.size,
+            file: !!file.file,
+            folder: !!file.folder
+        }))
+    );
+
+    return data.value;
+}
+
+
+async function downloadOneDriveFileById(accessToken, itemId) {
+    const response = await fetch(
+        `https://graph.microsoft.com/v1.0/me/drive/items/${encodeURIComponent(itemId)}/content`,
+        {
+            headers: {
+                Authorization: `Bearer ${accessToken}`
+            }
+        }
+    );
+
+    if (!response.ok) {
+        const body = await response.text();
+
+        throw new Error(
+            `OneDrive workbook download failed (${response.status}): ${body}`
+        );
+    }
+
+    const arrayBuffer = await response.arrayBuffer();
+
+    return Buffer.from(arrayBuffer);
+}
+
 
 module.exports = {
     createMicrosoftDraft,
     sendMicrosoftDraft,
-    getMicrosoftDraftBody
+    getMicrosoftDraftBody,
+    testOneDriveFile,
+    downloadOneDriveFileById
 };

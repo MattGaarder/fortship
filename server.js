@@ -15,10 +15,19 @@ const generateDailyReportHtml = require("./generator-daily-report");
 const { getGoogleAuthUrl, getGoogleTokens } = require("./gmail-auth");
 const {
     getMicrosoftLoginUrl,
-    getMicrosoftTokenFromCode
+    getMicrosoftTokenFromCode,
+    getMicrosoftAccessToken
 } = require("./auth");
 const { createReportDraft, selectedProvider, sendReportDraft } = require("./mailer");
 const getWeather = require("./weather");
+const {
+    createMicrosoftDraft,
+    sendMicrosoftDraft,
+    downloadOneDriveFileById
+} = require("./graph");
+
+const LINEUP_WORKBOOK_ID =
+    "FB6DC47598B18BF3!s9adf370729184224bc561ba0e065b4f2";
 
 const app = express();
 const port = Number(process.env.PORT || 3000);
@@ -121,11 +130,16 @@ function createOAuthState(req, key) {
 
 function hasValidOAuthState(req, key, state) {
     const expected = req.session[key];
+
     delete req.session[key];
+
     return typeof state === "string" &&
         typeof expected === "string" &&
         state.length === expected.length &&
-        crypto.timingSafeEqual(Buffer.from(state), Buffer.from(expected));
+        crypto.timingSafeEqual(
+            Buffer.from(state),
+            Buffer.from(expected)
+        );
 }
 
 function signInRequired(res, provider) {
@@ -354,6 +368,9 @@ app.get("/google/callback", async (req, res) => {
 app.get("/microsoft/login", async (req, res, next) => {
     try {
         const state = createOAuthState(req, "microsoftOAuthState");
+
+        console.log("Microsoft OAuth state created:", state);
+
         res.redirect(await getMicrosoftLoginUrl(state));
     } catch (error) {
         next(error);
@@ -361,22 +378,59 @@ app.get("/microsoft/login", async (req, res, next) => {
 });
 
 app.get("/microsoft/callback", async (req, res) => {
+
+    console.log("MICROSOFT CALLBACK");
+    console.log("Query state:", req.query.state);
+    console.log(
+        "Session state:",
+        req.session.microsoftOAuthState
+    );
+
     if (req.query.error) {
-        return res.status(400).send("Microsoft authentication was cancelled or denied.");
+        console.error("Microsoft OAuth error:", req.query);
+        return res.status(400).send(
+            "Microsoft authentication was cancelled or denied."
+        );
     }
 
-    if (!req.query.code || !hasValidOAuthState(req, "microsoftOAuthState", req.query.state)) {
-        return res.status(400).send("Invalid Microsoft authorization response. Please try again.");
+    if (!req.query.code) {
+        console.error("No authorization code received.");
+        return res.status(400).send(
+            "Invalid Microsoft authorization response: no code."
+        );
+    }
+
+    if (!hasValidOAuthState(
+        req,
+        "microsoftOAuthState",
+        req.query.state
+    )) {
+        console.error("OAuth state validation failed.");
+        return res.status(400).send(
+            "Invalid Microsoft authorization response: state mismatch."
+        );
     }
 
     try {
-        const token = await getMicrosoftTokenFromCode(req.query.code);
+        const token = await getMicrosoftTokenFromCode(
+            req.query.code
+        );
+
         req.session.microsoftAuthenticated = true;
-        req.session.microsoftAccountHomeId = token.account.homeAccountId;
+        req.session.microsoftAccountHomeId =
+            token.account.homeAccountId;
+
         res.redirect("/");
+
     } catch (error) {
-        console.error("Microsoft authentication failed:", error);
-        res.status(500).send("Microsoft authentication failed. Check the server log.");
+        console.error(
+            "Microsoft authentication failed:",
+            error
+        );
+
+        res.status(500).send(
+            "Microsoft authentication failed. Check the server log."
+        );
     }
 });
 
@@ -397,50 +451,81 @@ app.post("/test/:provider/draft", async (req, res) => {
     }
 
     try {
+        // --------------------------------------------
+        // PRETEND THIS IS THE REAL OFFICE SCRIPT REPORT
+        // --------------------------------------------
 
-        const report = parseShippingReport(testWorkbookPath);
+        const parsedReport = parseShippingReport(testWorkbookPath);
+
+        const report = {
+            ...parsedReport,
+            reportType: "line-up",
+            sheetName: "Mucuripe",
+            recipient: "matteus.gaarder@outlook.com"
+        };
+
+        console.log("TEST REPORT:");
+        console.log(JSON.stringify(report, null, 2));
+
+        // --------------------------------------------
+        // NOW USE THE SAME PROCESSING AS REAL REPORT
+        // --------------------------------------------
+
         const port = getPortConfig(report.sheetName);
         const weather = await getWeather(port.coordinates);
 
-        const { html, images } = generateLineUpHtml(
+        const { html, images } = await generateLineUpHtml(
             report,
-            weather, 
+            weather,
             port
         );
 
         console.log("WORKING HTML LENGTH:", html.length);
-        console.log("HAS MOBILE:", html.includes('class="mobile-report"'));
-        console.log("HAS MEDIA QUERY:", html.includes('@media screen and (max-width: 600px)'));
+        console.log(
+            "HAS MOBILE:",
+            html.includes('class="mobile-report"')
+        );
+        console.log(
+            "HAS MEDIA QUERY:",
+            html.includes('@media screen and (max-width: 600px)')
+        );
 
         fs.writeFileSync("debug-browser.html", html);
 
-        // -------------------------------------------------------
-        // CREATE THE DRAFT
-        // -------------------------------------------------------
+        // --------------------------------------------
+        // CREATE DRAFT
+        // --------------------------------------------
 
         const draft = await createReportDraft({
             provider,
-            recipient: req.body.recipient,
+            recipient: report.recipient,
             subject: "Daily Shipping Report - RESPONSIVE TEST",
             html,
-            images: images,
-            microsoftAccountHomeId: req.session.microsoftAccountHomeId
+            images,
+            microsoftAccountHomeId:
+                req.session.microsoftAccountHomeId
         });
 
-        // -------------------------------------------------------
-        // SEND THE DRAFT
-        // -------------------------------------------------------
+        console.log("DRAFT CREATED:", draft);
+
+        // --------------------------------------------
+        // SEND
+        // --------------------------------------------
 
         await sendReportDraft({
             provider,
             draftId: draft.id,
-            microsoftAccountHomeId: req.session.microsoftAccountHomeId
+            microsoftAccountHomeId:
+                req.session.microsoftAccountHomeId
         });
 
-        res.send(
-            `<p>${draft.provider} responsive test email sent: ${draft.id}</p>
-             <p><a href="/">Back</a></p>`
-        );
+        console.log("DRAFT SENT:", draft.id);
+
+        res.send(`
+            <p>${draft.provider} responsive test email sent.</p>
+            <p>Draft ID: ${draft.id}</p>
+            <p><a href="/">Back</a></p>
+        `);
 
     } catch (error) {
         console.error("Test draft failed:", error);
@@ -452,7 +537,7 @@ app.post("/test/:provider/draft", async (req, res) => {
         res.status(mailboxError ? 422 : 500).send(
             mailboxError
                 ? error.message
-                : "Failed to create/send test email. Check the server log."
+                : `Test failed: ${error.message}`
         );
     }
 });
@@ -519,6 +604,103 @@ app.get("/preview/daily-report", async (req, res) => {
         res.status(500).send(
             "Error generating Daily Report preview: " +
             error.message
+        );
+    }
+});
+
+app.get("/test-onedrive", async (req, res) => {
+    if (!req.session.microsoftAuthenticated) {
+        return signInRequired(res, "Microsoft");
+    }
+
+    try {
+        const accessToken = await getMicrosoftAccessToken({
+            accountHomeId: req.session.microsoftAccountHomeId
+        });
+
+        const files = await testOneDriveFile(accessToken);
+
+        res.json({
+            success: true,
+            files
+        });
+
+    } catch (error) {
+        console.error("OneDrive test failed:", error);
+
+        res.status(500).json({
+            success: false,
+            error: error.message
+        });
+    }
+});
+
+app.get("/test-onedrive-attachment", async (req, res) => {
+    if (!req.session.microsoftAuthenticated) {
+        return signInRequired(res, "Microsoft");
+    }
+
+    try {
+        const accessToken = await getMicrosoftAccessToken({
+            accountHomeId:
+                req.session.microsoftAccountHomeId
+        });
+
+        const workbook =
+            await downloadOneDriveFileById(
+                accessToken,
+                LINEUP_WORKBOOK_ID
+            );
+
+        console.log(
+            "Downloaded workbook:",
+            workbook.length,
+            "bytes"
+        );
+
+        const draft = await createMicrosoftDraft({
+            to: ["matteus.gaarder@outlook.com"],
+            subject: "OneDrive attachment test",
+            html: `
+                <p>This is a test email.</p>
+                <p>The mothership lineup workbook should be attached.</p>
+            `,
+            accessToken,
+            attachments: [
+                {
+                    name: "mothership-lineup.xlsx",
+                    contentType:
+                        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                    contentBytes: workbook
+                }
+            ]
+        });
+
+        console.log(
+            "Attachment test draft created:",
+            draft.id
+        );
+
+        await sendMicrosoftDraft(
+            draft.id,
+            accessToken
+        );
+
+        res.send(`
+            <p>Attachment test email sent successfully.</p>
+            <p>Draft ID: ${draft.id}</p>
+            <p>Downloaded: ${workbook.length} bytes</p>
+            <p><a href="/">Back</a></p>
+        `);
+
+    } catch (error) {
+        console.error(
+            "OneDrive attachment test failed:",
+            error
+        );
+
+        res.status(500).send(
+            `Attachment test failed: ${error.message}`
         );
     }
 });

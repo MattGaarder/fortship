@@ -91,7 +91,7 @@ async function getWeather({ lat, lon }) {
 
     const data = await response.json();
 
-    console.log("OPENWEATHER RESPONSE:", JSON.stringify(data, null, 2));
+    // console.log("OPENWEATHER RESPONSE:", JSON.stringify(data, null, 2));
 
     const forecast = data.list[0];
 

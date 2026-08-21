@@ -24,6 +24,7 @@ const scopes = [
     "profile",
     "offline_access",
     "Mail.ReadWrite",
+    "Files.Read",
     ...(process.env.MICROSOFT_ALLOW_SEND === "true" ? ["Mail.Send"] : [])
 ];
 
