@@ -16,35 +16,53 @@ function selectedProvider() {
     return provider;
 }
 
-function reportRecipients() {
-    const recipients = (process.env.REPORT_RECIPIENTS || "")
-        .split(/[;,]/)
-        .map((address) => address.trim())
-        .filter(Boolean);
+// function reportRecipients() {
+//     const recipients = (process.env.REPORT_RECIPIENTS || "")
+//         .split(/[;,]/)
+//         .map((address) => address.trim())
+//         .filter(Boolean);
 
-    if (recipients.length === 0) {
-        throw new Error("REPORT_RECIPIENTS must contain at least one email address.");
-    }
-    return recipients;
-}
+//     if (recipients.length === 0) {
+//         throw new Error("REPORT_RECIPIENTS must contain at least one email address.");
+//     }
+//     return recipients;
+// }
 
 async function createReportDraft({
-    recipient,
+    to = [],
+    cc = [],
+    bcc = [],
     html,
     images,
     subject,
+    fileAttachments = [],
     provider = selectedProvider(),
     microsoftAccountHomeId
 }) {
-    const to = reportRecipients(recipient);
+    if (!Array.isArray(to) || to.length === 0) {
+        throw new Error(
+            "At least one To recipient is required."
+        );
+    }
+
+    if (!Array.isArray(cc)) {
+        cc = [];
+    }
+
+    if (!Array.isArray(bcc)) {
+        bcc = [];
+    }
 
     if (provider === "gmail") {
         const draft = await createGmailDraft({
             tokens: getStoredGoogleTokens(),
             to: to.join(", "),
+            cc: cc.join(", "),
+            bcc: bcc.join(", "),
             subject,
             html,
             images
+            // Note: fileAttachments not yet supported on Gmail path
         });
 
         return { provider, id: draft.id };
@@ -53,7 +71,17 @@ async function createReportDraft({
     const accessToken = await getMicrosoftAccessToken({
         accountHomeId: microsoftAccountHomeId
     });
-    const draft = await createMicrosoftDraft({ to, subject, html, accessToken, images });
+
+    const draft = await createMicrosoftDraft({
+        to,
+        cc,
+        bcc,
+        subject,
+        html,
+        accessToken,
+        images,
+        attachments: fileAttachments
+    });
 
     return { provider, id: draft.id };
 }

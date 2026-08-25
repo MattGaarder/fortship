@@ -7,7 +7,7 @@ const express = require("express");
 const session = require("express-session");
 const cors = require("cors");
 
-const { getPortConfig } = require("./config");
+const { getPortConfig, generateSubject } = require("./config");
 const parseShippingReport = require("./parser");
 const generateLineUpHtml = require("./generator-line-up");
 const generateBerthSailHtml = require("./generator-berth-sail");
@@ -20,6 +20,7 @@ const {
 } = require("./auth");
 const { createReportDraft, selectedProvider, sendReportDraft } = require("./mailer");
 const getWeather = require("./weather");
+const createStackedWorkbook = require("./workbook-generator");
 const {
     createMicrosoftDraft,
     sendMicrosoftDraft,
@@ -35,6 +36,8 @@ const isProduction = process.env.NODE_ENV === "production";
 const testWorkbookPath = path.join(__dirname, "LINEUP.xlsx");
 const berthSailPreviewPath = path.join(__dirname, "berth-sail-preview.json");
 const dailyReportPreviewPath = path.join(__dirname, "daily-report-preview.json");
+
+
 
 for (const variable of ["SESSION_SECRET", "API_KEY"]) {
     if (!process.env[variable]) {
@@ -82,16 +85,45 @@ function authenticateExcelRequest(req, res, next) {
     next();
 }
 
+function isEmailAddressArray(value) {
+    return Array.isArray(value) &&
+        value.every(
+            (address) => typeof address === "string"
+        );
+}
+
 function isLineUpReport(report) {
     return !!report &&
         report.reportType === "line-up" &&
         typeof report.sheetName === "string" &&
-        typeof report.recipient === "string" &&
+        isEmailAddressArray(report.to) &&
+        isEmailAddressArray(report.cc) &&
+        isEmailAddressArray(report.bcc) &&
         Array.isArray(report.berths) &&
         report.berths.every(
             (berth) =>
                 typeof berth?.name === "string" &&
-                Array.isArray(berth.vessels)
+                Array.isArray(berth.vessels) &&
+                berth.vessels.every(
+                    (vessel) =>
+                        typeof vessel?.name === "string" &&
+                        typeof vessel?.eta === "string" &&
+                        typeof vessel?.etb === "string" &&
+                        typeof vessel?.etc === "string" &&
+                        typeof vessel?.etd === "string" &&
+                        typeof vessel?.cargo === "string" &&
+                        typeof vessel?.quantity === "string" &&
+                        typeof vessel?.operation === "string" &&
+                        typeof vessel?.remarks === "string"
+                )
+        ) &&
+        Array.isArray(report.stackedData) &&
+        report.stackedData.every(
+            (row) =>
+                Array.isArray(row) &&
+                row.every(
+                    (cell) => typeof cell === "string"
+                )
         );
 }
 
@@ -99,7 +131,9 @@ function isBerthSailReport(report) {
     return !!report &&
         report.reportType === "berth-sail" &&
         typeof report.sheetName === "string" &&
-        typeof report.recipient === "string" &&
+        isEmailAddressArray(report.to) &&
+        isEmailAddressArray(report.cc) &&
+        isEmailAddressArray(report.bcc) &&
         Array.isArray(report.rows) &&
         report.rows.every(
             (row) =>
@@ -113,7 +147,9 @@ function isDailyReport(report) {
     return !!report &&
         report.reportType === "daily-report" &&
         typeof report.sheetName === "string" &&
-        typeof report.recipient === "string" &&
+        isEmailAddressArray(report.to) &&
+        isEmailAddressArray(report.cc) &&
+        isEmailAddressArray(report.bcc) &&
         typeof report.vesselName === "string" &&
         Array.isArray(report.holds) &&
         Array.isArray(report.summary) &&
@@ -157,16 +193,17 @@ app.post(
     officeScriptCors,
     authenticateExcelRequest,
     async (req, res) => {
+
         const report = req.body;
 
-        fs.writeFileSync(
-            path.join(__dirname, "debug-received-report.json"),
-            JSON.stringify(report, null, 2),
-            "utf8"
-        );
+        // fs.writeFileSync(
+        //     path.join(__dirname, "debug-received-report.json"),
+        //     JSON.stringify(report, null, 2),
+        //     "utf8"
+        // );
 
         console.log("Received report:");
-        console.log(JSON.stringify(report, null, 2));
+        // console.log(JSON.stringify(report, null, 2));
 
         if (
             !isLineUpReport(report) &&
@@ -179,23 +216,8 @@ app.post(
             });
         }
 
+        let stackedXlsxPath = null;
 
-
-        // try {
-        //     console.log("Report received successfully.");
-            
-        //     res.status(200).json({
-        //         success: true,
-        //         message: "Report received and saved as debug-received-report.json."
-        //     });
-        // } catch (error) {
-        //     console.error("Report processing failed:", error);
-
-        //     res.status(500).json({
-        //         success: false,
-        //         message: "Failed to process report."
-        //     });
-        // }
         try {
 
             const generators = {
@@ -211,6 +233,9 @@ app.post(
 
             console.log("REPORT TYPE:", report.reportType);
             console.log("SHEET NAME:", report.sheetName);
+            console.log("TO:", report.to);
+            console.log("CC:", report.cc);
+            console.log("BCC:", report.bcc);
 
             if (report.reportType === "line-up") {
                 port = getPortConfig(report.sheetName);
@@ -222,10 +247,45 @@ app.post(
                     ? await generator(report, weather, port)
                     : await generator(report);
 
+            // -------------------------------------------------
+            // Line-Up only: generate a standalone xlsx attachment
+            // from the calculated stackedData received from Office
+            // Script.  The original OneDrive workbook is not used.
+            // -------------------------------------------------
+            let fileAttachments = [];
+
+            if (
+                report.reportType === "line-up" &&
+                Array.isArray(report.stackedData) &&
+                report.stackedData.length > 0
+            ) {
+                const { filePath, displayName } = await createStackedWorkbook({
+                    sheetName: report.sheetName,
+                    data: report.stackedData
+                });
+
+                stackedXlsxPath = filePath;
+
+                fileAttachments = [
+                    {
+                        path: filePath,
+                        name: displayName,
+                        contentType:
+                            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                    }
+                ];
+
+                console.log(`[server] Stacked xlsx ready: ${displayName}`);
+            }
+
             const draft = await createReportDraft({
-                subject: process.env.DAILY_REPORT_SUBJECT || "Daily Shipping Report",
+                to: report.to,
+                cc: report.cc,
+                bcc: report.bcc,
+                subject: generateSubject(report),
                 html,
-                images
+                images,
+                fileAttachments
             });
 
             await sendReportDraft({
@@ -245,6 +305,15 @@ app.post(
                 success: false,
                 message: "Failed to create report draft."
             });
+        } finally {
+            // Always delete the temporary xlsx, whether the request
+            // succeeded or failed, so files never accumulate on disk.
+            if (stackedXlsxPath) {
+                fs.promises.unlink(stackedXlsxPath).catch((err) => {
+                    // Non-fatal: log but do not rethrow.
+                    console.warn(`[server] Could not delete temp xlsx ${stackedXlsxPath}:`, err.message);
+                });
+            }
         }
     }
 );

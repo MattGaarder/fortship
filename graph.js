@@ -44,6 +44,8 @@ async function getMicrosoftDraftBody(draftId, accessToken) {
 
 async function createMicrosoftDraft({
     to,
+    cc = [],
+    bcc = [],
     subject,
     html,
     accessToken,
@@ -85,13 +87,30 @@ async function createMicrosoftDraft({
         })
     );
 
-    const fileAttachments = attachments.map((attachment) => ({
-        "@odata.type": "#microsoft.graph.fileAttachment",
-        name: attachment.name,
-        contentType: attachment.contentType,
-        contentBytes: attachment.contentBytes.toString("base64"),
-        isInline: false
-    }));
+    const fileAttachments = await Promise.all(
+        attachments.map(async (attachment) => {
+            // Support either a pre-loaded Buffer (contentBytes) or a file path.
+            let contentBytes;
+            if (attachment.contentBytes) {
+                contentBytes = attachment.contentBytes.toString("base64");
+            } else if (attachment.path) {
+                contentBytes = await fs.promises.readFile(attachment.path, "base64");
+            } else {
+                throw new Error("createMicrosoftDraft: each attachment must have contentBytes or path.");
+            }
+
+            const name = attachment.name || path.basename(attachment.path || "attachment.bin");
+
+            return {
+                "@odata.type": "#microsoft.graph.fileAttachment",
+                name,
+                contentType: attachment.contentType,
+                contentBytes,
+                isInline: false
+            };
+        })
+    );
+
 
     const response = await fetch(
         "https://graph.microsoft.com/v1.0/me/messages",
@@ -112,6 +131,18 @@ async function createMicrosoftDraft({
                 },
 
                 toRecipients: to.map((address) => ({
+                    emailAddress: {
+                        address
+                    }
+                })),
+
+                ccRecipients: cc.map((address) => ({
+                    emailAddress: {
+                        address
+                    }
+                })),
+
+                bccRecipients: bcc.map((address) => ({
                     emailAddress: {
                         address
                     }

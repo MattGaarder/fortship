@@ -61,7 +61,27 @@ function getPortConfig(sheetName, isPreview = false) {
     return config;
 }
 
+function generateSubject(report) {
+    if (report.reportType === "berth-sail") {
+        return "Berthing Report";
+    }
+
+    if (report.reportType === "daily-report") {
+        return "Daily Report";
+    }
+
+    if (report.reportType === "line-up") {
+        const port = getPortConfig(report.sheetName);
+        return `${port.title} Line Up`;
+    }
+
+    throw new Error(
+        `Cannot generate subject for report type: "${report.reportType}"`
+    );
+}
+
 module.exports = {
     PORT_CONFIG,
-    getPortConfig
+    getPortConfig,
+    generateSubject
 };

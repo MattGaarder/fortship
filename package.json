@@ -16,6 +16,7 @@
     "@azure/msal-node": "^5.5.0",
     "cors": "^2.8.6",
     "dotenv": "^17.4.2",
+    "exceljs": "^4.4.0",
     "express": "^5.2.1",
     "express-session": "^1.19.0",
     "googleapis": "^174.0.1",

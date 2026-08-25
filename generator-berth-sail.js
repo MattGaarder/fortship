@@ -159,7 +159,6 @@ function generateBerthSailHtml(
             timelineRows.push(row);
             continue;
         }
-        timelineRows.push(row);
     }
 
     function renderMobileValueRows(sectionRows) {
@@ -338,6 +337,8 @@ img {
     word-break: normal;
     vertical-align: middle;
     box-sizing: border-box;
+    font-size: 13px;
+    line-height: 1.4;
 }
 .berth-table .berth-label,
 .timeline-table .timeline-label {
@@ -352,6 +353,11 @@ img {
     line-height: 0.5;
     font-weight: bold;
     text-align: left;
+
+}
+
+.berth-table .column-heading th:first-child {
+    padding-left: 30px;
 }
 
 .berth-table .section-heading th {
@@ -364,11 +370,6 @@ img {
     font-weight: bold;
     text-align: left;
     padding: 10px 8px;
-}
-
-.berth-table td {
-    font-size: 13px;
-    line-height: 1.4;
 }
 
 .berth-table .berth-label {
@@ -402,7 +403,7 @@ img {
 }
 
 .mobile-section-title {
-    padding: 10px 18px;
+    padding: 10px 12px;
     background-color: #D4DDE5;
     color: #1D4369;
     font-size: 14px;
@@ -419,7 +420,7 @@ img {
 }
 
 .mobile-card-header {
-    padding: 10px 18px;
+    padding: 10px 12px;
     background-color: #1D4369;
     color: #ffffff;
     font-size: 14px;
@@ -714,11 +715,6 @@ ${renderTwoColumnSection(
 <!-- VESSEL INFORMATION -->
 
 <div class="mobile-section">
-
-<div class="mobile-section-title">
-    Vessel Information
-</div>
-
 <div class="mobile-card">
 
 <div class="mobile-card-header">
@@ -739,23 +735,13 @@ ${renderTwoColumnSection(
 <!-- TIMELINE -->
 
 <div class="mobile-section">
-
-<div class="mobile-section-title">
-    Berthing &amp; Sailing Timeline
-</div>
-
 <div class="mobile-card">
-
 <div class="mobile-card-header">
-    Events
+    Timeline
 </div>
-
 `;
-
     for (const row of timelineRows) {
-
         html += `
-
 <div class="mobile-detail">
 
 <span class="mobile-label mobile-timeline-label">
