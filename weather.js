@@ -46,6 +46,51 @@ function getWindDirection(degrees) {
     return directions[Math.round(degrees / 22.5) % 16];
 }
 
+async function fetchWithRetry(url, maxAttempts = 3, initialDelayMs = 1000) {
+    let lastError;
+    let delayMs = initialDelayMs;
+
+    for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+        try {
+            const response = await fetch(url, {
+                signal: AbortSignal.timeout(8000)
+            });
+
+            if (!response.ok) {
+                const errorText = await response.text();
+
+                // Non-retryable auth/bad request errors
+                if (response.status === 401 || response.status === 400) {
+                    throw new Error(
+                        `OpenWeather returned ${response.status}: ${errorText}`
+                    );
+                }
+
+                throw new Error(
+                    `OpenWeather returned ${response.status}: ${errorText}`
+                );
+            }
+
+            return response;
+        } catch (error) {
+            lastError = error;
+            const isAuthError = error.message.includes("401") || error.message.includes("400");
+
+            if (isAuthError || attempt === maxAttempts) {
+                console.error(`========== OPENWEATHER ATTEMPT ${attempt}/${maxAttempts} FAILED ==========`);
+                console.error("Error message:", error.message);
+                break;
+            }
+
+            console.warn(`[weather] Attempt ${attempt}/${maxAttempts} failed (${error.name || error.message}). Retrying in ${delayMs / 1000}s...`);
+            await new Promise((resolve) => setTimeout(resolve, delayMs));
+            delayMs *= 1.5;
+        }
+    }
+
+    throw lastError;
+}
+
 async function getWeather({ lat, lon }) {
     const apiKey = process.env.OPENWEATHER_API_KEY;
 
@@ -67,27 +112,7 @@ async function getWeather({ lat, lon }) {
         `&units=metric` +
         `&lang=en`;
 
-    let response;
-
-    try {
-        response = await fetch(url);
-    } catch (error) {
-        console.error("========== OPENWEATHER FETCH FAILED ==========");
-        console.error("Error name:", error.name);
-        console.error("Error message:", error.message);
-        console.error("Error code:", error.code);
-        console.error("Error cause:", error.cause);
-        console.error("Full error:", error);
-
-        throw error;
-    }
-
-    if (!response.ok) {
-        const error = await response.text();
-        throw new Error(
-            `OpenWeather returned ${response.status}: ${error}`
-        );
-    }
+    const response = await fetchWithRetry(url, 3, 1000);
 
     const data = await response.json();
 

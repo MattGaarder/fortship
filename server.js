@@ -21,6 +21,7 @@ const {
 const { createReportDraft, selectedProvider, sendReportDraft } = require("./mailer");
 const getWeather = require("./weather");
 const createStackedWorkbook = require("./workbook-generator");
+const createReportPdf = require("./pdf-generator");
 const {
     createMicrosoftDraft,
     sendMicrosoftDraft,
@@ -217,6 +218,7 @@ app.post(
         }
 
         let stackedXlsxPath = null;
+        let pdfPath = null;
 
         try {
 
@@ -248,12 +250,31 @@ app.post(
                     : await generator(report);
 
             // -------------------------------------------------
-            // Line-Up only: generate a standalone xlsx attachment
-            // from the calculated stackedData received from Office
-            // Script.  The original OneDrive workbook is not used.
+            // 1. Generate PDF attachment from the rendered HTML
             // -------------------------------------------------
             let fileAttachments = [];
 
+            const pdfAttachment = await createReportPdf({
+                report,
+                html,
+                images
+            });
+
+            pdfPath = pdfAttachment.filePath;
+
+            fileAttachments.push({
+                path: pdfAttachment.filePath,
+                name: pdfAttachment.displayName,
+                contentType: "application/pdf"
+            });
+
+            console.log(`[server] PDF report ready: ${pdfAttachment.displayName}`);
+
+            // -------------------------------------------------
+            // 2. Line-Up only: generate standalone xlsx attachment
+            // from the calculated stackedData received from Office
+            // Script.  The original OneDrive workbook is not used.
+            // -------------------------------------------------
             if (
                 report.reportType === "line-up" &&
                 Array.isArray(report.stackedData) &&
@@ -266,14 +287,12 @@ app.post(
 
                 stackedXlsxPath = filePath;
 
-                fileAttachments = [
-                    {
-                        path: filePath,
-                        name: displayName,
-                        contentType:
-                            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-                    }
-                ];
+                fileAttachments.push({
+                    path: filePath,
+                    name: displayName,
+                    contentType:
+                        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                });
 
                 console.log(`[server] Stacked xlsx ready: ${displayName}`);
             }
@@ -306,12 +325,18 @@ app.post(
                 message: "Failed to create report draft."
             });
         } finally {
-            // Always delete the temporary xlsx, whether the request
+            // Always delete temporary files, whether the request
             // succeeded or failed, so files never accumulate on disk.
             if (stackedXlsxPath) {
                 fs.promises.unlink(stackedXlsxPath).catch((err) => {
                     // Non-fatal: log but do not rethrow.
                     console.warn(`[server] Could not delete temp xlsx ${stackedXlsxPath}:`, err.message);
+                });
+            }
+            if (pdfPath) {
+                fs.promises.unlink(pdfPath).catch((err) => {
+                    // Non-fatal: log but do not rethrow.
+                    console.warn(`[server] Could not delete temp pdf ${pdfPath}:`, err.message);
                 });
             }
         }
