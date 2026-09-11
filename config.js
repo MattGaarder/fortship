@@ -3,8 +3,8 @@ const PORT_CONFIG = {
         title: "Port of Fortaleza",
         image: "mucuripe.png",
         coordinates: {
-            lat: -3.7014,
-            lon: -38.4754
+            lat: -3.7176,
+            lon: -38.4975
         }
     },
 
@@ -12,8 +12,8 @@ const PORT_CONFIG = {
         title: "Port of Pecém",
         image: "pecem.png",
         coordinates: {
-            lat: -3.5447,
-            lon: -38.8183
+            lat: -3.533,
+            lon: -38.800
         }
     },
 
@@ -21,8 +21,8 @@ const PORT_CONFIG = {
         title: "Port of Vila do Conde",
         image: "vdc.png",
         coordinates: {
-            lat: -1.5445,
-            lon: -48.7539
+            lat: -1.53444,
+            lon: -48.74300
         }
     },
 
@@ -30,8 +30,8 @@ const PORT_CONFIG = {
         title: "Port of Mucuripe",
         image: "mucuripe-2.png",
         coordinates: {
-            lat: -3.7014,
-            lon: -38.4754
+            lat: -3.7176,
+            lon: -38.4975
         }
     },
 
@@ -39,8 +39,8 @@ const PORT_CONFIG = {
         title: "Port of Recife",
         image: "recife.png",
         coordinates: {
-            lat: -8.0476,
-            lon: -34.8770
+            lat: -8.0536,
+            lon: -34.8699
         }
     }
 };

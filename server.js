@@ -194,18 +194,8 @@ app.post(
     officeScriptCors,
     authenticateExcelRequest,
     async (req, res) => {
-
         const report = req.body;
-
-        // fs.writeFileSync(
-        //     path.join(__dirname, "debug-received-report.json"),
-        //     JSON.stringify(report, null, 2),
-        //     "utf8"
-        // );
-
         console.log("Received report:");
-        // console.log(JSON.stringify(report, null, 2));
-
         if (
             !isLineUpReport(report) &&
             !isBerthSailReport(report) &&
@@ -216,12 +206,10 @@ app.post(
                 message: "Invalid shipping report."
             });
         }
-
         let stackedXlsxPath = null;
         let pdfPath = null;
 
         try {
-
             const generators = {
                 "line-up": generateLineUpHtml,
                 "berth-sail": generateBerthSailHtml,
@@ -249,9 +237,7 @@ app.post(
                     ? await generator(report, weather, port)
                     : await generator(report);
 
-            // -------------------------------------------------
             // 1. Generate PDF attachment from the rendered HTML
-            // -------------------------------------------------
             let fileAttachments = [];
 
             const pdfAttachment = await createReportPdf({
@@ -270,11 +256,8 @@ app.post(
 
             console.log(`[server] PDF report ready: ${pdfAttachment.displayName}`);
 
-            // -------------------------------------------------
-            // 2. Line-Up only: generate standalone xlsx attachment
-            // from the calculated stackedData received from Office
-            // Script.  The original OneDrive workbook is not used.
-            // -------------------------------------------------
+            // 2. Line-Up only: generate standalone xlsx attachment from the calculated stackedData received from Office
+
             if (
                 report.reportType === "line-up" &&
                 Array.isArray(report.stackedData) &&

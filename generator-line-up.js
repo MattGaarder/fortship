@@ -88,134 +88,145 @@ function generateLineUpHtml(report, weather, port, { isPreview = false } = {}) {
             height: auto;
         }
 
-        /* Weather cards */
+        /* --------------------------------
+        WEATHER CARDS
+        -------------------------------- */
 
         .weather-card {
-            border: 1px solid #d1d5db;
-            background-color: #ffffff;
+            background: linear-gradient(
+                180deg,
+                #5fa9e6 0%,
+                #8fc9ee 48%,
+                #eaf6ff 100%
+            );
             overflow: hidden;
         }
 
+        /* Day / Night heading */
+
         .weather-card h3 {
             margin: 0;
-            padding: 10px 12px;
-            background-color: #EAEDF0;
-            border-bottom: 1px solid #d1d5db;
-            color: #1D4369;
+            padding: 12px 14px;
+            background: rgba(255, 255, 255, 0.18);
+            color: #ffffff;
             font-size: 12px;
             line-height: 1.2;
             font-weight: bold;
             text-align: left;
         }
 
-        .weather-icon {
-            display: block;
-            width: 100px;
-            height: 100px;
-            margin: 0 auto 10px auto;
-        }
-
-        .weather-temperature {
-            margin-bottom: 8px;
-            color: #1D4369;
-            font-size: 22px;
-            line-height: 1.1;
-            font-weight: bold;
-        }
-
-        .weather-value {
-            margin-bottom: 4px;
-            color: #111827;
-            font-size: 14px;
-            line-height: 1.4;
-        }
-
-        .weather-label {
-            color: #6b7280;
-            font-size: 12px;
-        }
+        /* Main weather "hero" */
 
         .weather-main {
-            padding: 10px;
+            padding: 18px 16px 16px;
         }
+
+        /* Temperature + icon are treated as one unit */
+
+        .weather-hero {
+            text-align: center;
+        }
+
+        .weather-hero table {
+            width: auto;
+            margin: 0 auto;
+        }
+
+        .weather-hero td {
+            vertical-align: middle;
+        }
+
+        /* Temperature */
 
         .weather-temperature {
             margin: 0;
-            color: #1D4369;
-            font-size: 26px;
-            line-height: 1.1;
+            color: #ffffff;
+            font-size: 34px;
+            line-height: 1;
             font-weight: bold;
+            white-space: nowrap;
         }
+
+        /* Weather icon */
 
         .weather-icon {
             display: block;
-            width: 50px;
-            height: 50px;
-            margin: 0;
+            width: 64px;
+            height: 64px;
+            margin: 0 0 0 8px;
         }
 
+        /* Description */
+
         .weather-condition {
-            margin-top: 6px;
-            color: #6b7280;
-            font-size: 12px;
+            margin-top: 8px;
+            color: #ffffff;
+            font-size: 13px;
             line-height: 1.2;
+            text-align: center;
             text-transform: capitalize;
         }
+
+        /* Weather statistics */
 
         .weather-stats-table {
             width: 100%;
             border-collapse: collapse;
-            border-top: 1px solid #d1d5db;
+            border: 0;
         }
 
         .weather-stats-table td {
             width: 50%;
-            padding: 8px 6px;
-            border-bottom: 1px solid #d1d5db;
+            padding: 10px 0px 0px 15px;
+            border: 0;
             vertical-align: top;
-        }
-
-        .weather-stats-table td:first-child {
-            border-right: 1px solid #d1d5db;
         }
 
         .weather-stat-label {
             display: block;
-            color: #6b7280;
+            color: rgba(255, 255, 255, 0.75);
             font-size: 10px;
             line-height: 1.2;
-
         }
 
         .weather-stat-value {
             display: block;
             margin-top: 2px;
-            color: #111827;
+            color: #ffffff;
             font-size: 12px;
             line-height: 1.3;
             font-weight: bold;
         }
 
+        /* Sunrise / sunset */
 
         .weather-sun {
-            display: flex;
-            justify-content: space-between;
-            gap: 10px;
-            padding-top: 10px;
-            padding-bottom: 10px;
+            display: table;
+            width: 100%;
+            padding: 12px 10px 14px;
         }
 
         .weather-sun > div {
-            flex: 1;
+            display: table-cell;
+            width: 50%;
             text-align: center;
         }
 
         .weather-sun strong {
             display: block;
             margin-top: 3px;
-            color: #1D4369;
+            color: #ffffff;
             font-size: 12px;
         }
+
+        .weather-card.night-card {
+            background: linear-gradient(
+                180deg,
+                #294b73 0%,
+                #426b92 50%,
+                #7897b5 100%
+            );
+        }        
 
 
 
@@ -511,7 +522,7 @@ function generateLineUpHtml(report, weather, port, { isPreview = false } = {}) {
             .weather-stats-table {
                 width: 100% !important;
                 border-collapse: collapse !important;
-                border-top: 1px solid #d1d5db !important;
+
             }
 
             .weather-stats-table td {
@@ -781,24 +792,24 @@ function generateLineUpHtml(report, weather, port, { isPreview = false } = {}) {
                             <!-- OVERVIEW -->
                             <div class="weather-section">
 
-                                <h2>Overview</h2>
-
-                                <!-- DESKTOP OVERVIEW -->
-                                <table
-                                    class="overview-desktop"
-                                    role="presentation"
-                                    width="100%"
-                                    cellpadding="0"
-                                    cellspacing="0"
-                                    border="0"
-                                >
-                                    <tr>
-
-                                        <!-- PORT -->
-                                        <td
-                                            width="50%"
-                                            valign="top"
-                                        >
+                            
+                            <!-- DESKTOP OVERVIEW -->
+                            <table
+                            class="overview-desktop"
+                            role="presentation"
+                            width="100%"
+                            cellpadding="0"
+                            cellspacing="0"
+                            border="0"
+                            >
+                            <tr>
+                            
+                            <!-- PORT -->
+                            <td
+                            width="50%"
+                            valign="top"
+                            >
+                            <h2>Overview</h2>
                                             <img
                                                 src="${isPreview
                                                     ? `/assets/ports/${port.image}`
@@ -816,50 +827,39 @@ function generateLineUpHtml(report, weather, port, { isPreview = false } = {}) {
                                         >
                                             <div class="weather-card">
                                                 <h3>Day</h3>
-                                                <div class="weather-main">
+                                                <div class="weather-hero">
                                                     <table
                                                         role="presentation"
-                                                        width="100%"
                                                         cellpadding="0"
                                                         cellspacing="0"
                                                         border="0"
                                                     >
                                                         <tr>
-                                                            <td
-                                                                width="60%"
-                                                                valign="middle"
-                                                                align="left"
-                                                            >
+
+                                                            <td valign="middle">
                                                                 <div class="weather-temperature">
                                                                     ${escapeHtml(weather.current.temperature)}°C
                                                                 </div>
                                                             </td>
 
-                                                            <td
-                                                                width="40%"
-                                                                valign="middle"
-                                                                align="right"
-                                                            >
+                                                            <td valign="middle">
                                                                 <img
                                                                     src="${isPreview
                                                                         ? `/assets/weather/${weather.current.icon}.png`
                                                                         : 'cid:weather-day-icon'}"
                                                                     class="weather-icon"
                                                                     alt="${escapeHtml(weather.current.condition)}"
-                                                                    width="50"
-                                                                    height="50"
+                                                                    width="64"
+                                                                    height="64"
                                                                 >
                                                             </td>
-                                                        </tr>
 
-                                                        <tr>
-                                                            <td colspan="2" align="left">
-                                                                <div class="weather-condition">
-                                                                    ${escapeHtml(weather.current.condition)}
-                                                                </div>
-                                                            </td>
                                                         </tr>
                                                     </table>
+
+                                                    <div class="weather-condition">
+                                                        ${escapeHtml(weather.current.condition)}
+                                                    </div>
 
                                                 </div>
                                                 <table
@@ -932,16 +932,13 @@ function generateLineUpHtml(report, weather, port, { isPreview = false } = {}) {
                                                                 ${escapeHtml(weather.current.clouds)}%
                                                             </span>
                                                         </td>
+
                                                     </tr>
                                                 </table>
                                                 <div class="weather-sun">
                                                     <div>
                                                         <span class="weather-stat-label">Sunrise</span>
                                                         <strong>${escapeHtml(weather.sunrise)}</strong>
-                                                    </div>
-                                                    <div>
-                                                        <span class="weather-stat-label">Sunset</span>
-                                                        <strong>${escapeHtml(weather.sunset)}</strong>
                                                     </div>
                                                 </div>
                                             </div>
@@ -951,56 +948,45 @@ function generateLineUpHtml(report, weather, port, { isPreview = false } = {}) {
                                             valign="top"
 
                                         >
-                                            <div class="weather-card">
+                                            <div class="weather-card night-card">
                                                 <h3>
                                                     Night
                                                     <span class="weather-time">21:00</span>
                                                 </h3>
-                                                <div class="weather-main">
+                                                <div class="weather-hero">
 
                                                     <table
                                                         role="presentation"
-                                                        width="100%"
                                                         cellpadding="0"
                                                         cellspacing="0"
                                                         border="0"
                                                     >
                                                         <tr>
-                                                            <td
-                                                                width="60%"
-                                                                valign="middle"
-                                                                align="left"
-                                                            >
+
+                                                            <td valign="middle">
                                                                 <div class="weather-temperature">
                                                                     ${escapeHtml(weather.night.temperature)}°C
                                                                 </div>
                                                             </td>
 
-                                                            <td
-                                                                width="40%"
-                                                                valign="middle"
-                                                                align="right"
-                                                            >
+                                                            <td valign="middle">
                                                                 <img
                                                                     src="${isPreview
                                                                         ? `/assets/weather/${weather.night.icon}.png`
                                                                         : 'cid:weather-night-icon'}"
                                                                     class="weather-icon"
                                                                     alt="${escapeHtml(weather.night.condition)}"
-                                                                    width="50"
-                                                                    height="50"
+                                                                    width="64"
+                                                                    height="64"
                                                                 >
                                                             </td>
-                                                        </tr>
 
-                                                        <tr>
-                                                            <td colspan="2" align="left">
-                                                                <div class="weather-condition">
-                                                                    ${escapeHtml(weather.night.condition)}
-                                                                </div>
-                                                            </td>
                                                         </tr>
                                                     </table>
+
+                                                    <div class="weather-condition">
+                                                        ${escapeHtml(weather.night.condition)}
+                                                    </div>
 
                                                 </div>
 
@@ -1076,6 +1062,12 @@ function generateLineUpHtml(report, weather, port, { isPreview = false } = {}) {
                                                         </td>
                                                     </tr>
                                                 </table>
+                                                <div class="weather-sun">
+                                                    <div>
+                                                        <span class="weather-stat-label">Sunset</span>
+                                                        <strong>${escapeHtml(weather.sunset)}</strong>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </td>
 
@@ -1313,7 +1305,7 @@ function generateLineUpHtml(report, weather, port, { isPreview = false } = {}) {
                                                         <tr>
                                                             <td colspan="2" align="left">
                                                                 <div class="weather-condition">
-                                                                    ${escapeHtml(weather.current.condition)}
+                                                                    ${escapeHtml(weather.night.condition)}
                                                                 </div>
                                                             </td>
                                                         </tr>

@@ -6,7 +6,8 @@
   "scripts": {
     "start": "node server.js",
     "generate:preview": "node generate-report.js",
-    "test": "node --check server.js && node --check auth.js && node --check graph.js && node --check mailer.js && node --check generator.js"
+    "test": "node --check server.js && node --check auth.js && node --check graph.js && node --check mailer.js && node --check generator.js",
+    "dev": "concurrently \"node server.js\" \"ngrok http 3000\""
   },
   "keywords": [],
   "author": "",
@@ -23,5 +24,8 @@
     "nodemailer": "^9.0.5",
     "puppeteer": "^25.9.0",
     "xlsx": "^0.18.5"
+  },
+  "devDependencies": {
+    "concurrently": "^10.0.5"
   }
 }
