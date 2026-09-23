@@ -228,386 +228,397 @@ function generateDailyReportHtml(
 </title>
 
 <style>
-
-body {
-    margin: 0;
-    padding: 0;
-    background: #D4DDE5;
-    font-family: Arial, Helvetica, sans-serif;
-}
-
-table {
-    border-collapse: collapse;
-}
-
-img {
-    max-width: 100%;
-    height: auto;
-}
-
-.email-container {
-    width: 100%;
-    max-width: 1300px;
-    margin: 0 auto;
-    background: #ffffff;
-}
-
-.balance-cell {
-    background-color: #FBCBC6 !important;
-}
-
-/* -------------------------------------------------------
-   HEADER
-------------------------------------------------------- */
-
-.report-header {
-    padding: 24px;
-    border-bottom: 1px solid #d1d5db;
-}
-
-.report-header h1 {
-    margin: 0;
-    font-size: 26px;
-    line-height: 1.2;
-}
-
-/* -------------------------------------------------------
-   DESKTOP REPORT
-------------------------------------------------------- */
-
-.desktop-report {
-    display: block;
-}
-
-.daily-section {
-    background-color: #D4DDE5;
-}
-
-.daily-table {
-    width: 100%;
-    border-collapse: collapse;
-    table-layout: fixed;
-}
-
-/* All table cells share the same spacing */
-
-.daily-table th,
-.daily-table td {
-    padding: 10px 8px 10px 30px;
-    overflow-wrap: break-word;
-    word-break: normal;
-    vertical-align: middle;
-    box-sizing: border-box;
-    text-align: left;
-}
-
-/* Blue column headings */
-
-.daily-table .column-heading th {
-    background-color: #1D4369;
-    color: #ffffff;
-    font-size: 12px;
-    line-height: 1.2;
-    font-weight: bold;
-}
-
-/* Normal cells */
-
-.daily-table td {
-    font-size: 13px;
-    line-height: 1.4;
-}
-
-/* Label cells */
-
-.daily-label {
-    font-weight: bold;
-    color: #1D4369;
-}
-
-
-/* -------------------------------------------------------
-   ETC/S
-------------------------------------------------------- */
-
-.etc-box {
-    width: 100%;
-    border-top: 1px solid #d1d5db;
-    border-collapse: collapse;
-}
-
-.etc-cell {
-    width: 25%;
-    padding: 0;
-    vertical-align: top;
-}
-
-.etc-spacer {
-    width: 75%;
-    padding: 0;
-}
-
-.etc-label {
-    display: block;
-    padding: 10px 0px;
-    background-color: #1D4369;
-    color: #ffffff;
-    font-size: 13px;
-    line-height: 1.4;
-    font-weight: bold;
-    text-align: center;
-}
-
-.etc-value {
-    display: block;
-    padding: 12px 0px;
-    background-color: #ffffff;
-    color: #C00000;
-    font-size: 16px;
-    line-height: 1.4;
-    font-weight: bold;
-    text-align: center;
-}
-/* -------------------------------------------------------
-   MOBILE REPORT
-------------------------------------------------------- */
-
-.mobile-report {
-    display: none;
-    width: 100%;
-}
-
-.mobile-section {
-    width: 100%;
-    margin: 0;
-    padding: 0;
-    background-color: #D4DDE5;
-}
-
-.mobile-section-title {
-    padding: 10px 18px;
-    background-color: #D4DDE5;
-    color: #1D4369;
-    font-size: 14px;
-    line-height: 1.3;
-    font-weight: bold;
-}
-
-.mobile-card {
-    width: 100%;
-    margin: 0;
-    border: 1px solid #d1d5db;
-    background-color: #ffffff;
-    box-sizing: border-box;
-}
-
-.mobile-card-header {
-    padding: 10px 18px;
-    background-color: #1D4369;
-    color: #ffffff;
-    font-size: 14px;
-    line-height: 1.4;
-    font-weight: bold;
-}
-
-.mobile-detail {
-    display: table;
-    width: 100%;
-    table-layout: fixed;
-    border-bottom: 1px solid #e5e7eb;
-    background-color: #ffffff;
-}
-
-.mobile-detail:last-child {
-    border-bottom: none;
-}
-
-.mobile-label,
-.mobile-value {
-    display: table-cell;
-    padding: 9px 12px;
-    font-size: 13px;
-    line-height: 1.4;
-    vertical-align: top;
-}
-
-.mobile-label {
-    width: 55%;
-    font-weight: bold;
-    color: #1D4369;
-}
-
-.mobile-value {
-    width: 45%;
-    overflow-wrap: break-word;
-}
-
-/* Balance rows */
-
-.mobile-balance {
-    background-color: #FBCBC6;
-}
-
-.mobile-balance .mobile-label {
-    color: #1D4369;
-}
-
-.mobile-balance .mobile-value {
-    font-weight: bold;
-}
-
-/* -------------------------------------------------------
-   MOBILE DISCHARGE SUMMARY
-------------------------------------------------------- */
-
-.mobile-discharge-summary {
-    width: 100%;
-    border: 1px solid #d1d5db;
-    background-color: #ffffff;
-    border-collapse: collapse;
-    table-layout: fixed;
-}
-
-.mobile-discharge-summary th,
-.mobile-discharge-summary td {
-    padding: 10px 18px;
-    font-size: 13px;
-    line-height: 1.4;
-    text-align: left;
-    vertical-align: middle;
-}
-
-.mobile-discharge-summary th {
-    background-color: #1D4369;
-    color: #ffffff;
-    font-size: 12px;
-    font-weight: bold;
-}
-
-.mobile-discharge-summary td {
-    background-color: #ffffff;
-}
-
-.mobile-discharge-summary .discharge-type {
-    width: 18%;
-    font-weight: bold;
-    color: #1D4369;
-}
-
-.mobile-discharge-summary td.balance-cell {
-    background-color: #FBCBC6 !important;
-    font-weight: bold;
-}
-
-/* -------------------------------------------------------
-   MOBILE DISCHARGE LOG
-------------------------------------------------------- */
-
-.mobile-discharge-card {
-    width: 100%;
-    border: 1px solid #d1d5db;
-    background-color: #ffffff;
-    box-sizing: border-box;
-}
-
-.mobile-discharge-card div {
-    display: table;
-    width: 100%;
-    table-layout: fixed;
-    box-sizing: border-box;
-    border-bottom: 1px solid #e5e7eb;
-}
-
-.mobile-discharge-card div:last-child {
-    border-bottom: none;
-}
-
-.mobile-discharge-card div:nth-child(even) {
-    background-color: #EAEDF0;
-}
-
-.mobile-discharge-label,
-.mobile-discharge-card div span:last-child {
-    display: table-cell;
-    vertical-align: middle;
-    padding-top: 9px;
-    padding-bottom: 9px;
-    font-size: 13px;
-    line-height: 1.4;
-}
-
-.mobile-discharge-label {
-    width: 45%;
-    padding-left: 18px;
-    padding-right: 9px;
-    font-weight: bold;
-    color: #1D4369;
-}
-
-.mobile-discharge-card div span:last-child {
-    width: 55%;
-    padding-left: 9px;
-    padding-right: 18px;
-    overflow-wrap: break-word;
-}
-
-/* -------------------------------------------------------
-   MOBILE ETC/S
-------------------------------------------------------- */
-
-.mobile-etc-card {
-    width: 100%;
-    margin: 0;
-    border: 1px solid #d1d5db;
-    background-color: #ffffff;
-    box-sizing: border-box;
-}
-
-.mobile-etc-header {
-    padding: 10px 18px;
-    background-color: #1D4369;
-    color: #ffffff;
-    font-size: 14px;
-    line-height: 1.4;
-    font-weight: bold;
-}
-
-.mobile-etc-value {
-    padding: 12px 18px;
-    background-color: #ffffff;
-    color: #C00000;
-    font-size: 17px;
-    line-height: 1.4;
-    font-weight: bold;
-}
-
-@media screen and (max-width: 600px) {
-
     body {
-        padding: 0 !important;
+            background: red !important;
+        }
+
+        .desktop-report {
+            display: none !important;
+        }
+
+        .mobile-report {
+            display: block !important;
     }
 
-    .email-container {
-        width: 100% !important;
-        max-width: 100% !important;
-    }
+// body {
+//     margin: 0;
+//     padding: 0;
+//     background: #D4DDE5;
+//     font-family: Arial, Helvetica, sans-serif;
+// }
 
-    .desktop-report {
-        display: none !important;
-    }
+// table {
+//     border-collapse: collapse;
+// }
 
-    .mobile-report {
-        display: block !important;
-    }
+// img {
+//     max-width: 100%;
+//     height: auto;
+// }
 
-    .report-header {
-        padding: 20px 16px !important;
-    }
+// .email-container {
+//     width: 100%;
+//     max-width: 1300px;
+//     margin: 0 auto;
+//     background: #ffffff;
+// }
 
-    .mobile-section {
-        padding: 0 !important;
-    }
-}
+// .balance-cell {
+//     background-color: #FBCBC6 !important;
+// }
+
+// /* -------------------------------------------------------
+//    HEADER
+// ------------------------------------------------------- */
+
+// .report-header {
+//     padding: 24px;
+//     border-bottom: 1px solid #d1d5db;
+// }
+
+// .report-header h1 {
+//     margin: 0;
+//     font-size: 26px;
+//     line-height: 1.2;
+// }
+
+// /* -------------------------------------------------------
+//    DESKTOP REPORT
+// ------------------------------------------------------- */
+
+// .desktop-report {
+//     display: block;
+// }
+
+// .daily-section {
+//     background-color: #D4DDE5;
+// }
+
+// .daily-table {
+//     width: 100%;
+//     border-collapse: collapse;
+//     table-layout: fixed;
+// }
+
+// /* All table cells share the same spacing */
+
+// .daily-table th,
+// .daily-table td {
+//     padding: 10px 8px 10px 30px;
+//     overflow-wrap: break-word;
+//     word-break: normal;
+//     vertical-align: middle;
+//     box-sizing: border-box;
+//     text-align: left;
+// }
+
+// /* Blue column headings */
+
+// .daily-table .column-heading th {
+//     background-color: #1D4369;
+//     color: #ffffff;
+//     font-size: 12px;
+//     line-height: 1.2;
+//     font-weight: bold;
+// }
+
+// /* Normal cells */
+
+// .daily-table td {
+//     font-size: 13px;
+//     line-height: 1.4;
+// }
+
+// /* Label cells */
+
+// .daily-label {
+//     font-weight: bold;
+//     color: #1D4369;
+// }
+
+
+// /* -------------------------------------------------------
+//    ETC/S
+// ------------------------------------------------------- */
+
+// .etc-box {
+//     width: 100%;
+//     border-top: 1px solid #d1d5db;
+//     border-collapse: collapse;
+// }
+
+// .etc-cell {
+//     width: 25%;
+//     padding: 0;
+//     vertical-align: top;
+// }
+
+// .etc-spacer {
+//     width: 75%;
+//     padding: 0;
+// }
+
+// .etc-label {
+//     display: block;
+//     padding: 10px 0px;
+//     background-color: #1D4369;
+//     color: #ffffff;
+//     font-size: 13px;
+//     line-height: 1.4;
+//     font-weight: bold;
+//     text-align: center;
+// }
+
+// .etc-value {
+//     display: block;
+//     padding: 12px 0px;
+//     background-color: #ffffff;
+//     color: #C00000;
+//     font-size: 16px;
+//     line-height: 1.4;
+//     font-weight: bold;
+//     text-align: center;
+// }
+// /* -------------------------------------------------------
+//    MOBILE REPORT
+// ------------------------------------------------------- */
+
+// .mobile-report {
+//     display: none;
+//     width: 100%;
+// }
+
+// .mobile-section {
+//     width: 100%;
+//     margin: 0;
+//     padding: 0;
+//     background-color: #D4DDE5;
+// }
+
+// .mobile-section-title {
+//     padding: 10px 18px;
+//     background-color: #D4DDE5;
+//     color: #1D4369;
+//     font-size: 14px;
+//     line-height: 1.3;
+//     font-weight: bold;
+// }
+
+// .mobile-card {
+//     width: 100%;
+//     margin: 0;
+//     border: 1px solid #d1d5db;
+//     background-color: #ffffff;
+//     box-sizing: border-box;
+// }
+
+// .mobile-card-header {
+//     padding: 10px 18px;
+//     background-color: #1D4369;
+//     color: #ffffff;
+//     font-size: 14px;
+//     line-height: 1.4;
+//     font-weight: bold;
+// }
+
+// .mobile-detail {
+//     display: table;
+//     width: 100%;
+//     table-layout: fixed;
+//     border-bottom: 1px solid #e5e7eb;
+//     background-color: #ffffff;
+// }
+
+// .mobile-detail:last-child {
+//     border-bottom: none;
+// }
+
+// .mobile-label,
+// .mobile-value {
+//     display: table-cell;
+//     padding: 9px 12px;
+//     font-size: 13px;
+//     line-height: 1.4;
+//     vertical-align: top;
+// }
+
+// .mobile-label {
+//     width: 55%;
+//     font-weight: bold;
+//     color: #1D4369;
+// }
+
+// .mobile-value {
+//     width: 45%;
+//     overflow-wrap: break-word;
+// }
+
+// /* Balance rows */
+
+// .mobile-balance {
+//     background-color: #FBCBC6;
+// }
+
+// .mobile-balance .mobile-label {
+//     color: #1D4369;
+// }
+
+// .mobile-balance .mobile-value {
+//     font-weight: bold;
+// }
+
+// /* -------------------------------------------------------
+//    MOBILE DISCHARGE SUMMARY
+// ------------------------------------------------------- */
+
+// .mobile-discharge-summary {
+//     width: 100%;
+//     border: 1px solid #d1d5db;
+//     background-color: #ffffff;
+//     border-collapse: collapse;
+//     table-layout: fixed;
+// }
+
+// .mobile-discharge-summary th,
+// .mobile-discharge-summary td {
+//     padding: 10px 18px;
+//     font-size: 13px;
+//     line-height: 1.4;
+//     text-align: left;
+//     vertical-align: middle;
+// }
+
+// .mobile-discharge-summary th {
+//     background-color: #1D4369;
+//     color: #ffffff;
+//     font-size: 12px;
+//     font-weight: bold;
+// }
+
+// .mobile-discharge-summary td {
+//     background-color: #ffffff;
+// }
+
+// .mobile-discharge-summary .discharge-type {
+//     width: 18%;
+//     font-weight: bold;
+//     color: #1D4369;
+// }
+
+// .mobile-discharge-summary td.balance-cell {
+//     background-color: #FBCBC6 !important;
+//     font-weight: bold;
+// }
+
+// /* -------------------------------------------------------
+//    MOBILE DISCHARGE LOG
+// ------------------------------------------------------- */
+
+// .mobile-discharge-card {
+//     width: 100%;
+//     border: 1px solid #d1d5db;
+//     background-color: #ffffff;
+//     box-sizing: border-box;
+// }
+
+// .mobile-discharge-card div {
+//     display: table;
+//     width: 100%;
+//     table-layout: fixed;
+//     box-sizing: border-box;
+//     border-bottom: 1px solid #e5e7eb;
+// }
+
+// .mobile-discharge-card div:last-child {
+//     border-bottom: none;
+// }
+
+// .mobile-discharge-card div:nth-child(even) {
+//     background-color: #EAEDF0;
+// }
+
+// .mobile-discharge-label,
+// .mobile-discharge-card div span:last-child {
+//     display: table-cell;
+//     vertical-align: middle;
+//     padding-top: 9px;
+//     padding-bottom: 9px;
+//     font-size: 13px;
+//     line-height: 1.4;
+// }
+
+// .mobile-discharge-label {
+//     width: 45%;
+//     padding-left: 18px;
+//     padding-right: 9px;
+//     font-weight: bold;
+//     color: #1D4369;
+// }
+
+// .mobile-discharge-card div span:last-child {
+//     width: 55%;
+//     padding-left: 9px;
+//     padding-right: 18px;
+//     overflow-wrap: break-word;
+// }
+
+// /* -------------------------------------------------------
+//    MOBILE ETC/S
+// ------------------------------------------------------- */
+
+// .mobile-etc-card {
+//     width: 100%;
+//     margin: 0;
+//     border: 1px solid #d1d5db;
+//     background-color: #ffffff;
+//     box-sizing: border-box;
+// }
+
+// .mobile-etc-header {
+//     padding: 10px 18px;
+//     background-color: #1D4369;
+//     color: #ffffff;
+//     font-size: 14px;
+//     line-height: 1.4;
+//     font-weight: bold;
+// }
+
+// .mobile-etc-value {
+//     padding: 12px 18px;
+//     background-color: #ffffff;
+//     color: #C00000;
+//     font-size: 17px;
+//     line-height: 1.4;
+//     font-weight: bold;
+// }
+
+// @media screen and (max-width: 600px) {
+
+//     body {
+//         padding: 0 !important;
+//     }
+
+//     .email-container {
+//         width: 100% !important;
+//         max-width: 100% !important;
+//     }
+
+//     .desktop-report {
+//         display: none !important;
+//     }
+
+//     .mobile-report {
+//         display: block !important;
+//     }
+
+//     .report-header {
+//         padding: 20px 16px !important;
+//     }
+
+//     .mobile-section {
+//         padding: 0 !important;
+//     }
+// }
 
 </style>
 </head>

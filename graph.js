@@ -112,6 +112,11 @@ async function createMicrosoftDraft({
     );
 
 
+    console.log("BEFORE GRAPH");
+    console.log("style:", html.includes("<style>"));
+    console.log("red:", html.includes("background: red"));
+    console.log("desktop:", html.includes(".desktop-report"));
+    console.log("mobile:", html.includes(".mobile-report"));
     const response = await fetch(
         "https://graph.microsoft.com/v1.0/me/messages",
         {
@@ -171,6 +176,12 @@ async function createMicrosoftDraft({
     }
 
     const data = await response.json();
+
+    console.log("AFTER GRAPH");
+    console.log("style:", data.body.content.includes("<style>"));
+    console.log("red:", data.body.content.includes("background: red"));
+    console.log("desktop:", data.body.content.includes(".desktop-report"));
+    console.log("mobile:", data.body.content.includes(".mobile-report"));
 
     console.log(
         "DEBUG: Created draft ID:",

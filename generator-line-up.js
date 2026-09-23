@@ -21,573 +21,578 @@ function generateLineUpHtml(report, weather, port, { isPreview = false } = {}) {
     <meta name="x-apple-disable-message-reformatting">
     <title>${escapeHtml(port.title)} — Line Up</title>
     <style>
-        /* --------------------------------
-        OVERVIEW
-        -------------------------------- */
-
-        .intro-section {
-            padding: 20px 24px;
-            border-bottom: 1px solid #d1d5db;
-            background-color: #ffffff;
-        }
-
-        .intro-section p {
-            margin: 0 0 10px 0;
-            font-size: 14px;
-            line-height: 1;
-            color: #111827;
-        }
-
-        .intro-section p:last-child {
-            margin-bottom: 0;
-        }
-
-        .weather-section {
-
-            background-color: #D4DDE5;
-        }
-
-        .weather-section h2 {
-            margin: 0;
-            padding: 10px 12px;
-            background-color: #1D4369;
-            color: #ffffff;
-            border: 1px solid #1D4369;
-            font-size: 12px;
-            line-height: 1.2;
-            font-weight: bold;
-            text-align: left;
-        }
-
-        /* Desktop overview */
-
-        .weather-time {
-            float: right;
-            color: #6b7280;
-            font-size: 11px;
-            font-weight: normal;
-        }
-
-        .overview-desktop {
-            width: 100%;
-            background-color: #D4DDE5;
-        }
-
-        /* Mobile overview is hidden by default */
-
-        .overview-mobile {
-            display: none;
-        }
-
-        /* Port image */
-
-        .port-image {
-            display: block;
-            width: 100%;
-            max-width: 100%;
-            height: auto;
-        }
-
-        /* --------------------------------
-        WEATHER CARDS
-        -------------------------------- */
-
-        .weather-card {
-            background: linear-gradient(
-                180deg,
-                #5fa9e6 0%,
-                #8fc9ee 48%,
-                #eaf6ff 100%
-            );
-            overflow: hidden;
-        }
-
-        /* Day / Night heading */
-
-        .weather-card h3 {
-            margin: 0;
-            padding: 12px 14px;
-            background: rgba(255, 255, 255, 0.18);
-            color: #ffffff;
-            font-size: 12px;
-            line-height: 1.2;
-            font-weight: bold;
-            text-align: left;
-        }
-
-        /* Main weather "hero" */
-
-        .weather-main {
-            padding: 18px 16px 16px;
-        }
-
-        /* Temperature + icon are treated as one unit */
-
-        .weather-hero {
-            text-align: center;
-        }
-
-        .weather-hero table {
-            width: auto;
-            margin: 0 auto;
-        }
-
-        .weather-hero td {
-            vertical-align: middle;
-        }
-
-        /* Temperature */
-
-        .weather-temperature {
-            margin: 0;
-            color: #ffffff;
-            font-size: 34px;
-            line-height: 1;
-            font-weight: bold;
-            white-space: nowrap;
-        }
-
-        /* Weather icon */
-
-        .weather-icon {
-            display: block;
-            width: 64px;
-            height: 64px;
-            margin: 0 0 0 8px;
-        }
-
-        /* Description */
-
-        .weather-condition {
-            margin-top: 8px;
-            color: #ffffff;
-            font-size: 13px;
-            line-height: 1.2;
-            text-align: center;
-            text-transform: capitalize;
-        }
-
-        /* Weather statistics */
-
-        .weather-stats-table {
-            width: 100%;
-            border-collapse: collapse;
-            border: 0;
-        }
-
-        .weather-stats-table td {
-            width: 50%;
-            padding: 10px 0px 0px 15px;
-            border: 0;
-            vertical-align: top;
-        }
-
-        .weather-stat-label {
-            display: block;
-            color: rgba(255, 255, 255, 0.75);
-            font-size: 10px;
-            line-height: 1.2;
-        }
-
-        .weather-stat-value {
-            display: block;
-            margin-top: 2px;
-            color: #ffffff;
-            font-size: 12px;
-            line-height: 1.3;
-            font-weight: bold;
-        }
-
-        /* Sunrise / sunset */
-
-        .weather-sun {
-            display: table;
-            width: 100%;
-            padding: 12px 10px 14px;
-        }
-
-        .weather-sun > div {
-            display: table-cell;
-            width: 50%;
-            text-align: center;
-        }
-
-        .weather-sun strong {
-            display: block;
-            margin-top: 3px;
-            color: #ffffff;
-            font-size: 12px;
-        }
-
-        .weather-card.night-card {
-            background: linear-gradient(
-                180deg,
-                #294b73 0%,
-                #426b92 50%,
-                #7897b5 100%
-            );
-        }        
-
-
-
-        body {
-            margin: 0;
-            padding: 0;
-            background: #D4DDE5;
-            font-family: Arial, Helvetica, sans-serif;
-        }
-
-        table {
-            border-collapse: collapse;
-        }
-
-        img {
-            max-width: 100%;
-            height: auto;
-        }
-        .email-container {
-            width: 100%;
-            max-width: 1300px;
-            margin: 0 auto;
-            background: #ffffff;
-        }
-        .report-header {
-            padding: 24px;
-            border-bottom: 1px solid #d1d5db;
-        }
-        .report-header h1 {
-            margin: 0;
-            font-size: 26px;
-            line-height: 1.2;
-        }
-        .report-header p {
-            margin: 6px 0 0;
-            font-size: 14px;
-            line-height: 1.4;
-        }
-        .berth-section {
-
-            padding-top: 12px;
-            padding-bottom: 12px;
-            background-color: #D4DDE5;
-
-        }
-        .berth-section h3 {
-            font-size: 13px;
-            line-height: 1;
-            margin: 0 0 12px 0;
-        }
-        .shipping-table {
-            width: 100%;
-            border-collapse: collapse;
-            table-layout: fixed;
-        }
-
-        .shipping-table .col-vessel {
-            width: 15%;
-        }
-
-        .shipping-table .col-time {
-            width: 10%;
-        }
-
-        .shipping-table .col-cargo {
-            width: 15%;
-        }
-
-        .shipping-table .col-quantity {
-            width: 9%;
-        }
-
-        .shipping-table .col-operation {
-            width: 9%;
-        }
-
-        .shipping-table .col-remarks {
-            width: 12%;
-        }
-
-        .shipping-table th,
-        .shipping-table td {
-            padding: 10px 8px;
-            overflow-wrap: break-word;
-            word-break: normal;
-            vertical-align: middle;
-        }
-
-        
-        .shipping-table .column-heading th {
-            padding: 10px 8px;
-            background-color: #1D4369;
-            color: #ffffff;
-            font-size: 12px;
-            line-height: 1.2;
-            font-weight: bold;
-            text-align: left;
-        }
-            
-        .shipping-table .berth-heading th {
-            background-color: #D4DDE5;
-            color: #1D4369;
-            border: 1px solid #d1d5db;
-            border-bottom: none;
-            font-size: 13px;
-            line-height: 1.2;
-            font-weight: bold;
-            text-align: left;
-            padding: 10px 8px;
-        }
-
-        .shipping-table td {
-            padding: 10px 8px;
-            font-size: 13px;
-            line-height: 1.4;
-        }
-
-
-        /* --------------------------------
-        MOBILE VERSION
-        -------------------------------- */
-
-        .mobile-report {
-            display: none;
-        }
-
-        .mobile-report {
-            width: 100%;
-        }
-
-        .mobile-vessel-card {
-            width: 100%;
-            margin: 0px;
-            border: 1px solid #d1d5db;
-            background-color: #ffffff;
-            box-sizing: border-box;
-        }
-
-        .mobile-vessel-name {
-            padding: 10px 18px;
-            font-size: 14px;
-            line-height: 1.4;
-            font-weight: bold;
-            background-color: #1D4369;
-            color: #ffffff;
-        }
-
-        .mobile-detail {
-            padding: 10px 18px;
-            border-bottom: 1px solid #d1d5db;
-            background-color: #ffffff;
-        }
-
-        .mobile-detail:last-child {
-            border-bottom: none;
-        }
-
-        .mobile-detail-label {
-            display: block;
-            margin-bottom: 2px;
-            font-size: 9px;
-            line-height: 1;
-            font-weight: none;
-            color: #1D4369;
-
-        }
-
-        .mobile-detail-value {
-            display: block;
-            font-size: 14px;
-            line-height: 1.4;
-            color: #111827;
-        }
-
-        /* --------------------------------
-           RESPONSIVE RULES
-        -------------------------------- */
-
-        @media screen and (max-width: 600px) {
-
-            .intro-section {
-                padding: 16px !important;
-            }
-
-            .intro-section p {
-                font-size: 13px !important;
-            }
-
-            body {
-                padding: 0 !important;
-            }
-
-            .email-container {
-                width: 100% !important;
-                max-width: 100% !important;
-            }
-
-            .desktop-report {
-                display: none !important;
-            }
-
-            .mobile-report {
-                display: block !important;
-            }
-
-            .report-header {
-                padding: 20px 16px !important;
-            }
-
-            .report-header h1 {
-                font-size: 24px !important;
-            }
-
-            .berth-section {
-                padding: 0px !important;
-            }
-
-            .berth-section h3 {
-                margin: 0;
-                padding: 10px 18px;
-                background-color: #D4DDE5;
-                color: #1D4369;
-                border: 1px solid #d1d5db;
-                border-bottom: none;
-                font-size: 13px;
-                line-height: 1.2;
-                font-weight: bold;
-                text-align: left;
-            }
-
-
-            /* -------------------------------
-            MOBILE OVERVIEW
-            ------------------------------- */
-
-            .overview-desktop {
-                display: none !important;
-            }
-
-            .overview-mobile {
-                display: table !important;
-                width: 100% !important;
-            }
-
-            .weather-card {
-                width: 100% !important;
-                border: 1px solid #d1d5db !important;
-                background-color: #ffffff !important;
-                box-sizing: border-box !important;
-                overflow: hidden !important;
-            }
-
-            .weather-card h3 {
-                margin: 0 !important;
-                padding: 10px 12px !important;
-                background-color: #EAEDF0 !important;
-                border-bottom: 1px solid #d1d5db !important;
-                color: #1D4369 !important;
-                font-size: 12px !important;
-                line-height: 1.2 !important;
-                font-weight: bold !important;
-                text-align: left !important;
-            }
-
-            .weather-main {
-                padding: 12px !important;
-                text-align: center !important;
-            }
-
-            .weather-icon {
-                display: block !important;
-                width: 50px !important;
-                height: 50px !important;
-                margin: 0 auto 8px auto !important;
-            }
-
-            .weather-temperature {
-                margin-bottom: 6px !important;
-                color: #1D4369 !important;
-                font-size: 20px !important;
-                line-height: 1 !important;
-                font-weight: bold !important;
-            }
-
-            .weather-condition {
-                margin-top: 4px !important;
-                color: #6b7280 !important;
-                font-size: 11px !important;
-                line-height: 1.2 !important;
-                text-transform: capitalize !important;
-            }
-
-            .weather-stats-table {
-                width: 100% !important;
-                border-collapse: collapse !important;
-
-            }
-
-            .weather-stats-table td {
-                width: 50% !important;
-                padding: 7px 6px !important;
-                border-bottom: 1px solid #d1d5db !important;
-                vertical-align: top !important;
-            }
-
-            .weather-stat-label {
-                display: block !important;
-                color: #6b7280 !important;
-                font-size: 9px !important;
-                line-height: 1.2 !important;
-            }
-
-            .weather-stat-value {
-                display: block !important;
-                margin-top: 2px !important;
-                color: #111827 !important;
-                font-size: 11px !important;
-                line-height: 1.3 !important;
-                font-weight: bold !important;
-            }
-
-            .weather-sun {
-                display: table !important;
-                width: 100% !important;
-                padding: 7px 6px !important;
-            }
-
-            .weather-sun > div {
-                display: table-cell !important;
-                width: 50% !important;
-                text-align: center !important;
-                padding: 7px 6px !important;
-            }
-
-            .weather-sun strong {
-                display: block !important;
-                margin-top: 3px !important;
-                color: #1D4369 !important;
-                font-size: 11px !important;
-            }
-
-            .weather-stats-table td {
-                width: 50%;
-                padding: 7px 6px;
-                border-bottom: 1px solid #d1d5db;
-                vertical-align: top;
-            }
-
-            .mobile-weather-row > td {
-                display: table-cell !important;
-                width: 50% !important;
-                padding: 0 !important;
-                vertical-align: top !important;
-            }
-
-        }
+/* =====================================================
+   BASE
+===================================================== */
+
+body {
+    margin: 0;
+    padding: 0;
+    background: #ffffffff;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+table {
+    border-collapse: collapse;
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+}
+
+.email-container {
+    width: 100%;
+    max-width: 1300px;
+    margin: 0 auto;
+    background: #ffffff;
+}
+
+
+/* =====================================================
+   HEADER
+===================================================== */
+
+.report-header {
+    padding: 10px 0px 10px 10px;
+}
+
+.report-header h1 {
+    margin: 0;
+    font-size: 12px;
+    line-height: 1.2;
+}
+
+.intro-section p {
+    margin: 0 0 4px 0;
+    padding: 0;
+    font-size: 12px;
+    line-height: 1.2;
+    
+}
+
+.intro-section {
+    padding: 0px;
+    margin-top: 50px;
+}
+
+
+/* =====================================================
+   DESKTOP LINE-UP
+===================================================== */
+
+.desktop-report {
+    display: block !important;
+}
+
+.shipping-table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+}
+
+/* EXACTLY the same cell spacing as the original */
+.shipping-table th,
+.shipping-table td {
+    padding: 6px 0px 6px 10px;
+    overflow-wrap: break-word;
+    word-break: normal;
+    vertical-align: middle;
+    box-sizing: border-box;
+    text-align: left;
+}
+
+/* Desktop body cells */
+.shipping-table td {
+    font-size: 10px;
+    line-height: 1;
+}
+
+/* Column headings */
+.shipping-table .column-heading th {
+    font-size: 10px;
+    line-height: 1;
+    background-color: #1D4369;
+    color: white;
+}
+
+
+.shipping-table .berth-heading th {
+    background-color: #D4DDE5;
+    color: #1D4369;
+    font-size: 10px;
+    line-height: 1;
+    font-weight: bold;
+    text-align: left;
+}
+
+/* Vessel name */
+
+.shipping-table .vessel-name {
+    font-weight: bold;
+    color: #1D4369;
+}
+
+/* Time columns */
+
+.shipping-table .col-time-cell {
+    text-align: left;
+    padding-left: 8px;
+    padding-right: 8px;
+}
+
+/* Quantity / operation */
+
+.shipping-table .operation-cell {
+    text-align: left;
+    padding-left: 8px;
+    padding-right: 8px;
+}
+
+/* Berth heading */
+
+
+
+
+/* =====================================================
+   MOBILE LINE-UP
+===================================================== */
+
+.mobile-report {
+    display: none !important;
+    width: 100%;
+}
+
+.berth-section {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    background-color: #D4DDE5;
+}
+
+/* EXACTLY the original mobile section title */
+
+.berth-section h3 {
+    margin: 0;
+    padding: 10px 18px;
+    background-color: #D4DDE5;
+    color: #1D4369;
+    font-size: 14px;
+    line-height: 1.3;
+    font-weight: bold;
+}
+
+.mobile-vessel-card {
+    width: 100%;
+    margin: 0;
+    border: 1px solid #d1d5db;
+    background-color: #ffffff;
+    box-sizing: border-box;
+}
+
+/* Vessel name/header */
+
+.mobile-vessel-name {
+    padding: 10px 18px;
+    background-color: #1D4369;
+    color: #ffffff;
+    font-size: 14px;
+    line-height: 1.4;
+    font-weight: bold;
+}
+
+/* Detail rows */
+
+.mobile-detail {
+    display: table;
+    width: 100%;
+    table-layout: fixed;
+    border-bottom: 1px solid #e5e7eb;
+    background-color: #ffffff;
+    box-sizing: border-box;
+}
+
+.mobile-detail:last-child {
+    border-bottom: none;
+}
+
+.mobile-detail-label,
+.mobile-detail-value {
+    display: table-cell;
+    padding: 9px 12px;
+    font-size: 13px;
+    line-height: 1.4;
+    vertical-align: top;
+}
+
+.mobile-detail-label {
+    width: 55%;
+    font-weight: bold;
+    color: #1D4369;
+    text-align: left;
+}
+
+.mobile-detail-value {
+    width: 45%;
+    text-align: right;
+    overflow-wrap: break-word;
+}
+
+/* =====================================================
+   OVERVIEW
+===================================================== */
+
+.weather-section {
+    background-color: #ffffffff;
+}
+
+/*
+   Important:
+   the HTML parser inserts <tbody> into the overview table,
+   so don't rely on "> tr > td".
+*/
+
+.overview-desktop {
+    display: table !important;
+    width: 100%;
+    table-layout: fixed;
+}
+
+.overview-desktop td {
+    padding: 0px;
+    vertical-align: top;
+}
+
+.overview-desktop h2 {
+    margin: 0;
+    padding: 6px 0px 6px 10px;
+    color: #fff;
+    font-size: 10px;
+    line-height: 1.2;
+    background-color: #1D4369;
+}
+
+.overview-mobile {
+    display: none !important;
+}
+
+.port-image {
+    display: block;
+    width: 100%;
+    height: auto;
+}
+
+.weather-card {
+    background-color: #ffffff;
+    color: #000000;
+    box-sizing: border-box;
+}
+
+.weather-card h3 {
+    margin: 0;
+    padding: 7px 6px;
+    background-color: #1D4369;
+    color: #ffffff;
+    font-size: 10px;
+    line-height: 1;
+    font-weight: bold;
+    text-align: left;
+}
+
+.weather-time {
+    float: right;
+    font-size: 10px;
+    font-weight: normal;
+    line-height: 1;
+}
+
+/* Main temperature / condition area */
+
+.weather-hero,
+.weather-main {
+    background-color: #ffffff;
+    color: #000000;
+}
+
+.weather-hero {
+    padding: 6px 10px;
+    text-align: left;
+}
+
+.weather-temperature {
+    font-size: 16px;
+    line-height: 1.2;
+    font-weight: bold;
+    color: #1D4369;
+}
+
+.weather-icon {
+    display: block;
+}
+
+.weather-condition {
+    margin: 2px 0 0 0;
+    color: #000000;
+    font-size: 10px;
+    line-height: 1.2;
+}
+
+/* Weather statistics */
+
+.weather-stats-table {
+    width: 100%;
+    margin: 0;
+    background-color: #ffffff;
+    color: #000000;
+}
+
+.weather-stats-table td {
+    width: 50%;
+    padding: 6px 10px;
+    border: 0;
+    vertical-align: top;
+    font-size: 10px;
+    line-height: 1.2;
+}
+
+/* Alternating weather rows */
+.weather-stats-table tr:nth-child(even) td {
+    background-color: #EAEDF0;
+}
+
+.weather-stat-label {
+    display: block;
+    color: #1D4369;
+    font-size: 10px;
+    line-height: 1.2;
+    font-weight: bold;
+}
+
+.weather-stat-value {
+    display: block;
+    color: #000000;
+    font-size: 10px;
+    line-height: 1.2;
+    font-weight: normal;
+}
+
+/* Sunrise / sunset */
+
+.weather-sun-table {
+    width: 100%;
+    margin: 0;
+    background-color: #ffffff;
+}
+
+.weather-sun-table td {
+    padding: 6px 10px;
+    border: 0;
+    background-color: #EAEDF0;
+    text-align: left;
+}
+
+.weather-sun-label {
+    color: #1D4369;
+    font-size: 10px;
+    line-height: 1.2;
+    font-weight: bold;
+}
+
+.weather-sun-value {
+    display: inline;
+    margin-left: 6px;
+    color: #000000;
+    font-size: 10px;
+    line-height: 1.2;
+    font-weight: normal;
+}
+
+
+/* =====================================================
+   MOBILE RESPONSIVENESS
+===================================================== */
+
+@media only screen and (max-width: 600px) {
+
+    body {
+        padding: 0 !important;
+    }
+
+    .email-container {
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+
+
+    /* Switch Line-Up */
+
+    .desktop-report {
+        display: none !important;
+    }
+
+    .mobile-report {
+        display: block !important;
+    }
+
+
+    /* Switch Overview */
+
+    .overview-desktop {
+        display: none !important;
+    }
+
+    .overview-mobile {
+        display: table !important;
+        width: 100% !important;
+        table-layout: fixed !important;
+    }
+
+    .report-header {
+        padding: 0px 10px 10px 10px;
+        border-bottom: 1px solid #d1d5db;
+    }
+
+    .report-header h1 {
+        margin: 0;
+        font-size: 12px;
+        line-height: 1.2;
+    }
+
+
+    /* Mobile report */
+
+    .berth-section {
+        padding: 0 !important;
+    }
+
+    .berth-section h3 {
+        padding: 10px 18px;
+    }
+
+    .mobile-vessel-name {
+        padding: 10px 18px;
+    }
+
+    .mobile-detail-label,
+    .mobile-detail-value {
+        padding: 9px 12px;
+    }
+
+
+    /* Mobile overview */
+
+    .overview-mobile .port-image {
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+
+    .overview-mobile .weather-card {
+        width: 100%;
+    }
+
+    .overview-mobile .weather-temperature {
+        font-size: 24px;
+    }
+
+    .overview-mobile .weather-condition {
+        font-size: 12px;
+    }
+
+    .overview-mobile .weather-stat-label {
+        font-size: 10px;
+    }
+
+    .overview-mobile .weather-stat-value {
+        font-size: 12px;
+    }
+}
     </style>
+
 </head>
 
 <body>
 
+
+    <!-- =====================================================
+         INTRO + LOGO — outside .email-container so the logo
+         can bleed to the full viewport width (issue 10)
+    ====================================================== -->
+    <table
+        role="presentation"
+        width="100%"
+        cellpadding="0"
+        cellspacing="0"
+        border="0"
+        style="background-color:#ffffff;"
+    >
+        <tr>
+            <td style="padding: 16px 0px 10px 0px; vertical-align: top;">
+
+                <table
+                    role="presentation"
+                    width="100%"
+                    cellpadding="0"
+                    cellspacing="0"
+                    border="0"
+                >
+                    <tr>
+                        <td
+                            valign="top"
+                            style="padding: 0px 0px 0px 10px;
+                                vertical-align: top;
+                                font-size: 12px;
+                                margin: 0;
+                                line-height: 1;"
+                        >
+
+                            <!-- Logo floats over the right side -->
+                            <img
+                                src="${isPreview
+                                    ? '/assets/Logo-Claro-Fortship.png'
+                                    : 'cid:company-logo'}"
+                                class="logo-img"
+                                alt="Fortship Logo"
+                                width="280"
+                                style="
+                                    display:block;
+                                    float:right;
+                                    width: 280px;
+                                    max-width:none;
+                                    height:auto;
+                                    margin: 0 0 0px 0px;
+                                "
+                            >
+
+                            <div class="intro-section">
+                                <p>Dear All,</p>
+
+                                <p>
+                                    Please find below the latest line-up for the
+                                    <strong>${escapeHtml(port.title)}</strong>,
+                                    provided for your reference and guidance.
+                                </p>
+
+                                <p>
+                                    Kindly note that the information contained
+                                    in this line-up is subject to change without
+                                    prior notice and is based on AGW/WP.
+                                </p>
+                            </div>
+
+                            <!-- Clear the float -->
+                            <div style="clear:both;"></div>
+
+                        </td>
+                    </tr>
+                </table>
+
+            </td>
+        </tr>
+    </table>
+
+    <!-- =====================================================
+         MAIN REPORT TABLE
+    ====================================================== -->
     <table
         role="presentation"
         width="100%"
@@ -607,94 +612,39 @@ function generateLineUpHtml(report, weather, port, { isPreview = false } = {}) {
                     class="email-container"
                 >
 
-                    <!-- INTRODUCTION -->
+                    <!-- HEADER (title only — logo is above) -->
                     <tr>
                         <td>
-                            <div class="intro-section">
-
-                                <p>Dear All,</p>
-
-                                <p>
-                                    Please find below the latest line-up for the
-                                    <strong>${escapeHtml(port.title)}</strong>,
-                                    provided for your reference and guidance.
-                                </p>
-
-                                <p>
-                                    Kindly note that the information contained
-                                    in this line-up is subject to change without
-                                    prior notice and is based on AGW/WP.
-                                </p>
-
-                            </div>
-                        </td>
-                    </tr>
-
-                    <!-- HEADER + REPORT -->
-                    <tr>
-                        <td>
-
                             <div class="report-header">
-                                <table
-                                    width="100%"
-                                    border="0"
-                                    cellpadding="0"
-                                    cellspacing="0"
-                                >
-                                    <tr>
-                                        <td align="left" valign="middle">
-                                            <h1>
-                                                ${escapeHtml(port.title)} Line Up
-                                            </h1>
-                                        </td>
-
-                                        <td align="right" valign="middle">
-                                            <img
-                                                src="${isPreview
-                                                    ? '/assets/bf-fortship-1_1.png'
-                                                    : 'cid:company-logo'}"
-                                                alt="Fortship Logo"
-                                                style="max-height: 60px;"
-                                            >
-                                        </td>
-                                    </tr>
-                                </table>
+                                <h1>${escapeHtml(port.title)} Line Up</h1>
                             </div>
 
-                            <!-- DESKTOP REPORT -->
+                            <!-- DESKTOP REPORT — shown by default (issue 11 fallback) -->
+                            <!-- inline style ensures non-media-query clients always see desktop -->
                             <div class="desktop-report">
-                        `;
-                                for (const berth of report.berths) {
-                                html += `
-                                    <table class="shipping-table" width="100%" cellpadding="0" cellspacing="0" border="0">
+                                <table class="shipping-table" width="100%" cellpadding="0" cellspacing="0" border="0">
 
                                     <colgroup>
-                                        <col class="col-vessel">
-                                        <col class="col-time">
-                                        <col class="col-time">
-                                        <col class="col-time">
-                                        <col class="col-time">
-                                        <col class="col-cargo">
-                                        <col class="col-quantity">
-                                        <col class="col-operation">
-                                        <col class="col-remarks">
+                                        <col style="width: 16%;" class="col-vessel">
+                                        <col style="width: 9%;" class="col-time">
+                                        <col style="width: 9%;" class="col-time">
+                                        <col style="width: 9%;" class="col-time">
+                                        <col style="width: 9%;" class="col-time">
+                                        <col style="width: 15%;" class="col-cargo">
+                                        <col style="width: 10%;" class="col-quantity">
+                                        <col style="width: 10%;" class="col-operation">
+                                        <col style="width: 13%;" class="col-remarks">
                                     </colgroup>
 
                                     <thead>
-                                        <tr class="berth-heading">
-                                            <th colspan="9">
-                                                ${escapeHtml(berth.name)}
-                                            </th>
-                                        </tr>
-
                                         <tr class="column-heading">
                                             <th>Vessel Name</th>
-                                            <th>ETA</th>
-                                            <th>ETB</th>
-                                            <th>ETC</th>
-                                            <th>ETD</th>
+                                            <th class="col-time-cell">ETA</th>
+                                            <th class="col-time-cell">ETB</th>
+                                            <th class="col-time-cell">ETC</th>
+                                            <th class="col-time-cell">ETD</th>
                                             <th>Cargo</th>
-                                            <th>Quantity</th>
+                                            <th class="operation-cell">Quantity</th>
                                             <th>Operation</th>
                                             <th>Remarks</th>
                                         </tr>
@@ -703,87 +653,93 @@ function generateLineUpHtml(report, weather, port, { isPreview = false } = {}) {
                                     <tbody>
                             `;
 
-                            for (const [i, vessel] of berth.vessels.entries()) {
-                                const rowBg = i % 2 === 0 ? "#ffffff" : "#EAEDF0";
+                            for (const berth of report.berths) {
 
                                 html += `
-                                    <tr style="background-color: ${rowBg};">
-                                        <td class="vessel-name">
-                                            ${escapeHtml(vessel.name)}
-                                        </td>
-                                        <td>${escapeHtml(vessel.eta)}</td>
-                                        <td>${escapeHtml(vessel.etb)}</td>
-                                        <td>${escapeHtml(vessel.etc)}</td>
-                                        <td>${escapeHtml(vessel.etd)}</td>
-                                        <td>${escapeHtml(vessel.cargo)}</td>
-                                        <td>${escapeHtml(vessel.quantity)}</td>
-                                        <td>${escapeHtml(vessel.operation)}</td>
-                                        <td>${escapeHtml(vessel.remarks)}</td>
+                                    <tr class="berth-heading">
+                                        <th colspan="9">
+                                            ${escapeHtml(berth.name)}
+                                        </th>
                                     </tr>
-                                `;
+                            `;
+
+                                for (const [i, vessel] of berth.vessels.entries()) {
+                                    const rowBg = i % 2 === 0 ? "#ffffff" : "#EAEDF0";
+
+                                    html += `
+                                        <tr style="background-color: ${rowBg};">
+                                            <td class="vessel-name">
+                                                ${escapeHtml(vessel.name)}
+                                            </td>
+                                            <td class="col-time-cell">${escapeHtml(vessel.eta)}</td>
+                                            <td class="col-time-cell">${escapeHtml(vessel.etb)}</td>
+                                            <td class="col-time-cell">${escapeHtml(vessel.etc)}</td>
+                                            <td class="col-time-cell">${escapeHtml(vessel.etd)}</td>
+                                            <td>${escapeHtml(vessel.cargo)}</td>
+                                            <td>${escapeHtml(vessel.quantity)}</td>
+                                            <td>${escapeHtml(vessel.operation)}</td>
+                                            <td>${escapeHtml(vessel.remarks)}</td>
+                                        </tr>
+                                    `;
+                                }
                             }
 
                             html += `
                                     </tbody>
                                 </table>
-                            `;
-                        }
-    html += `
                             </div>
-                            <!-- MOBILE REPORT -->
+
+                            <!-- MOBILE REPORT — hidden by default (issue 11 fallback) -->
+                            <!-- inline style hides it; @media overrides to display:block on small screens -->
                             <div class="mobile-report">
-`;
-    for (const berth of report.berths) {
+                            `;
+
+                            for (const berth of report.berths) {
+    html += `
+        <div class="berth-section">
+            <h3>${escapeHtml(berth.name)}</h3>
+    `;
+
+    for (const vessel of berth.vessels) {
         html += `
-            <div class="berth-section">
-                <h3>${escapeHtml(berth.name)}</h3>
+            <div class="mobile-vessel-card">
+                <div class="mobile-vessel-name">
+                    ${escapeHtml(vessel.name)}
+                </div>
         `;
-        for (const vessel of berth.vessels) {
+
+        const details = [
+            ["ETA", vessel.eta],
+            ["ETB", vessel.etb],
+            ["ETC", vessel.etc],
+            ["ETD", vessel.etd],
+            ["Cargo", vessel.cargo],
+            ["Quantity", vessel.quantity],
+            ["Operation", vessel.operation],
+            ["Remarks", vessel.remarks]
+        ];
+
+        details.forEach(([label, value], index) => {
+            const rowBg = index % 2 === 0 ? "#ffffff" : "#EAEDF0";
+
             html += `
-                <div class="mobile-vessel-card">
-                    <div class="mobile-vessel-name">
-                        ${escapeHtml(vessel.name)}
-                    </div>
-                    <div class="mobile-detail">
-                        <span class="mobile-detail-label">ETA</span>
-                        <span class="mobile-detail-value">${escapeHtml(vessel.eta)}</span>
-                    </div>
-                    <div class="mobile-detail">
-                        <span class="mobile-detail-label">ETB</span>
-                        <span class="mobile-detail-value">${escapeHtml(vessel.etb)}</span>
-                    </div>
-                    <div class="mobile-detail">
-                        <span class="mobile-detail-label">ETC</span>
-                        <span class="mobile-detail-value">${escapeHtml(vessel.etc)}</span>
-                    </div>
-                    <div class="mobile-detail">
-                        <span class="mobile-detail-label">ETD</span>
-                        <span class="mobile-detail-value">${escapeHtml(vessel.etd)}</span>
-                    </div>
-                    <div class="mobile-detail">
-                        <span class="mobile-detail-label">Cargo</span>
-                        <span class="mobile-detail-value">${escapeHtml(vessel.cargo)}</span>
-                    </div>
-                    <div class="mobile-detail">
-                        <span class="mobile-detail-label">Quantity</span>
-                        <span class="mobile-detail-value">${escapeHtml(vessel.quantity)}</span>
-                    </div>
-                    <div class="mobile-detail">
-                        <span class="mobile-detail-label">Operation</span>
-                        <span class="mobile-detail-value">${escapeHtml(vessel.operation)}</span>
-                    </div>
-                    <div class="mobile-detail">
-                        <span class="mobile-detail-label">Remarks</span>
-                        <span class="mobile-detail-value">${escapeHtml(vessel.remarks)}</span>
-                    </div>
+                <div class="mobile-detail" style="background-color: ${rowBg};">
+                    <span class="mobile-detail-label">${label}</span>
+                    <span class="mobile-detail-value">${escapeHtml(value)}</span>
                 </div>
             `;
-        }
+        });
+
         html += `
             </div>
         `;
     }
+
     html += `
+        </div>
+    `;
+}
+                            html += `
                             </div>
                         </td>
                     </tr>
@@ -793,23 +749,23 @@ function generateLineUpHtml(report, weather, port, { isPreview = false } = {}) {
                             <div class="weather-section">
 
                             
-                            <!-- DESKTOP OVERVIEW -->
-                            <table
-                            class="overview-desktop"
-                            role="presentation"
-                            width="100%"
-                            cellpadding="0"
-                            cellspacing="0"
-                            border="0"
-                            >
-                            <tr>
-                            
-                            <!-- PORT -->
-                            <td
-                            width="50%"
-                            valign="top"
-                            >
-                            <h2>Overview</h2>
+                                <!-- DESKTOP OVERVIEW -->
+                                <table
+                                class="overview-desktop"
+                                role="presentation"
+                                width="100%"
+                                cellpadding="0"
+                                cellspacing="0"
+                                border="0"
+                                >
+                                <tr>
+                                    
+                                    <!-- PORT -->
+                                    <td
+                                    width="50%"
+                                    valign="top"
+                                    >
+                                        <h2>Overview</h2>
                                             <img
                                                 src="${isPreview
                                                     ? `/assets/ports/${port.image}`
@@ -864,20 +820,23 @@ function generateLineUpHtml(report, weather, port, { isPreview = false } = {}) {
                                                 </div>
                                                 <table
                                                     class="weather-stats-table"
+                                                    align="center"
                                                     role="presentation"
+                                                    width="90%"
                                                     cellpadding="0"
                                                     cellspacing="0"
                                                     border="0"
+                                                   
                                                 >
                                                     <tr>
-                                                        <td>
+                                                        <td >
                                                             <span class="weather-stat-label">Humidity</span>
                                                             <span class="weather-stat-value">
                                                                 ${escapeHtml(weather.current.humidity)}%
                                                             </span>
                                                         </td>
 
-                                                        <td>
+                                                        <td >
                                                             <span class="weather-stat-label">Wind</span>
                                                             <span class="weather-stat-value">
                                                                 ${escapeHtml(weather.current.windDirection)}
@@ -919,14 +878,14 @@ function generateLineUpHtml(report, weather, port, { isPreview = false } = {}) {
                                                     </tr>
 
                                                     <tr>
-                                                        <td>
+                                                        <td style="width: 50%; padding: 1px 0px 13px 12px; border: 0; vertical-align: top;">
                                                             <span class="weather-stat-label">Pressure</span>
                                                             <span class="weather-stat-value">
                                                                 ${escapeHtml(weather.current.pressure)} hPa
                                                             </span>
                                                         </td>
 
-                                                        <td>
+                                                        <td style="width: 50%; padding: 1px 0px 13px 12px; border: 0; vertical-align: top;">
                                                             <span class="weather-stat-label">Cloud cover</span>
                                                             <span class="weather-stat-value">
                                                                 ${escapeHtml(weather.current.clouds)}%
@@ -935,12 +894,24 @@ function generateLineUpHtml(report, weather, port, { isPreview = false } = {}) {
 
                                                     </tr>
                                                 </table>
-                                                <div class="weather-sun">
-                                                    <div>
-                                                        <span class="weather-stat-label">Sunrise</span>
-                                                        <strong>${escapeHtml(weather.sunrise)}</strong>
-                                                    </div>
-                                                </div>
+                                                <!-- Sunrise (Day card only) — HTML table for Outlook centering (issue 2) -->
+                                                <table
+                                                    class="weather-sun-table"
+                                                    align="center"
+                                                    role="presentation"
+                                                    width="90%"
+                                                    cellpadding="0"
+                                                    cellspacing="0"
+                                                    border="0"
+                                                    style="width:90%; margin:6px auto 12px; background-color:#2d5882;"
+                                                >
+                                                    <tr>
+                                                        <td align="center" style="width:100%; text-align:center; padding:8px 4px;">
+                                                            <span class="weather-sun-label">Sunrise</span>
+                                                            <span class="weather-sun-value">${escapeHtml(weather.sunrise)}</span>
+                                                        </td>
+                                                    </tr>
+                                                </table>
                                             </div>
                                         </td>
                                         <td
@@ -992,10 +963,13 @@ function generateLineUpHtml(report, weather, port, { isPreview = false } = {}) {
 
                                                 <table
                                                     class="weather-stats-table"
+                                                    align="center"
                                                     role="presentation"
+                                                    width="90%"
                                                     cellpadding="0"
                                                     cellspacing="0"
                                                     border="0"
+                                                   
                                                 >
                                                     <tr>
                                                         <td>
@@ -1047,14 +1021,14 @@ function generateLineUpHtml(report, weather, port, { isPreview = false } = {}) {
                                                     </tr>
 
                                                     <tr>
-                                                        <td>
+                                                        <td style="width: 50%; padding: 1px 0px 13px 12px; border: 0; vertical-align: top;">
                                                             <span class="weather-stat-label">Pressure</span>
                                                             <span class="weather-stat-value">
                                                                 ${escapeHtml(weather.night.pressure)} hPa
                                                             </span>
                                                         </td>
 
-                                                        <td>
+                                                        <td style="width: 50%; padding: 1px 0px 13px 12px; border: 0; vertical-align: top;">
                                                             <span class="weather-stat-label">Cloud cover</span>
                                                             <span class="weather-stat-value">
                                                                 ${escapeHtml(weather.night.clouds)}%
@@ -1062,12 +1036,24 @@ function generateLineUpHtml(report, weather, port, { isPreview = false } = {}) {
                                                         </td>
                                                     </tr>
                                                 </table>
-                                                <div class="weather-sun">
-                                                    <div>
-                                                        <span class="weather-stat-label">Sunset</span>
-                                                        <strong>${escapeHtml(weather.sunset)}</strong>
-                                                    </div>
-                                                </div>
+                                                <!-- Sunset (Night card only) — HTML table for Outlook centering (issue 2) -->
+                                                <table
+                                                    class="weather-sun-table"
+                                                    align="center"
+                                                    role="presentation"
+                                                    width="90%"
+                                                    cellpadding="0"
+                                                    cellspacing="0"
+                                                    border="0"
+                                                    style="width:90%; margin:6px auto 12px; background-color:#2d5882;"
+                                                >
+                                                    <tr>
+                                                        <td align="center" style="width:100%; text-align:center; padding:8px 4px;">
+                                                            <span class="weather-sun-label">Sunset</span>
+                                                            <span class="weather-sun-value">${escapeHtml(weather.sunset)}</span>
+                                                        </td>
+                                                    </tr>
+                                                </table>
                                             </div>
                                         </td>
 
@@ -1167,20 +1153,23 @@ function generateLineUpHtml(report, weather, port, { isPreview = false } = {}) {
 
                                                 <table
                                                     class="weather-stats-table"
+                                                    align="center"
                                                     role="presentation"
+                                                    width="90%"
                                                     cellpadding="0"
                                                     cellspacing="0"
                                                     border="0"
+                                                    
                                                 >
                                                     <tr>
-                                                        <td style="width: 50%; padding: 7px 6px; border-bottom: 1px solid #d1d5db; vertical-align: top;">
+                                                        <td>
                                                             <span class="weather-stat-label">Humidity</span>
                                                             <span class="weather-stat-value">
                                                                 ${escapeHtml(weather.current.humidity)}%
                                                             </span>
                                                         </td>
 
-                                                        <td style="width: 50%; padding: 7px 6px; border-bottom: 1px solid #d1d5db; vertical-align: top;">
+                                                        <td>
                                                             <span class="weather-stat-label">Wind</span>
                                                             <span class="weather-stat-value">
                                                                 ${escapeHtml(weather.current.windDirection)}
@@ -1190,14 +1179,14 @@ function generateLineUpHtml(report, weather, port, { isPreview = false } = {}) {
                                                     </tr>
 
                                                     <tr>
-                                                        <td style="width: 50%; padding: 7px 6px; border-bottom: 1px solid #d1d5db; vertical-align: top;">
+                                                        <td>
                                                             <span class="weather-stat-label">Rain</span>
                                                             <span class="weather-stat-value">
                                                                 ${escapeHtml(weather.current.rainChance)}%
                                                             </span>
                                                         </td>
 
-                                                        <td style="width: 50%; padding: 7px 6px; border-bottom: 1px solid #d1d5db; vertical-align: top;">
+                                                        <td>
                                                             <span class="weather-stat-label">Visibility</span>
                                                             <span class="weather-stat-value">
                                                                 ${escapeHtml(weather.current.visibility)} km
@@ -1206,14 +1195,14 @@ function generateLineUpHtml(report, weather, port, { isPreview = false } = {}) {
                                                     </tr>
 
                                                     <tr>
-                                                        <td style="width: 50%; padding: 7px 6px; border-bottom: 1px solid #d1d5db; vertical-align: top;">
+                                                        <td>
                                                             <span class="weather-stat-label">Feels like</span>
                                                             <span class="weather-stat-value">
                                                                 ${escapeHtml(weather.current.feelsLike)}°C
                                                             </span>
                                                         </td>
 
-                                                        <td style="width: 50%; padding: 7px 6px; border-bottom: 1px solid #d1d5db; vertical-align: top;">
+                                                        <td>
                                                             <span class="weather-stat-label">Wind gusts</span>
                                                             <span class="weather-stat-value">
                                                                 ${escapeHtml(weather.current.windGust ?? "—")} km/h
@@ -1222,14 +1211,14 @@ function generateLineUpHtml(report, weather, port, { isPreview = false } = {}) {
                                                     </tr>
 
                                                     <tr>
-                                                        <td style="width: 50%; padding: 7px 6px; border-bottom: 1px solid #d1d5db; vertical-align: top;">
+                                                        <td>
                                                             <span class="weather-stat-label">Pressure</span>
                                                             <span class="weather-stat-value">
                                                                 ${escapeHtml(weather.current.pressure)} hPa
                                                             </span>
                                                         </td>
 
-                                                        <td style="width: 50%; padding: 7px 6px; border-bottom: 1px solid #d1d5db; vertical-align: top;">
+                                                        <td>
                                                             <span class="weather-stat-label">Cloud cover</span>
                                                             <span class="weather-stat-value">
                                                                 ${escapeHtml(weather.current.clouds)}%
@@ -1238,19 +1227,24 @@ function generateLineUpHtml(report, weather, port, { isPreview = false } = {}) {
                                                     </tr>
                                                 </table>
 
-                                                <div class="weather-sun">
-
-                                                    <div>
-                                                        <span class="weather-stat-label">Sunrise</span>
-                                                        <strong>${escapeHtml(weather.sunrise)}</strong>
-                                                    </div>
-
-                                                    <div>
-                                                        <span class="weather-stat-label">Sunset</span>
-                                                        <strong>${escapeHtml(weather.sunset)}</strong>
-                                                    </div>
-
-                                                </div>
+                                                <!-- Mobile Day card: Sunrise only (issue 8) -->
+                                                <table
+                                                    class="weather-sun-table"
+                                                    align="center"
+                                                    role="presentation"
+                                                    width="90%"
+                                                    cellpadding="0"
+                                                    cellspacing="0"
+                                                    border="0"
+                                                   
+                                                >
+                                                    <tr>
+                                                        <td align="center" >
+                                                            <span class="weather-sun-label">Sunrise</span>
+                                                            <span class="weather-sun-value">${escapeHtml(weather.sunrise)}</span>
+                                                        </td>
+                                                    </tr>
+                                                </table>
 
                                             </div>
                                         </td>
@@ -1261,7 +1255,7 @@ function generateLineUpHtml(report, weather, port, { isPreview = false } = {}) {
                                             valign="top"
 
                                         >
-                                            <div class="weather-card">
+                                            <div class="weather-card night-card">
 
                                                 <h3>Night <span class="weather-time">21:00</span></h3>
 
@@ -1314,20 +1308,23 @@ function generateLineUpHtml(report, weather, port, { isPreview = false } = {}) {
                                                 </div>
                                                 <table
                                                     class="weather-stats-table"
+                                                    align="center"
                                                     role="presentation"
+                                                    width="90%"
                                                     cellpadding="0"
                                                     cellspacing="0"
                                                     border="0"
+                                                    
                                                 >
                                                     <tr>
-                                                        <td style="width: 50%; padding: 7px 6px; border-bottom: 1px solid #d1d5db; vertical-align: top;">
+                                                        <td>
                                                             <span class="weather-stat-label">Humidity</span>
                                                             <span class="weather-stat-value">
                                                                 ${escapeHtml(weather.night.humidity)}%
                                                             </span>
                                                         </td>
 
-                                                        <td style="width: 50%; padding: 7px 6px; border-bottom: 1px solid #d1d5db; vertical-align: top;">
+                                                        <td >
                                                             <span class="weather-stat-label">Wind</span>
                                                             <span class="weather-stat-value">
                                                                 ${escapeHtml(weather.night.windDirection)}
@@ -1337,14 +1334,14 @@ function generateLineUpHtml(report, weather, port, { isPreview = false } = {}) {
                                                     </tr>
 
                                                     <tr>
-                                                        <td style="width: 50%; padding: 7px 6px; border-bottom: 1px solid #d1d5db; vertical-align: top;">
+                                                        <td>
                                                             <span class="weather-stat-label">Rain</span>
                                                             <span class="weather-stat-value">
                                                                 ${escapeHtml(weather.night.rainChance)}%
                                                             </span>
                                                         </td>
 
-                                                        <td style="width: 50%; padding: 7px 6px; border-bottom: 1px solid #d1d5db; vertical-align: top;">
+                                                        <td>
                                                             <span class="weather-stat-label">Visibility</span>
                                                             <span class="weather-stat-value">
                                                                 ${escapeHtml(weather.night.visibility)} km
@@ -1353,14 +1350,14 @@ function generateLineUpHtml(report, weather, port, { isPreview = false } = {}) {
                                                     </tr>
 
                                                     <tr>
-                                                        <td style="width: 50%; padding: 7px 6px; border-bottom: 1px solid #d1d5db; vertical-align: top;">
+                                                        <td>
                                                             <span class="weather-stat-label">Feels like</span>
                                                             <span class="weather-stat-value">
                                                                 ${escapeHtml(weather.night.feelsLike)}°C
                                                             </span>
                                                         </td>
 
-                                                        <td style="width: 50%; padding: 7px 6px; border-bottom: 1px solid #d1d5db; vertical-align: top;">
+                                                        <td >
                                                             <span class="weather-stat-label">Wind gusts</span>
                                                             <span class="weather-stat-value">
                                                                 ${escapeHtml(weather.night.windGust ?? "—")} km/h
@@ -1369,18 +1366,37 @@ function generateLineUpHtml(report, weather, port, { isPreview = false } = {}) {
                                                     </tr>
 
                                                     <tr>
-                                                        <td style="width: 50%; padding: 7px 6px; border-bottom: 1px solid #d1d5db; vertical-align: top;">
+                                                        <td>
                                                             <span class="weather-stat-label">Pressure</span>
                                                             <span class="weather-stat-value">
                                                                 ${escapeHtml(weather.night.pressure)} hPa
                                                             </span>
                                                         </td>
 
-                                                        <td style="width: 50%; padding: 7px 6px; border-bottom: 1px solid #d1d5db; vertical-align: top;">
+                                                        <td >
                                                             <span class="weather-stat-label">Cloud cover</span>
                                                             <span class="weather-stat-value">
                                                                 ${escapeHtml(weather.night.clouds)}%
                                                             </span>
+                                                        </td>
+                                                    </tr>
+                                                </table>
+
+                                                <!-- Mobile Night card: Sunset only (issue 8) -->
+                                                <table
+                                                    class="weather-sun-table"
+                                                    align="center"
+                                                    role="presentation"
+                                                    width="90%"
+                                                    cellpadding="0"
+                                                    cellspacing="0"
+                                                    border="0"
+                                                    
+                                                >
+                                                    <tr>
+                                                        <td align="center" >
+                                                            <span class="weather-sun-label">Sunset</span>
+                                                            <span class="weather-sun-value">${escapeHtml(weather.sunset)}</span>
                                                         </td>
                                                     </tr>
                                                 </table>
@@ -1416,7 +1432,7 @@ function generateLineUpHtml(report, weather, port, { isPreview = false } = {}) {
         html,
         images: isPreview ? [] : [
             {
-                path: path.join(__dirname, "assets", "bf-fortship-1_1.png"),
+                path: path.join(__dirname, "assets", "Logo-Claro-Fortship.png"),
                 cid: "company-logo"
             },
             {

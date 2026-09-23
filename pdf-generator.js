@@ -205,7 +205,7 @@ async function createReportPdf({ report, html, images = [] }) {
         const pdfBuffer = await page.pdf({
             format: "A4",
             printBackground: true,
-            scale: 0.68, // Scales the document to ~88-90% for a spacious, non-cramped desktop layout
+            scale: 0.68, 
             margin: {
                 top: "8mm",
                 right: "8mm",

@@ -72,7 +72,7 @@ function generateSubject(report) {
 
     if (report.reportType === "line-up") {
         const port = getPortConfig(report.sheetName);
-        return `${port.title} Line Up`;
+        return `${port.title} Line2qwasd`;
     }
 
     throw new Error(
