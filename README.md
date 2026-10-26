@@ -231,6 +231,7 @@ lorenahtml/
 ├── config.js                 # Port config (title, image, coordinates) + email subject logic
 ├── parser.js                 # Parses LINEUP.xlsx locally for previews/tests
 ├── generator-line-up.js      # Line-up HTML (desktop + mobile + weather + port image)
+├── email-theme.js            # Shared line-up-style CSS/shell for Berth & Sail and Daily Report
 ├── generator-berth-sail.js   # Berth & Sail HTML
 ├── generator-daily-report.js # Daily report HTML
 ├── weather.js                # OpenWeather client with retry/timeout
@@ -285,7 +286,7 @@ Example (Berth & Sail):
 | `GET /microsoft/login`, `/microsoft/callback` | Microsoft OAuth |
 | `GET /preview` | Live line-up preview (from `LINEUP.xlsx`) |
 | `GET /preview/berth-sail` | Preview from `berth-sail-preview.json` |
-| `GET /preview/daily-report` | Preview from `debug-received-report.json` |
+| `GET /preview/daily-report` | Preview from `daily-report-preview.json` |
 | `POST /test/:provider/draft` | Send a test email (`gmail` or `microsoft`) |
 | `GET /test-weather` | Weather API check |
 | `GET /test-onedrive`, `/test-onedrive-attachment` | OneDrive / Graph attachment tests |
@@ -367,8 +368,7 @@ Resize the window under 600 px to see the mobile card layout. `npm test` runs `n
 
 ## Known Limitations / Future Work
 
-- Gmail path does not yet support the PDF/XLSX attachments (`fileAttachments` are Microsoft-only).
-- The `npm test` script references `generator.js`, which no longer exists (generators were split per report).
+- Email sending is Microsoft-only by design; the Gmail code is deprecated.
 - The line-up subject uses a fixed revision string (`LI1.005`).
 - Puppeteer launches a new browser per PDF; a shared instance would be faster at higher volume.
 - `generator-line-up.js` contains a large commented-out legacy template that can be removed.

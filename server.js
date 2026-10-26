@@ -622,6 +622,9 @@ app.post("/test/:provider/draft", async (req, res) => {
 app.get("/preview/berth-sail", async (req, res) => {
     try {
         delete require.cache[
+            require.resolve("./email-theme")
+        ];
+        delete require.cache[
             require.resolve("./generator-berth-sail")
         ];
         const generateBerthSailHtml =
@@ -652,6 +655,9 @@ app.get("/preview/berth-sail", async (req, res) => {
 app.get("/preview/daily-report", async (req, res) => {
     try {
         delete require.cache[
+            require.resolve("./email-theme")
+        ];
+        delete require.cache[
             require.resolve("./generator-daily-report")
         ];
 
@@ -660,7 +666,7 @@ app.get("/preview/daily-report", async (req, res) => {
 
         const report = JSON.parse(
             fs.readFileSync(
-                path.join(__dirname, "debug-received-report.json"),
+                dailyReportPreviewPath,
                 "utf8"
             )
         );

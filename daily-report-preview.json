@@ -1,0 +1,165 @@
+{
+  "reportType": "daily-report",
+  "sheetName": "Daily Report",
+  "to": [
+    "ops@example.com"
+  ],
+  "cc": [],
+  "bcc": [],
+  "vesselName": "MV BBC TOPAZ",
+  "holds": [
+    "Hold #1",
+    "Hold #2"
+  ],
+  "summary": [
+    {
+      "label": "Total Manifested (mtons)",
+      "value": "962.80"
+    },
+    {
+      "label": "Total Manifested (units)",
+      "value": "45"
+    },
+    {
+      "label": "Discharged Daily (mtons)",
+      "value": "107.20"
+    },
+    {
+      "label": "Balance to go (mtons)",
+      "value": "192.60"
+    },
+    {
+      "label": "Discharged Daily (units)",
+      "value": "5"
+    },
+    {
+      "label": "Balance to go (units)",
+      "value": "9"
+    }
+  ],
+  "dischargeSummary": [
+    {
+      "label": "Manifested (mtons)",
+      "value": "962.80"
+    },
+    {
+      "label": "Total Discharged (mtons)",
+      "value": "770.20"
+    },
+    {
+      "label": "Balance to go (mtons)",
+      "value": "192.60"
+    },
+    {
+      "label": "Manifested (units)",
+      "value": "45"
+    },
+    {
+      "label": "Total Discharged (units)",
+      "value": "36"
+    },
+    {
+      "label": "Balance to go (units)",
+      "value": "9"
+    }
+  ],
+  "discharges": [
+    {
+      "date": "Mon, 3 Aug 2026",
+      "shift": "00:00 - 06:00",
+      "units": "0",
+      "mtons": "0.00"
+    },
+    {
+      "date": "Mon, 3 Aug 2026",
+      "shift": "06:00 - 12:00",
+      "units": "3",
+      "mtons": "64.20"
+    },
+    {
+      "date": "Mon, 3 Aug 2026",
+      "shift": "12:00 - 18:00",
+      "units": "4",
+      "mtons": "85.60"
+    },
+    {
+      "date": "Mon, 3 Aug 2026",
+      "shift": "18:00 - 00:00",
+      "units": "4",
+      "mtons": "85.60"
+    },
+    {
+      "date": "Tue, 4 Aug 2026",
+      "shift": "00:00 - 06:00",
+      "units": "0",
+      "mtons": "0.00"
+    },
+    {
+      "date": "Tue, 4 Aug 2026",
+      "shift": "06:00 - 12:00",
+      "units": "0",
+      "mtons": "0.00"
+    },
+    {
+      "date": "Tue, 4 Aug 2026",
+      "shift": "12:00 - 18:00",
+      "units": "3",
+      "mtons": "64.20"
+    },
+    {
+      "date": "Tue, 4 Aug 2026",
+      "shift": "18:00 - 00:00",
+      "units": "4",
+      "mtons": "85.60"
+    },
+    {
+      "date": "Wed, 5 Aug 2026",
+      "shift": "00:00 - 06:00",
+      "units": "2",
+      "mtons": "42.80"
+    },
+    {
+      "date": "Wed, 5 Aug 2026",
+      "shift": "06:00 - 12:00",
+      "units": "1",
+      "mtons": "21.40"
+    },
+    {
+      "date": "Wed, 5 Aug 2026",
+      "shift": "12:00 - 18:00",
+      "units": "0",
+      "mtons": "0.00"
+    },
+    {
+      "date": "Wed, 5 Aug 2026",
+      "shift": "18:00 - 00:00",
+      "units": "2",
+      "mtons": "42.80"
+    },
+    {
+      "date": "Thu, 6 Aug 2026",
+      "shift": "00:00 - 06:00",
+      "units": "1",
+      "mtons": "21.40"
+    },
+    {
+      "date": "Thu, 6 Aug 2026",
+      "shift": "06:00 - 12:00",
+      "units": "2",
+      "mtons": "42.80"
+    },
+    {
+      "date": "Thu, 6 Aug 2026",
+      "shift": "12:00 - 18:00",
+      "units": "4",
+      "mtons": "85.60"
+    },
+    {
+      "date": "Thu, 6 Aug 2026",
+      "shift": "18:00 - 00:00",
+      "units": "1",
+      "mtons": "21.40"
+    }
+  ],
+  "etcs": "Tue, 11 Aug 2026 9 AM"
+}

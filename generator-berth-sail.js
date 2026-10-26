@@ -1,19 +1,23 @@
-const path = require("path");
+const {
+    escapeHtml,
+    rowBackground,
+    titleCase,
+    renderDocument,
+    themeImages,
+    mobileDetailRow
+} = require("./email-theme");
 
-function escapeHtml(value) {
-    return String(value ?? "")
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
-}
+const SECTION_KEYS = {
+    "BUNKERS UPON:": "bunkers",
+    "DRAFTS UPON:": "drafts",
+    "TUGS USED UPON:": "tugs"
+};
 
-const SECTION_HEADINGS = new Set([
-    "BUNKERS UPON:",
-    "DRAFTS UPON:",
-    "TUGS USED UPON:"
-]);
+const SECTION_TITLES = {
+    bunkers: "Bunkers Upon",
+    drafts: "Drafts Upon",
+    tugs: "Tugs Used Upon"
+};
 
 const VESSEL_INFORMATION = new Set([
     "VESSEL",
@@ -24,910 +28,267 @@ const VESSEL_INFORMATION = new Set([
     "BERTHING"
 ]);
 
-function isSectionHeading(label) {
-    return SECTION_HEADINGS.has(
-        String(label).trim().toUpperCase()
-    );
-}
-
-function isVesselInformation(label) {
-    return VESSEL_INFORMATION.has(
-        String(label).trim().toUpperCase()
-    );
-}
-
+const TIMELINE_LABELS = new Set([
+    "FREE PRATIQUE GRANTED",
+    "END OF SEA PASSAGE",
+    "ARRIVED AT THE ROADS (DRIFTING)",
+    "NOTICE OF READINESS TENDERED",
+    "ANCHOR DOWN",
+    "ANCHOR AWEIGHT",
+    "POB FOR BERTHING",
+    "FIRST LINE ASHORE",
+    "ALL FAST",
+    "GANGWAY PLACED ASHORE",
+    "CLEARED BY PORT AUTHORITIES",
+    "COMMENCED LOADING",
+    "COMPLETED LOADING",
+    "LASHING/SECURING VESSEL COMPLETED BY CREW FOR SAILING",
+    "POB FOR SAILING",
+    "CAST-OFF",
+    "POB OFF.",
+    "NEXT PORT ETA"
+]);
 
 function isBlankRow(row) {
-    return (
-        !row.label &&
-        !row.valueB &&
-        !row.valueC
-    );
+    return !row.label && !row.valueB && !row.valueC;
 }
 
+/**
+ * Splits the raw sheet rows (label / valueB / valueC) into the logical
+ * blocks of the Berth & Sail report.
+ */
+function groupRows(rows) {
+    const groups = {
+        vessel: [],
+        timeline: [],
+        bunkers: { headers: null, rows: [] },
+        drafts: { headers: null, rows: [] },
+        tugs: { headers: null, rows: [] }
+    };
 
-function isTimelineRow(row) {
-    const label = String(row.label).trim().toUpperCase();
-
-    return (
-        label &&
-        !isSectionHeading(label) &&
-        !isVesselInformation(label) &&
-        (
-            label === "FREE PRATIQUE GRANTED" ||
-            label === "END OF SEA PASSAGE" ||
-            label === "ARRIVED AT THE ROADS (DRIFTING)" ||
-            label === "NOTICE OF READINESS TENDERED" ||
-            label === "ANCHOR DOWN" ||
-            label === "ANCHOR AWEIGHT" ||
-            label === "POB FOR BERTHING" ||
-            label === "FIRST LINE ASHORE" ||
-            label === "ALL FAST" ||
-            label === "GANGWAY PLACED ASHORE" ||
-            label === "CLEARED BY PORT AUTHORITIES" ||
-            label === "COMMENCED LOADING" ||
-            label === "COMPLETED LOADING" ||
-            label === "LASHING/SECURING VESSEL COMPLETED BY CREW FOR SAILING" ||
-            label === "POB FOR SAILING" ||
-            label === "CAST-OFF" ||
-            label === "POB OFF." ||
-            label === "NEXT PORT ETA"
-        )
-    );
-}
-
-function generateBerthSailHtml(
-    report,
-    { isPreview = false } = {}
-) {
-
-    const rows = report.rows || [];
-
-    const vesselRows = [];
-    const timelineRows = [];
-    const bunkersRows = [];
-    const draftsRows = [];
-    const tugsRows = [];
-    let bunkersHeaders = null;
-    let draftsHeaders = null;
-    let tugsHeaders = null;
     let currentSection = null;
+
     for (const row of rows) {
-
-
+        if (isBlankRow(row)) {
+            continue;
+        }
 
         const label = String(row.label ?? "").trim();
         const upperLabel = label.toUpperCase();
 
-        if (isBlankRow(row)) {
-            continue;
-        }
-        if (upperLabel === "BUNKERS UPON:") {
-            currentSection = "bunkers";
-
-            bunkersHeaders = {
-                label: label.replace(/:$/, ""),
-                valueB: row.valueB,
-                valueC: row.valueC
+        if (SECTION_KEYS[upperLabel]) {
+            currentSection = SECTION_KEYS[upperLabel];
+            groups[currentSection].headers = {
+                valueB: titleCase(row.valueB) || "Berthing",
+                valueC: titleCase(row.valueC) || "Sailing"
             };
-
             continue;
         }
 
-        if (upperLabel === "DRAFTS UPON:") {
-            currentSection = "drafts";
-
-            draftsHeaders = {
-                label: label.replace(/:$/, ""),
-                valueB: row.valueB,
-                valueC: row.valueC
-            };
-
+        if (currentSection) {
+            groups[currentSection].rows.push(row);
             continue;
         }
 
-        if (upperLabel === "TUGS USED UPON:") {
-            currentSection = "tugs";
-
-            tugsHeaders = {
-                label: label.replace(/:$/, ""),
-                valueB: row.valueB,
-                valueC: row.valueC
-            };
-
+        if (VESSEL_INFORMATION.has(upperLabel)) {
+            groups.vessel.push(row);
             continue;
         }
 
-        if (currentSection === "bunkers") {
-            bunkersRows.push(row);
+        if (TIMELINE_LABELS.has(upperLabel)) {
+            groups.timeline.push(row);
+        }
+    }
+
+    return groups;
+}
+
+function findVesselValue(vesselRows, label) {
+    const match = vesselRows.find(
+        (row) => String(row.label).trim().toUpperCase() === label
+    );
+    return match ? String(match.valueB ?? "").trim() : "";
+}
+
+// ---------- Desktop ----------
+
+function sectionBar(title) {
+    return `
+        <tr class="berth-heading">
+            <th colspan="3">${escapeHtml(title)}</th>
+        </tr>`;
+}
+
+function columnHeading(a, b, c) {
+    return `
+        <tr class="column-heading">
+            <th>${escapeHtml(a)}</th>
+            <th>${escapeHtml(b)}</th>
+            <th>${escapeHtml(c)}</th>
+        </tr>`;
+}
+
+const SPACER = `
+        <tr class="spacer-row"><td colspan="3">&nbsp;</td></tr>`;
+
+function renderDesktop(groups) {
+    let body = "";
+
+    if (groups.vessel.length) {
+        body += sectionBar("Vessel Details");
+        for (const [i, row] of groups.vessel.entries()) {
+            body += `
+        <tr style="background-color: ${rowBackground(i)};">
+            <td class="row-label">${escapeHtml(row.label)}</td>
+            <td colspan="2">${escapeHtml(row.valueB)}</td>
+        </tr>`;
+        }
+        body += SPACER;
+    }
+
+    if (groups.timeline.length) {
+        body += sectionBar("Timeline");
+        body += columnHeading("Event", "Date", "Time");
+        for (const [i, row] of groups.timeline.entries()) {
+            body += `
+        <tr style="background-color: ${rowBackground(i)};">
+            <td class="row-label">${escapeHtml(row.label)}</td>
+            <td>${escapeHtml(row.valueB)}</td>
+            <td>${escapeHtml(row.valueC)}</td>
+        </tr>`;
+        }
+        body += SPACER;
+    }
+
+    for (const key of ["bunkers", "drafts", "tugs"]) {
+        const { headers, rows } = groups[key];
+        if (!headers || !rows.length) {
             continue;
         }
-        if (currentSection === "drafts") {
-            draftsRows.push(row);
+
+        body += sectionBar(SECTION_TITLES[key]);
+        body += columnHeading("Item", headers.valueB, headers.valueC);
+        for (const [i, row] of rows.entries()) {
+            body += `
+        <tr style="background-color: ${rowBackground(i)};">
+            <td class="row-label">${escapeHtml(row.label)}</td>
+            <td>${escapeHtml(row.valueB)}</td>
+            <td>${escapeHtml(row.valueC)}</td>
+        </tr>`;
+        }
+        body += SPACER;
+    }
+
+    return `
+    <table class="report-table" width="100%" cellpadding="0" cellspacing="0" border="0">
+        <colgroup>
+            <col style="width: 40%;">
+            <col style="width: 30%;">
+            <col style="width: 30%;">
+        </colgroup>
+        <tbody>${body}
+        </tbody>
+    </table>`;
+}
+
+// ---------- Mobile ----------
+
+function mobileCard(title, innerHtml) {
+    return `
+    <div class="berth-section">
+        <h3>${escapeHtml(title)}</h3>
+        <div class="mobile-vessel-card">${innerHtml}
+        </div>
+    </div>`;
+}
+
+/** "Berthing: x<br>Sailing: y" when both exist, otherwise the single value. */
+function combinedValue(row, headers) {
+    const b = escapeHtml(row.valueB);
+    const c = escapeHtml(row.valueC);
+
+    if (row.valueB && row.valueC) {
+        return `${escapeHtml(headers.valueB)}: ${b}<br>${escapeHtml(headers.valueC)}: ${c}`;
+    }
+    if (row.valueC) {
+        return `${escapeHtml(headers.valueC)}: ${c}`;
+    }
+    return b;
+}
+
+function renderMobile(groups) {
+    let html = "";
+
+    if (groups.vessel.length) {
+        html += mobileCard(
+            "Vessel Details",
+            groups.vessel
+                .map((row, i) => mobileDetailRow(row.label, escapeHtml(row.valueB), i))
+                .join("")
+        );
+    }
+
+    if (groups.timeline.length) {
+        html += mobileCard(
+            "Timeline",
+            groups.timeline
+                .map((row, i) =>
+                    mobileDetailRow(
+                        row.label,
+                        escapeHtml(row.valueB) +
+                            (row.valueC ? `<br>${escapeHtml(row.valueC)}` : ""),
+                        i
+                    )
+                )
+                .join("")
+        );
+    }
+
+    for (const key of ["bunkers", "drafts", "tugs"]) {
+        const { headers, rows } = groups[key];
+        if (!headers || !rows.length) {
             continue;
         }
-        if (currentSection === "tugs") {
-            tugsRows.push(row);
-            continue;
-        }
 
-        if (isVesselInformation(label)) {
-            vesselRows.push(row);
-            continue;
-        }
-        if (isTimelineRow(row)) {
-            timelineRows.push(row);
-            continue;
-        }
+        html += mobileCard(
+            SECTION_TITLES[key],
+            rows
+                .map((row, i) => mobileDetailRow(row.label, combinedValue(row, headers), i))
+                .join("")
+        );
     }
 
-    function renderMobileValueRows(sectionRows) {
-        let output = "";
-        for (const row of sectionRows) {
-            if (!row.valueB && !row.valueC) {
-                output += `
-                    <div class="mobile-detail">
-                        <span class="mobile-label">
-                            ${escapeHtml(row.label)}
-                        </span>
-                    </div>
-                `;
-
-                continue;
-            }
-
-            output += `
-                <div class="mobile-detail">
-                    <span class="mobile-label">
-                        ${escapeHtml(row.label)}
-                    </span>
-
-                    <span class="mobile-value">
-                        ${escapeHtml(row.valueB)}
-                    </span>
-                </div>
-            `;
-
-            if (row.valueC) {
-                output += `
-                    <div class="mobile-detail mobile-secondary">
-                        <span class="mobile-label">
-                        </span>
-
-                        <span class="mobile-value">
-                            ${escapeHtml(row.valueC)}
-                        </span>
-                    </div>
-                `;
-            }
-        }
-
-        return output;
-    }
-
-    function renderTwoColumnSection(
-        headers,
-        sectionRows
-    ) {
-        if (!headers) {
-            return "";
-        }
-
-        let html = `
-            <table
-                class="berth-table"
-                width="100%"
-                cellpadding="0"
-                cellspacing="0"
-                border="0"
-            >
-                <thead>
-                    <tr class="column-heading">
-                        <th>
-                            ${escapeHtml(headers.label)}
-                        </th>
-                        <th>
-                            ${escapeHtml(headers.valueB)}
-                        </th>
-                        <th>
-                            ${escapeHtml(headers.valueC)}
-                        </th>
-                    </tr>
-                </thead>
-                <tbody>
-        `;
-
-        for (const [i, row] of sectionRows.entries()) {
-            const background =
-                i % 2 === 0
-                    ? "#ffffff"
-                    : "#EAEDF0";
-            html += `
-                <tr style="background-color: ${background};">
-                    <td class="berth-label">
-                        ${escapeHtml(row.label)}
-                    </td>
-                    <td>
-                        ${escapeHtml(row.valueB)}
-                    </td>
-                    <td>
-                        ${escapeHtml(row.valueC)}
-                    </td>
-                </tr>
-            `;
-        }
-        html += `
-                </tbody>
-            </table>
-        `;
-        return html;
-    }
-    let html = `
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
->
-<meta
-    name="x-apple-disable-message-reformatting"
->
-<title>
- Berthing Report
-</title>
-<style>
-body {
-    margin: 0;
-    padding: 0;
-    background: #D4DDE5;
-    font-family: Arial, Helvetica, sans-serif;
-}
-table {
-    border-collapse: collapse;
+    return html;
 }
 
-img {
-    max-width: 100%;
-    height: auto;
-}
+// ---------- Public API ----------
 
-.email-container {
-    width: 100%;
-    max-width: 1300px;
-    margin: 0 auto;
-    background: #ffffff;
-}
+function generateBerthSailHtml(report, { isPreview = false } = {}) {
+    const groups = groupRows(report.rows || []);
 
+    const vessel = findVesselValue(groups.vessel, "VESSEL");
+    const port = findVesselValue(groups.vessel, "PORT");
 
+    const subject = vessel
+        ? `<strong>Berthing Report</strong> for <strong>${escapeHtml(vessel)}</strong>${port ? ` at <strong>${escapeHtml(port)}</strong>` : ""}`
+        : "<strong>Berthing Report</strong>";
 
-.report-header {
-    padding: 24px;
-    border-bottom: 1px solid #d1d5db;
-}
+    const introHtml = `
+                                <p>Dear All,</p>
+                                <p>Please find below the latest ${subject}, provided for your reference and guidance.</p>`;
 
-.report-header h1 {
-    margin: 0;
-    font-size: 26px;
-    line-height: 1.2;
-}
-
-
-.desktop-report {
-    display: block;
-}
-
-.berth-section {
-    background-color: #D4DDE5;
-}
-
-.berth-table {
-    width: 100%;
-    border-collapse: collapse;
-    table-layout: fixed;
-}
-
-.berth-table th,
-.berth-table td,
-.timeline-table th,
-.timeline-table td {
-    padding: 10px 8px;
-    overflow-wrap: break-word;
-    word-break: normal;
-    vertical-align: middle;
-    box-sizing: border-box;
-    font-size: 13px;
-    line-height: 1.4;
-}
-.berth-table .berth-label,
-.timeline-table .timeline-label {
-    padding-left: 30px;
-    font-weight: bold;
-}
-
-.berth-table .column-heading th {
-    background-color: #1D4369;
-    color: #ffffff;
-    font-size: 12px;
-    line-height: 0.5;
-    font-weight: bold;
-    text-align: left;
-
-}
-
-.berth-table .column-heading th:first-child {
-    padding-left: 30px;
-}
-
-.berth-table .section-heading th {
-    background-color: #D4DDE5;
-    color: #1D4369;
-    border: 1px solid #d1d5db;
-    border-bottom: none;
-    font-size: 13px;
-    line-height: 1.2;
-    font-weight: bold;
-    text-align: left;
-    padding: 10px 8px;
-}
-
-.berth-table .berth-label {
-    width: 42%;
-    font-weight: bold;
-}
-
-.timeline-table {
-    width: 100%;
-    border-collapse: collapse;
-    table-layout: fixed;
-}
-
-
-
-
-/* -------------------------------------------------------
-   MOBILE
-------------------------------------------------------- */
-
-.mobile-report {
-    display: none;
-    width: 100%;
-}
-
-.mobile-section {
-    width: 100%;
-    margin: 0;
-    padding: 0;
-    background-color: #D4DDE5;
-}
-
-.mobile-section-title {
-    padding: 10px 12px;
-    background-color: #D4DDE5;
-    color: #1D4369;
-    font-size: 14px;
-    line-height: 1.3;
-    font-weight: bold;
-}
-
-.mobile-card {
-    width: 100%;
-    margin: 0;
-    border: 1px solid #d1d5db;
-    background-color: #ffffff;
-    box-sizing: border-box;
-}
-
-.mobile-card-header {
-    padding: 10px 12px;
-    background-color: #1D4369;
-    color: #ffffff;
-    font-size: 14px;
-    line-height: 1.4;
-    font-weight: bold;
-}
-
-.mobile-detail {
-    display: table;
-    width: 100%;
-    table-layout: fixed;
-    border-bottom: 1px solid #e5e7eb;
-    background-color: #ffffff;
-}
-
-.mobile-detail:last-child {
-    border-bottom: none;
-}
-
-.mobile-label,
-.mobile-value {
-    display: table-cell;
-    padding: 9px 12px;
-    font-size: 13px;
-    line-height: 1.4;
-    vertical-align: top;
-}
-
-.mobile-label {
-    width: 42%;
-    font-weight: bold;
-    color: #1D4369;
-}
-
-.mobile-value {
-    width: 58%;
-    overflow-wrap: break-word;
-}
-
-.mobile-secondary .mobile-label {
-    color: transparent;
-}
-
-.mobile-timeline-label {
-    width: 52%;
-}
-
-
-/* -------------------------------------------------------
-   OVERVIEW
-------------------------------------------------------- */
-
-.overview-desktop {
-    width: 100%;
-    background-color: #D4DDE5;
-}
-
-.overview-mobile {
-    display: none;
-}
-
-
-/* -------------------------------------------------------
-   RESPONSIVE
-------------------------------------------------------- */
-
-@media screen and (max-width: 600px) {
-
-    body {
-        padding: 0 !important;
-    }
-
-    .email-container {
-        width: 100% !important;
-        max-width: 100% !important;
-    }
-
-    .desktop-report {
-        display: none !important;
-    }
-
-    .mobile-report {
-        display: block !important;
-    }
-
-    .report-header {
-        padding: 20px 16px !important;
-    }
-
-    .berth-section {
-        padding: 0 !important;
-    }
-
-    .overview-desktop {
-        display: none !important;
-    }
-
-    .overview-mobile {
-        display: table !important;
-        width: 100% !important;
-    }
-
-}
-
-</style>
-
-</head>
-
-<body>
-
-<table
-    role="presentation"
-    width="100%"
-    cellpadding="0"
-    cellspacing="0"
-    border="0"
->
-
-<tr>
-
-<td align="center">
-
-<table
-    role="presentation"
-    width="100%"
-    cellpadding="0"
-    cellspacing="0"
-    border="0"
-    class="email-container"
->
-
-<tr>
-
-<td>
-
-
-<!-- =====================================================
-     HEADER
-===================================================== -->
-
-<div class="report-header">
-<table
-    width="100%"
-    border="0"
-    cellpadding="0"
-    cellspacing="0"
->
-<tr>
-<td align="left" valign="middle">
-<h1> Berthing Report
-</h1>
-</td>
-<td align="right" valign="middle">
-<img
-    src="${
+    const html = renderDocument({
+        title: "Berthing Report",
+        introHtml,
+        desktopHtml: renderDesktop(groups),
+        mobileHtml: renderMobile(groups),
         isPreview
-            ? "/assets/bf-fortship-1_1.png"
-            : "cid:company-logo"
-    }"
-    alt="Fortship Logo"
-    style="max-height: 60px;"
->
-</td>
-</tr>
-</table>
-</div>
+    });
 
-
-<!-- =====================================================
-     DESKTOP REPORT
-===================================================== -->
-
-<div class="desktop-report">
-<div class="berth-section">
-<table
-    class="berth-table"
-    width="100%"
-    cellpadding="0"
-    cellspacing="0"
-    border="0"
->
-<thead>
-<tr class="column-heading">
-<th></th><th></th><th></th>
-</tr>
-</thead>
-<tbody>
-`;
-    /*
-     * Vessel information
-     */
-    for (const [i, row] of vesselRows.entries()) {
-        const background =
-            i % 2 === 0
-                ? "#ffffff"
-                : "#EAEDF0";
-        html += `
-<tr style="background-color: ${background};">
-    <td class="berth-label">
-        ${escapeHtml(row.label)}
-    </td>
-    <td colspan="2">
-        ${escapeHtml(row.valueB)}
-    </td>
-</tr>
-`;
-    }
-
-    html += `
-
-</tbody>
-
-</table>
-
-</div>
-
-
-<!-- TIMELINE -->
-
-<div class="berth-section">
-<table
-    class="timeline-table"
-    width="100%"
-    cellpadding="0"
-    cellspacing="0"
-    border="0"
->
-<tbody>
-`;
-    for (const [i, row] of timelineRows.entries()) {
-        const background =
-            i % 2 === 0 ? "#ffffff" : "#EAEDF0";
-        html += `
-<tr style="background-color: ${background};">
-    <td class="timeline-label">
-        ${escapeHtml(row.label)}
-    </td>
-    <td class="timeline-date">
-        ${escapeHtml(row.valueB)}
-    </td>
-    <td class="timeline-time">
-        ${escapeHtml(row.valueC)}
-    </td>
-</tr>
-`;
-    }
-    html += `
-</tbody>
-
-</table>
-
-</div>
-
-
-<!-- BUNKERS -->
-<div class="berth-section">
-${renderTwoColumnSection(
-    bunkersHeaders,
-    bunkersRows
-)}
-</div>
-
-
-<!-- DRAFTS -->
-<div class="berth-section">
-${renderTwoColumnSection(
-    draftsHeaders,
-    draftsRows
-)}
-</div>
-
-
-<!-- TUGS -->
-<div class="berth-section">
-${renderTwoColumnSection(
-    tugsHeaders,
-    tugsRows
-)}
-</div>
-
-
-</div>
-
-
-<!-- =====================================================
-     MOBILE REPORT
-===================================================== -->
-
-<div class="mobile-report">
-
-
-<!-- VESSEL INFORMATION -->
-
-<div class="mobile-section">
-<div class="mobile-card">
-
-<div class="mobile-card-header">
-    Vessel Details
-</div>
-
-`;
-
-    html += renderMobileValueRows(vesselRows);
-
-    html += `
-
-</div>
-
-</div>
-
-
-<!-- TIMELINE -->
-
-<div class="mobile-section">
-<div class="mobile-card">
-<div class="mobile-card-header">
-    Timeline
-</div>
-`;
-    for (const row of timelineRows) {
-        html += `
-<div class="mobile-detail">
-
-<span class="mobile-label mobile-timeline-label">
-    ${escapeHtml(row.label)}
-</span>
-
-<span class="mobile-value">
-
-    ${escapeHtml(row.valueB)}
-
-    ${
-        row.valueC
-            ? `<br>${escapeHtml(row.valueC)}`
-            : ""
-    }
-
-</span>
-
-</div>
-
-`;
-    }
-
-    html += `
-
-</div>
-
-</div>
-
-
-<!-- BUNKERS -->
-
-<div class="mobile-section">
-
-<div class="mobile-section-title">
-    Bunkers Upon
-</div>
-
-<div class="mobile-card">
-
-`;
-
-    for (const row of bunkersRows) {
-
-        html += `
-
-<div class="mobile-detail">
-
-<span class="mobile-label">
-    ${escapeHtml(row.label)}
-</span>
-
-<span class="mobile-value">
-
-    ${escapeHtml(row.valueB)}
-
-    ${
-        row.valueC
-            ? `<br><strong>Sailing:</strong> ${escapeHtml(row.valueC)}`
-            : ""
-    }
-
-</span>
-
-</div>
-
-`;
-    }
-
-    html += `
-
-</div>
-
-</div>
-
-
-<!-- DRAFTS -->
-
-<div class="mobile-section">
-
-<div class="mobile-section-title">
-    Drafts Upon
-</div>
-
-<div class="mobile-card">
-
-`;
-
-    for (const row of draftsRows) {
-
-        html += `
-
-<div class="mobile-detail">
-
-<span class="mobile-label">
-    ${escapeHtml(row.label)}
-</span>
-
-<span class="mobile-value">
-
-    ${escapeHtml(row.valueB)}
-
-    ${
-        row.valueC
-            ? `<br><strong>Sailing:</strong> ${escapeHtml(row.valueC)}`
-            : ""
-    }
-
-</span>
-
-</div>
-
-`;
-    }
-
-    html += `
-
-</div>
-
-</div>
-
-
-<!-- TUGS -->
-
-<div class="mobile-section">
-
-<div class="mobile-section-title">
-    Tugs Used Upon
-</div>
-
-<div class="mobile-card">
-
-`;
-
-    for (const row of tugsRows) {
-
-        html += `
-
-<div class="mobile-detail">
-
-<span class="mobile-label">
-    ${escapeHtml(row.label)}
-</span>
-
-<span class="mobile-value">
-
-    ${escapeHtml(row.valueB)}
-
-    ${
-        row.valueC
-            ? `<br><strong>Sailing:</strong> ${escapeHtml(row.valueC)}`
-            : ""
-    }
-</span>
-</div>
-`;
-    }
-
-    html += `
-</div>
-</div>
-</div>
-</td>
-</tr>
-</table>
-</body>
-</html>
-
-`;
     return {
         html,
-
-        images: isPreview
-            ? []
-            : [
-                {
-                    path: path.join(
-                        __dirname,
-                        "assets",
-                        "bf-fortship-1_1.png"
-                    ),
-                    cid: "company-logo"
-                }
-            ]
+        images: themeImages(isPreview)
     };
 }
-
 
 module.exports = generateBerthSailHtml;

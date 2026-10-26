@@ -1002,47 +1002,28 @@ const path = require("path");
 
 
 function escapeHtml(value) {
-
     return String(value ?? "").replace(/[&<>"']/g, (character) => ({
-
         "&": "&amp;",
-
         "<": "&lt;",
-
         ">": "&gt;",
-
         '"': "&quot;",
-
         "'": "&#39;"
-
     })[character]);
-
 }
 
 
 
 function formatBrazilGeneratedAt(now = new Date()) {
-
     const parts = new Intl.DateTimeFormat("en-GB", {
-
         timeZone: "America/Sao_Paulo",
-
         day: "2-digit",
-
         month: "short",
-
         hour: "2-digit",
-
         minute: "2-digit",
-
         hourCycle: "h23"
-
     }).formatToParts(now);
-
     const part = (type) => parts.find((item) => item.type === type)?.value ?? "";
-
     return part("day") + " " + part("month") + " · " +
-
         part("hour") + ":" + part("minute") + " BRT";
 
 }
